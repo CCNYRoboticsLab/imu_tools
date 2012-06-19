@@ -6,6 +6,7 @@
   <license>BSD, GPL</license>  
   <review status="experimental" notes=""/>
   <url>http://ros.org/wiki/imu_tools</url>
+  <version>0.1.0</version>
   <depend stack="ros" />
   <depend stack="ros_core"/>
   <depend stack="common" />
