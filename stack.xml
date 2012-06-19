@@ -1,0 +1,15 @@
+<stack>
+  <description brief="IMU tools for ROS"> 
+    Various tools for IMU devices
+  </description>
+  <author>Maintained by Ivan Dryanovski</author>
+  <license>BSD, GPL</license>  
+  <review status="experimental" notes=""/>
+  <url>http://ros.org/wiki/imu_tools</url>
+  <depend stack="ros" />
+  <depend stack="ros_core"/>
+  <depend stack="common" />
+  <depend stack="common_msgs" />
+  <depend stack="geometry" />
+  <depend stack="visualization"/>
+</stack>
