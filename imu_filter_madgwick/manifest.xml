@@ -1,0 +1,24 @@
+<package>
+  <description brief="imu_filter_madgwick">
+
+     Filter which fuses angular velocities, accelerations, and (optionally) magnetic readings from a generic IMU device into an orientation.
+
+  </description>
+  <author>Ivan Dryanovski</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/imu_filter_madgwick</url>
+  <depend package="roscpp"/>
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="tf"/>
+  <depend package="nodelet"/>
+  <depend package="message_filters"/>
+
+  <export>
+    <nodelet plugin="${prefix}/imu_filter_nodelet.xml" />
+  </export>
+
+</package>
+
+

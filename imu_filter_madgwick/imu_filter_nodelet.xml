@@ -1,0 +1,9 @@
+<!-- Imu Filter nodelet publisher -->
+<library path="lib/libimu_filter_nodelet">
+  <class name="imu_filter_madgwick/ImuFilterNodelet" type="ImuFilterNodelet" 
+    base_class_type="nodelet::Nodelet">
+    <description>
+      Imu Filter nodelet publisher.
+    </description>
+  </class>
+</library>
