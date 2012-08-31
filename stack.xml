@@ -8,7 +8,6 @@
   <url>http://ros.org/wiki/imu_tools</url>
   <version>0.1.0</version>
   <depend stack="ros" />
-  <depend stack="ros_core"/>
   <depend stack="common" />
   <depend stack="common_msgs" />
   <depend stack="geometry" />
