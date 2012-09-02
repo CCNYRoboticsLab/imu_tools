@@ -37,6 +37,11 @@ Compile the stack:
 
     rosmake imu_tools
 
+More info
+-----------------------------------
+
+http://ros.org/wiki/imu_tools
+
 References
 -----------------------------------
  [1] http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms
