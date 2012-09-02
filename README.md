@@ -8,7 +8,7 @@ IMU-related filters and visualizers. The stack contains:
 
  * `imu_filter_madgwick`: a filter which fuses angular velocities,
 accelerations, and (optionally) magnetic readings from a generic IMU 
-device into an orientation.
+device into an orientation. Based on the work of [1].
 
  * `rviz_imu_plugin` a plugin for rviz which displays `sensor_msgs::Imu`
 messages
@@ -37,3 +37,6 @@ Compile the stack:
 
     rosmake imu_tools
 
+References
+-----------------------------------
+ [1] http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms
