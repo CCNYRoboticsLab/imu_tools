@@ -1,9 +1,17 @@
-imu_tools stack for ROS
+IMU tools for ROS
 ===================================
 
 Overview
 -----------------------------------
-This stack contains IMU-related filters and visualizers.
+
+IMU-related filters and visualizers. The stack contains:
+
+ * `imu_filter_madgwick`: a filter which fuses angular velocities,
+accelerations, and (optionally) magnetic readings from a generic IMU 
+device into an orientation.
+
+ * `rviz_imu_plugin` a plugin for rviz which displays `sensor_msgs::Imu`
+messages
 
 Installing
 -----------------------------------
@@ -11,7 +19,7 @@ Installing
 ### From source ###
 
 Create a directory where you want the package downloaded (ex. `~/ros`), 
-and add it to $ROS_PACKAGE_PATH.
+and add it to `$ROS_PACKAGE_PATH`.
 
 Make sure you have git installed:
 
