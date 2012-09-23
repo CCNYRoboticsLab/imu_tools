@@ -40,6 +40,15 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    use_mag_ = true;
   if (!nh_private_.getParam ("fixed_frame", fixed_frame_))
    fixed_frame_ = "odom";
+  if (!nh_private_.getParam ("constant_dt", constant_dt_))
+    constant_dt_ = 0.0;
+
+  // if constant_dt_ is 0.0 (default), use IMU timestamp to determine dt
+  // otherwise, it will be constant
+  if (constant_dt_ < 0.0)
+    ROS_FATAL("constant_dt parameter must be >= 0");
+  else if (constant_dt_ == 0.0)
+    ROS_INFO("using constant dt of %f sec", constant_dt_);
 
   // **** register publishers
 
@@ -84,7 +93,13 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     initialized_ = true;
   }
 
-  float dt = (time - last_time_).toSec();
+  // determine dt: either constant, or from IMU timestamp
+  float dt;
+  if (constant_dt_ > 0.0)
+    dt = constant_dt_;
+  else
+    dt = (time - last_time_).toSec();
+
   last_time_ = time;
   
   const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
