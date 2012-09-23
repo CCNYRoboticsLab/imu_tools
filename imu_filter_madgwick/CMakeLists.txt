@@ -16,6 +16,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # create imu_filter library
 rosbuild_add_library (imu_filter src/imu_filter.cpp)
+rosbuild_link_boost(imu_filter signals)
 
 # create imu_filter_nodelet library
 rosbuild_add_library (imu_filter_nodelet src/imu_filter_nodelet.cpp)
