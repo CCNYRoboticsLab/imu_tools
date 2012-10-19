@@ -31,6 +31,7 @@
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <tf/transform_datatypes.h>
+#include <tf/transform_broadcaster.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
@@ -62,12 +63,14 @@ class ImuFilter
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
 
     ros::Publisher imu_publisher_;
+    tf::TransformBroadcaster tf_broadcaster_;
   
     // **** paramaters
 
     double gain_;				// algorithm gain
     bool use_mag_;
     std::string fixed_frame_;
+    std::string tf_prefix_;
     double constant_dt_;
 
 
@@ -85,6 +88,7 @@ class ImuFilter
     void imuCallback(const ImuMsg::ConstPtr& imu_msg_raw);
 
     void publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw);
+    void publishTransform(void);
 
     void madgwickAHRSupdate(float gx, float gy, float gz, 
                             float ax, float ay, float az, 

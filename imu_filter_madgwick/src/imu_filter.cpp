@@ -40,6 +40,8 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    use_mag_ = true;
   if (!nh_private_.getParam ("fixed_frame", fixed_frame_))
    fixed_frame_ = "odom";
+  if (!nh_private_.getParam ("tf_prefix", tf_prefix_))
+   tf_prefix_ = "";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
     constant_dt_ = 0.0;
 
@@ -111,6 +113,7 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     dt);
 
   publishFilteredMsg(imu_msg_raw);
+  publishTransform();
 }
 
 void ImuFilter::imuMagCallback(
@@ -149,6 +152,19 @@ void ImuFilter::imuMagCallback(
   }
 
   publishFilteredMsg(imu_msg_raw);
+  publishTransform();
+}
+
+void ImuFilter::publishTransform()
+{
+  tf::Quaternion q(q1, q2, q3, q0);
+  tf::Transform transform;
+  transform.setOrigin( tf::Vector3( 0.0, 0.0, 0.0 ) );
+  transform.setRotation( q );
+  tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
+						       ros::Time::now(),
+						       fixed_frame_,
+						       tf_prefix_ + "/imu" ) );
 }
 
 void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
