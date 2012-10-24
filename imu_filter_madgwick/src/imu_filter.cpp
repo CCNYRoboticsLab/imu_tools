@@ -40,8 +40,6 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    use_mag_ = true;
   if (!nh_private_.getParam ("fixed_frame", fixed_frame_))
    fixed_frame_ = "odom";
-  if (!nh_private_.getParam ("tf_prefix", tf_prefix_))
-   tf_prefix_ = "";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
     constant_dt_ = 0.0;
 
@@ -88,6 +86,7 @@ ImuFilter::~ImuFilter()
 void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 {
   ros::Time time = imu_msg_raw->header.stamp;
+  imu_frame_ = imu_msg_raw->header.frame_id;
 
   if (!initialized_)
   {
@@ -121,6 +120,7 @@ void ImuFilter::imuMagCallback(
   const MagMsg::ConstPtr& mag_msg)
 {
   ros::Time time = imu_msg_raw->header.stamp;
+  imu_frame_ = imu_msg_raw->header.frame_id;
 
   if (!initialized_)
   {
@@ -164,7 +164,8 @@ void ImuFilter::publishTransform()
   tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
 						       ros::Time::now(),
 						       fixed_frame_,
-						       tf_prefix_ + "/imu" ) );
+						       imu_frame_ ) );
+
 }
 
 void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
@@ -177,6 +178,7 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   boost::shared_ptr<ImuMsg> imu_msg = 
     boost::make_shared<ImuMsg>(*imu_msg_raw);
 
+  imu_msg->header.frame_id = fixed_frame_;
   tf::quaternionTFToMsg(q, imu_msg->orientation);  
   imu_publisher_.publish(imu_msg);
 }

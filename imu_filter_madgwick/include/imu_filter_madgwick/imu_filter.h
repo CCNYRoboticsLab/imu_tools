@@ -70,9 +70,8 @@ class ImuFilter
     double gain_;				// algorithm gain
     bool use_mag_;
     std::string fixed_frame_;
-    std::string tf_prefix_;
+    std::string imu_frame_;
     double constant_dt_;
-
 
     // **** state variables
   
