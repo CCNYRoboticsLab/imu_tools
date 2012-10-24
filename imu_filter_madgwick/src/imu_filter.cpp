@@ -86,6 +86,7 @@ ImuFilter::~ImuFilter()
 void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 {
   ros::Time time = imu_msg_raw->header.stamp;
+  imu_frame_ = imu_msg_raw->header.frame_id;
 
   if (!initialized_)
   {
@@ -111,6 +112,7 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     dt);
 
   publishFilteredMsg(imu_msg_raw);
+  publishTransform();
 }
 
 void ImuFilter::imuMagCallback(
@@ -118,6 +120,7 @@ void ImuFilter::imuMagCallback(
   const MagMsg::ConstPtr& mag_msg)
 {
   ros::Time time = imu_msg_raw->header.stamp;
+  imu_frame_ = imu_msg_raw->header.frame_id;
 
   if (!initialized_)
   {
@@ -149,6 +152,20 @@ void ImuFilter::imuMagCallback(
   }
 
   publishFilteredMsg(imu_msg_raw);
+  publishTransform();
+}
+
+void ImuFilter::publishTransform()
+{
+  tf::Quaternion q(q1, q2, q3, q0);
+  tf::Transform transform;
+  transform.setOrigin( tf::Vector3( 0.0, 0.0, 0.0 ) );
+  transform.setRotation( q );
+  tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
+						       ros::Time::now(),
+						       fixed_frame_,
+						       imu_frame_ ) );
+
 }
 
 void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
@@ -161,6 +178,7 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   boost::shared_ptr<ImuMsg> imu_msg = 
     boost::make_shared<ImuMsg>(*imu_msg_raw);
 
+  imu_msg->header.frame_id = fixed_frame_;
   tf::quaternionTFToMsg(q, imu_msg->orientation);  
   imu_publisher_.publish(imu_msg);
 }
