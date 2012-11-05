@@ -43,11 +43,16 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
     constant_dt_ = 0.0;
 
+  // check for illegal constant_dt values
+  if (constant_dt_ < 0.0)
+  {
+    ROS_FATAL("constant_dt parameter is %f, must be >= 0.0. Setting to 0.0", constant_dt_);
+    constant_dt_ = 0.0;
+  }
+  
   // if constant_dt_ is 0.0 (default), use IMU timestamp to determine dt
   // otherwise, it will be constant
-  if (constant_dt_ < 0.0)
-    ROS_FATAL("Constant_dt parameter must be >= 0");
-  else if (constant_dt_ == 0.0)
+  if (constant_dt_ == 0.0)
     ROS_INFO("Using dt computed from message headers");
   else
     ROS_INFO("Using constant dt of %f sec", constant_dt_);
