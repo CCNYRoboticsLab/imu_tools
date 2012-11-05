@@ -46,10 +46,17 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   // if constant_dt_ is 0.0 (default), use IMU timestamp to determine dt
   // otherwise, it will be constant
   if (constant_dt_ < 0.0)
-    ROS_FATAL("constant_dt parameter must be >= 0");
+    ROS_FATAL("Constant_dt parameter must be >= 0");
   else if (constant_dt_ == 0.0)
-    ROS_INFO("using constant dt of %f sec", constant_dt_);
+    ROS_INFO("Using dt computed from message headers");
+  else
+    ROS_INFO("Using constant dt of %f sec", constant_dt_);
 
+  // **** register dynamic reconfigure
+  
+  FilterConfigServer::CallbackType f = boost::bind(&ImuFilter::reconfigCallback, this, _1, _2);
+  config_server_.setCallback(f);
+  
   // **** register publishers
 
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(
@@ -85,6 +92,8 @@ ImuFilter::~ImuFilter()
 
 void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 {
+  boost::mutex::scoped_lock(mutex_);
+  
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
@@ -119,6 +128,8 @@ void ImuFilter::imuMagCallback(
   const ImuMsg::ConstPtr& imu_msg_raw,
   const MagMsg::ConstPtr& mag_msg)
 {
+  boost::mutex::scoped_lock(mutex_);
+  
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
@@ -362,6 +373,13 @@ void ImuFilter::madgwickAHRSupdateIMU(
 	q1 *= recipNorm;
 	q2 *= recipNorm;
 	q3 *= recipNorm;
+}
+
+void ImuFilter::reconfigCallback(FilterConfig& config, uint32_t level)
+{
+  boost::mutex::scoped_lock(mutex_);
+  gain_ = config.gain;
+  ROS_INFO("Imu filter gain set to %f", gain_);
 }
 
 

@@ -35,6 +35,9 @@
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
+#include <dynamic_reconfigure/server.h>
+
+#include "imu_filter_madgwick/ImuFilterMadgwickConfig.h"
 
 class ImuFilter
 {
@@ -45,6 +48,9 @@ class ImuFilter
   typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
   typedef message_filters::Subscriber<ImuMsg> ImuSubscriber; 
   typedef message_filters::Subscriber<MagMsg> MagSubscriber;
+  
+  typedef imu_filter_madgwick::ImuFilterMadgwickConfig   FilterConfig;
+  typedef dynamic_reconfigure::Server<FilterConfig>   FilterConfigServer;
 
   public:
 
@@ -64,10 +70,12 @@ class ImuFilter
 
     ros::Publisher imu_publisher_;
     tf::TransformBroadcaster tf_broadcaster_;
-  
+
+    FilterConfigServer config_server_;
+    
     // **** paramaters
 
-    double gain_;				// algorithm gain
+    double gain_;     // algorithm gain
     bool use_mag_;
     std::string fixed_frame_;
     std::string imu_frame_;
@@ -75,8 +83,9 @@ class ImuFilter
 
     // **** state variables
   
+    boost::mutex mutex_;
     bool initialized_;
-    double q0, q1, q2, q3;	// quaternion
+    double q0, q1, q2, q3;  // quaternion
     ros::Time last_time_;
 
     // **** member functions
@@ -98,17 +107,19 @@ class ImuFilter
                                float ax, float ay, float az,
                                float dt);
 
+    void reconfigCallback(FilterConfig& config, uint32_t level);
+    
     // Fast inverse square-root
     // See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
     static float invSqrt(float x) 
     {
-	    float halfx = 0.5f * x;
-	    float y = x;
-	    long i = *(long*)&y;
-	    i = 0x5f3759df - (i>>1);
-	    y = *(float*)&i;
-	    y = y * (1.5f - (halfx * y * y));
-	    return y;
+      float halfx = 0.5f * x;
+      float y = x;
+      long i = *(long*)&y;
+      i = 0x5f3759df - (i>>1);
+      y = *(float*)&i;
+      y = y * (1.5f - (halfx * y * y));
+      return y;
     }
 };
 

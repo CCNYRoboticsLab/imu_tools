@@ -14,6 +14,11 @@ rosbuild_init()
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
+# Generate dynamic parameters
+rosbuild_find_ros_package(dynamic_reconfigure)
+include(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
+gencfg()
+
 # create imu_filter library
 rosbuild_add_library (imu_filter src/imu_filter.cpp)
 rosbuild_link_boost(imu_filter signals)
