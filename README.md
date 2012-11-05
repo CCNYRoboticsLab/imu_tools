@@ -42,6 +42,13 @@ More info
 
 http://ros.org/wiki/imu_tools
 
+License
+-----------------------------------
+
+ * `imu_filter_madgwick`: currently licensed as GPL, following the original implementation
+
+ * `rviz_imu_plugin`: BSD
+
 References
 -----------------------------------
  [1] http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms
