@@ -87,7 +87,7 @@ class ImuFilter
     void imuCallback(const ImuMsg::ConstPtr& imu_msg_raw);
 
     void publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw);
-    void publishTransform(void);
+    void publishTransform(const ImuMsg::ConstPtr& imu_msg_raw);
 
     void madgwickAHRSupdate(float gx, float gy, float gz, 
                             float ax, float ay, float az, 

@@ -112,7 +112,7 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     dt);
 
   publishFilteredMsg(imu_msg_raw);
-  publishTransform();
+  publishTransform(imu_msg_raw);
 }
 
 void ImuFilter::imuMagCallback(
@@ -128,7 +128,13 @@ void ImuFilter::imuMagCallback(
     initialized_ = true;
   }
 
-  float dt = (time - last_time_).toSec();
+  // determine dt: either constant, or from IMU timestamp
+  float dt;
+  if (constant_dt_ > 0.0)
+    dt = constant_dt_;
+  else
+    dt = (time - last_time_).toSec();
+  
   last_time_ = time;
   
   const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
@@ -152,19 +158,19 @@ void ImuFilter::imuMagCallback(
   }
 
   publishFilteredMsg(imu_msg_raw);
-  publishTransform();
+  publishTransform(imu_msg_raw);
 }
 
-void ImuFilter::publishTransform()
+void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
 {
   tf::Quaternion q(q1, q2, q3, q0);
   tf::Transform transform;
   transform.setOrigin( tf::Vector3( 0.0, 0.0, 0.0 ) );
   transform.setRotation( q );
   tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
-						       ros::Time::now(),
-						       fixed_frame_,
-						       imu_frame_ ) );
+                   imu_msg_raw->header.stamp,
+                   fixed_frame_,
+                   imu_frame_ ) );
 
 }
 
