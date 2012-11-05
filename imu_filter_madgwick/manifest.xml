@@ -5,7 +5,7 @@
 
   </description>
   <author>Ivan Dryanovski</author>
-  <license>BSD</license>
+  <license>GPL</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/imu_filter_madgwick</url>
   <depend package="roscpp"/>
