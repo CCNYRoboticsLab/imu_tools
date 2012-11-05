@@ -93,12 +93,28 @@ ImuFilter::~ImuFilter()
 void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 {
   boost::mutex::scoped_lock(mutex_);
+
+  const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
+  const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration; 
   
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
   if (!initialized_)
   {
+    // initialize roll/pitch orientation from acc. vector    
+    double roll  = atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
+    double pitch = atan2(lin_acc.y, sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));                    
+    double yaw = 0.0;
+                        
+    tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
+    
+    q1 = init_q.getX();
+    q2 = init_q.getY();
+    q3 = init_q.getZ();
+    q0 = init_q.getW();
+    
+    // initialize time
     last_time_ = time;
     initialized_ = true;
   }
@@ -112,9 +128,6 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 
   last_time_ = time;
   
-  const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
-  const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration; 
-
   madgwickAHRSupdateIMU(
     ang_vel.x, ang_vel.y, ang_vel.z,
     lin_acc.x, lin_acc.y, lin_acc.z,
@@ -130,11 +143,27 @@ void ImuFilter::imuMagCallback(
 {
   boost::mutex::scoped_lock(mutex_);
   
+  const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
+  const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration; 
+  const geometry_msgs::Vector3& mag_fld = mag_msg->vector;
+  
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
   if (!initialized_)
   {
+    // initialize roll/pitch orientation from acc. vector    
+    double roll  = atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
+    double pitch = atan2(lin_acc.y, sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));                    
+    double yaw = 0.0; // TODO: initialize from magnetic raeding?
+                        
+    tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
+    
+    q1 = init_q.getX();
+    q2 = init_q.getY();
+    q3 = init_q.getZ();
+    q0 = init_q.getW();
+    
     last_time_ = time;
     initialized_ = true;
   }
@@ -147,26 +176,12 @@ void ImuFilter::imuMagCallback(
     dt = (time - last_time_).toSec();
   
   last_time_ = time;
-  
-  const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
-  const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration; 
-  const geometry_msgs::Vector3& mag_fld = mag_msg->vector;
 
-  if (use_mag_)
-  {
-    madgwickAHRSupdate(
-      ang_vel.x, ang_vel.y, ang_vel.z,
-      lin_acc.x, lin_acc.y, lin_acc.z,
-      mag_fld.x, mag_fld.y, mag_fld.z,
-      dt);
-  }
-  else
-  {
-    madgwickAHRSupdateIMU(
-      ang_vel.x, ang_vel.y, ang_vel.z,
-      lin_acc.x, lin_acc.y, lin_acc.z,
-      dt);
-  }
+  madgwickAHRSupdate(
+    ang_vel.x, ang_vel.y, ang_vel.z,
+    lin_acc.x, lin_acc.y, lin_acc.z,
+    mag_fld.x, mag_fld.y, mag_fld.z,
+    dt);
 
   publishFilteredMsg(imu_msg_raw);
   publishTransform(imu_msg_raw);
