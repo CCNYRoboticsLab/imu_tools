@@ -30,6 +30,8 @@
 
 #include "rviz_imu_plugin/imu_display.h"
 
+#include <rviz/properties/status_property.h>
+
 namespace rviz
 {
 
@@ -51,24 +53,24 @@ void ImuDisplay::onInitialize()
   
   // create orientation box visual 
   box_visual_ = new ImuOrientationVisual(
-    vis_manager_->getSceneManager(), scene_node_);
+    context_->getSceneManager(), scene_node_);
 
   // create orientation axes visual 
   axes_visual_ = new ImuAxesVisual(
-    vis_manager_->getSceneManager(), scene_node_);
+    context_->getSceneManager(), scene_node_);
 
   // create acceleration vector visual 
   acc_visual_ = new ImuAccVisual(
-    vis_manager_->getSceneManager(), scene_node_);
+    context_->getSceneManager(), scene_node_);
 
   tf_filter_ =
-    new tf::MessageFilter<sensor_msgs::Imu>( *vis_manager_->getTFClient(),
+    new tf::MessageFilter<sensor_msgs::Imu>( *context_->getTFClient(),
                                              "", 100, update_nh_ );
   tf_filter_->connectInput( sub_ );
   tf_filter_->registerCallback( boost::bind( &ImuDisplay::incomingMessage,
                                              this, _1 ));
 
-  vis_manager_->getFrameManager()
+  context_->getFrameManager()
     ->registerFilterForTransformStatusCheck( tf_filter_, this );
 }
 
@@ -83,7 +85,7 @@ void ImuDisplay::clear()
 {
   tf_filter_->clear();
   messages_received_ = 0;
-  setStatus(rviz::status_levels::Warn, "Topic", "No messages received" );
+  setStatus(rviz::StatusProperty::Warn, "Topic", "No messages received" );
 
   box_visual_->hide();
   axes_visual_->hide();
@@ -248,7 +250,7 @@ void ImuDisplay::incomingMessage( const sensor_msgs::Imu::ConstPtr& msg )
 
   Ogre::Quaternion orientation;
   Ogre::Vector3 position;
-  if(!vis_manager_->getFrameManager()->getTransform(msg->header.frame_id,
+  if(!context_->getFrameManager()->getTransform(msg->header.frame_id,
                                                     msg->header.stamp,
                                                     position, orientation ))
   {

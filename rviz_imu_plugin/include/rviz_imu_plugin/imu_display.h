@@ -37,11 +37,15 @@
 #include <rviz/display.h>
 #include <rviz/visualization_manager.h>
 #include <rviz/properties/property.h>
-#include <rviz/properties/property_manager.h>
 #include <rviz/frame_manager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
 #include <tf/transform_listener.h>
+
+#include <rviz/properties/bool_property.h>
+#include <rviz/properties/float_property.h>
+#include <rviz/properties/color_property.h>
+#include <rviz/properties/ros_topic_property.h>
 
 #include "rviz_imu_plugin/imu_axes_visual.h"
 #include "rviz_imu_plugin/imu_orientation_visual.h"
@@ -129,27 +133,27 @@ class ImuDisplay: public rviz::Display
     int messages_received_;
 
     // Property objects for user-editable properties.
-    rviz::ROSTopicStringPropertyWPtr topic_property_;
+    rviz::RosTopicProperty* topic_property_;
 
-    CategoryPropertyWPtr box_category_;
-    CategoryPropertyWPtr axes_category_;
-    CategoryPropertyWPtr acc_category_;
+//    CategoryPropertyWPtr box_category_;
+//    CategoryPropertyWPtr axes_category_;
+//    CategoryPropertyWPtr acc_category_;
 
-    BoolPropertyWPtr  box_enabled_property_;
-    FloatPropertyWPtr box_scale_x_property_;
-    FloatPropertyWPtr box_scale_y_property_;
-    FloatPropertyWPtr box_scale_z_property_;
-    ColorPropertyWPtr box_color_property_;
-    FloatPropertyWPtr box_alpha_property_;
+    rviz::BoolProperty*  box_enabled_property_;
+    rviz::FloatProperty* box_scale_x_property_;
+    rviz::FloatProperty* box_scale_y_property_;
+    rviz::FloatProperty* box_scale_z_property_;
+    rviz::ColorProperty* box_color_property_;
+    rviz::FloatProperty* box_alpha_property_;
 
-    BoolPropertyWPtr  axes_enabled_property_;
-    FloatPropertyWPtr axes_scale_property_;
+    rviz::BoolProperty*  axes_enabled_property_;
+    rviz::FloatProperty* axes_scale_property_;
 
-    BoolPropertyWPtr  acc_enabled_property_;
-    BoolPropertyWPtr  acc_derotated_property_;
-    FloatPropertyWPtr acc_scale_property_;
-    ColorPropertyWPtr acc_color_property_;
-    FloatPropertyWPtr acc_alpha_property_;
+    rviz::BoolProperty*  acc_enabled_property_;
+    rviz::BoolProperty*  acc_derotated_property_;
+    rviz::FloatProperty* acc_scale_property_;
+    rviz::ColorProperty* acc_color_property_;
+    rviz::FloatProperty* acc_alpha_property_;
 
     // Function to handle an incoming ROS message.
     void incomingMessage( const sensor_msgs::Imu::ConstPtr& msg);
