@@ -35,435 +35,245 @@
 namespace rviz
 {
 
-ImuDisplay::ImuDisplay(): 
-  Display(),
-  box_enabled_(true),
-  axes_enabled_(true),
-  acc_enabled_(false),
-  scene_node_(NULL),
-  messages_received_(0)
+ImuDisplay::ImuDisplay():
+    box_enabled_(false),
+    axes_enabled_(true),
+    acc_enabled_(false),
+    scene_node_(NULL),
+    messages_received_(0)
 {
+    createProperties();
 
 }
 
 void ImuDisplay::onInitialize()
 {
-  // Make an Ogre::SceneNode to contain all our visuals.
-  scene_node_ = scene_manager_->getRootSceneNode()->createChildSceneNode();
-  
-  // create orientation box visual 
-  box_visual_ = new ImuOrientationVisual(
-    context_->getSceneManager(), scene_node_);
+    MFDClass::onInitialize();
 
-  // create orientation axes visual 
-  axes_visual_ = new ImuAxesVisual(
-    context_->getSceneManager(), scene_node_);
+    // Make an Ogre::SceneNode to contain all our visuals.
+    scene_node_ = scene_manager_->getRootSceneNode()->createChildSceneNode();
 
-  // create acceleration vector visual 
-  acc_visual_ = new ImuAccVisual(
-    context_->getSceneManager(), scene_node_);
+    // create orientation box visual
+    box_visual_ = new ImuOrientationVisual(
+                context_->getSceneManager(), scene_node_);
+    if (box_enabled_)
+        box_visual_->show();
+    else
+        box_visual_->hide();
 
-  tf_filter_ =
-    new tf::MessageFilter<sensor_msgs::Imu>( *context_->getTFClient(),
-                                             "", 100, update_nh_ );
-  tf_filter_->connectInput( sub_ );
-  tf_filter_->registerCallback( boost::bind( &ImuDisplay::incomingMessage,
-                                             this, _1 ));
+    // create orientation axes visual
+    axes_visual_ = new ImuAxesVisual(
+                context_->getSceneManager(), scene_node_);
+    if (axes_enabled_)
+        axes_visual_->show();
+    else
+        axes_visual_->hide();
 
-  context_->getFrameManager()
-    ->registerFilterForTransformStatusCheck( tf_filter_, this );
-}
+    // create acceleration vector visual
+    acc_visual_ = new ImuAccVisual(
+                context_->getSceneManager(), scene_node_);
+    if (acc_enabled_)
+        acc_visual_->show();
+    else
+        acc_visual_->hide();}
 
 ImuDisplay::~ImuDisplay()
 {
-  unsubscribe();
-  clear();
-  delete tf_filter_;
-}
-
-void ImuDisplay::clear()
-{
-  tf_filter_->clear();
-  messages_received_ = 0;
-  setStatus(rviz::StatusProperty::Warn, "Topic", "No messages received" );
-
-  box_visual_->hide();
-  axes_visual_->hide();
-  acc_visual_->hide();
-}
-
-void ImuDisplay::setTopic( const std::string& topic )
-{
-  unsubscribe();
-  clear();
-  topic_ = topic;
-  subscribe();
-
-  propertyChanged(topic_property_);
-  causeRender();
-}
-
-void ImuDisplay::setBoxEnabled(bool enabled)
-{
-  box_enabled_ = enabled;
-  if (enabled) box_visual_->show();
-  else         box_visual_->hide();
-  propertyChanged(box_enabled_property_);
-  causeRender();
-}
-
-void ImuDisplay::setAxesEnabled(bool enabled)
-{
-  axes_enabled_ = enabled;
-  if (enabled) axes_visual_->show();
-  else         axes_visual_->hide();
-  propertyChanged(box_enabled_property_);
-  causeRender();
-}
-
-void ImuDisplay::setAccEnabled(bool enabled)
-{
-  acc_enabled_ = enabled;
-  if (enabled) acc_visual_->show();
-  else         acc_visual_->hide();
-  propertyChanged(acc_enabled_property_);
-  causeRender();
-}
-
-void ImuDisplay::setBoxScaleX(float x)
-{
-  box_visual_->setScaleX(x);
-  propertyChanged(box_scale_x_property_);
-  causeRender();
-}
-
-void ImuDisplay::setBoxScaleY(float y)
-{
-  box_visual_->setScaleY(y);
-  propertyChanged(box_scale_y_property_);
-  causeRender();
-}
-
-void ImuDisplay::setBoxScaleZ(float z)
-{
-  box_visual_->setScaleZ(z);
-  propertyChanged(box_scale_z_property_);
-  causeRender();
-}
-
-void ImuDisplay::setBoxColor(const rviz::Color& color)
-{
-  box_visual_->setColor(color);
-  propertyChanged(box_color_property_);
-  causeRender();
-}
-
-void ImuDisplay::setBoxAlpha(float alpha)
-{
-  box_visual_->setAlpha(alpha);
-  propertyChanged(box_alpha_property_);
-  causeRender();
-}
-
-void ImuDisplay::setAxesScale(float scale)
-{
-  axes_visual_->setScale(scale);
-  propertyChanged(axes_scale_property_);
-  causeRender();
-}
-
-
-void ImuDisplay::setAccScale(float scale)
-{
-  acc_visual_->setScale(scale);
-  propertyChanged(acc_scale_property_);
-  causeRender();
-}
-
-void ImuDisplay::setAccColor(const rviz::Color& color)
-{
-  acc_visual_->setColor(color);
-  propertyChanged(acc_color_property_);
-  causeRender();
-}
-
-void ImuDisplay::setAccAlpha(float alpha)
-{
-  acc_visual_->setAlpha(alpha);
-  propertyChanged(acc_alpha_property_);
-  causeRender();
-}
-
-void ImuDisplay::setAccDerotated(bool derotated)
-{
-  acc_visual_->setDerotated(derotated);
-  propertyChanged(acc_derotated_property_);
-  causeRender();
-}
-
-void ImuDisplay::subscribe()
-{
-  // If we are not actually enabled, don't do it.
-  if (!isEnabled()) return;
-
-  try
-  {
-    sub_.subscribe( update_nh_, topic_, 10 );
-    setStatus( rviz::status_levels::Ok, "Topic", "OK" );
-  }
-  catch( ros::Exception& e )
-  {
-    setStatus( rviz::status_levels::Error, "Topic",
-               std::string( "Error subscribing: " ) + e.what() );
-  }
-}
-
-void ImuDisplay::unsubscribe()
-{
-  sub_.unsubscribe();
-}
-
-void ImuDisplay::onEnable()
-{
-  subscribe();
-}
-
-void ImuDisplay::onDisable()
-{
-  unsubscribe();
-  clear();
-}
-
-void ImuDisplay::fixedFrameChanged()
-{
-  tf_filter_->setTargetFrame(fixed_frame_);
-  clear();
-}
-
-void ImuDisplay::incomingMessage( const sensor_msgs::Imu::ConstPtr& msg )
-{
-  ++messages_received_;
-  
-  std::stringstream ss;
-  ss << messages_received_ << " messages received";
-  setStatus( rviz::status_levels::Ok, "Topic", ss.str() );
-
-  Ogre::Quaternion orientation;
-  Ogre::Vector3 position;
-  if(!context_->getFrameManager()->getTransform(msg->header.frame_id,
-                                                    msg->header.stamp,
-                                                    position, orientation ))
-  {
-    ROS_DEBUG("Error transforming from frame '%s' to frame '%s'",
-               msg->header.frame_id.c_str(), fixed_frame_.c_str());
-    return;
-  }
-
-  if (box_enabled_)
-  { 
-    box_visual_->setMessage(msg);
-    box_visual_->setFramePosition(position);
-    box_visual_->setFrameOrientation(orientation);  
-    box_visual_->show();
-  }
-  if (axes_enabled_) 
-  {
-    axes_visual_->setMessage(msg);
-    axes_visual_->setFramePosition(position);
-    axes_visual_->setFrameOrientation(orientation);
-    axes_visual_->show();
-  }
-  if (acc_enabled_) 
-  {
-    acc_visual_->setMessage(msg);
-    acc_visual_->setFramePosition(position);
-    acc_visual_->setFrameOrientation(orientation);
-    acc_visual_->show();
-  }
 }
 
 void ImuDisplay::reset()
 {
-  Display::reset();
-  clear();
+    MFDClass::reset();
+    messages_received_ = 0;
+    setStatus(rviz::StatusProperty::Warn, "Topic", "No messages received" );
+
+    box_visual_->hide();
+    axes_visual_->hide();
+    acc_visual_->hide();
+}
+
+
+void ImuDisplay::updateBox() {
+    box_enabled_ = box_enabled_property_->getBool();
+    if (box_enabled_)
+        box_visual_->show();
+    else
+        box_visual_->hide();
+
+    box_visual_->setScaleX(box_scale_x_property_->getFloat());
+    box_visual_->setScaleY(box_scale_y_property_->getFloat());
+    box_visual_->setScaleZ(box_scale_z_property_->getFloat());
+    box_visual_->setColor(box_color_property_->getColor());
+    box_visual_->setAlpha(box_alpha_property_->getFloat());
+}
+
+void ImuDisplay::updateAxes() {
+    axes_enabled_ = axes_enabled_property_->getBool();
+    if (axes_enabled_)
+        axes_visual_->show();
+    else
+        axes_visual_->hide();
+
+    axes_visual_->setScale(axes_scale_property_->getFloat());
+
+}
+
+void ImuDisplay::updateAcc() {
+    acc_enabled_ = acc_enabled_property_->getBool();
+    if (acc_enabled_)
+        acc_visual_->show();
+    else
+        acc_visual_->hide();
+
+    acc_visual_->setScale(acc_scale_property_->getFloat());
+    acc_visual_->setColor(acc_color_property_->getColor());
+    acc_visual_->setAlpha(acc_alpha_property_->getFloat());
+    acc_visual_->setDerotated(acc_derotated_property_->getBool());
+}
+
+void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
+{
+    ++messages_received_;
+
+    std::stringstream ss;
+    ss << messages_received_ << " messages received";
+    setStatus( rviz::StatusProperty::Ok, "Topic", ss.str().c_str() );
+
+    Ogre::Quaternion orientation;
+    Ogre::Vector3 position;
+    if(!context_->getFrameManager()->getTransform(msg->header.frame_id,
+                                                  msg->header.stamp,
+                                                  position, orientation ))
+    {
+        ROS_ERROR("Error transforming from frame '%s' to frame '%s'",
+                  msg->header.frame_id.c_str(), fixed_frame_.toStdString().c_str());
+        return;
+    }
+
+    if (box_enabled_)
+    {
+        box_visual_->setMessage(msg);
+        box_visual_->setFramePosition(position);
+        box_visual_->setFrameOrientation(orientation);
+        box_visual_->show();
+    }
+    if (axes_enabled_)
+    {
+        axes_visual_->setMessage(msg);
+        axes_visual_->setFramePosition(position);
+        axes_visual_->setFrameOrientation(orientation);
+        axes_visual_->show();
+    }
+    if (acc_enabled_)
+    {
+        acc_visual_->setMessage(msg);
+        acc_visual_->setFramePosition(position);
+        acc_visual_->setFrameOrientation(orientation);
+        acc_visual_->show();
+    }
 }
 
 void ImuDisplay::createProperties()
 {
-  // **** topic properties
+    // **** box properties
+    box_category_ = new rviz::Property("Box properties",
+                                       QVariant(),
+                                       "The list of all the box properties",
+                                       this
+                                       );
+    box_enabled_property_ = new rviz::BoolProperty("Enable box",
+                                                   box_enabled_,
+                                                   "Enable the box display",
+                                                   box_category_,
+                                                   SLOT(updateBox()),
+                                                   this);
+    box_scale_x_property_ = new rviz::FloatProperty("x_scale",
+                                                    1.0,
+                                                    "Box length (x), in meters.",
+                                                    box_category_,
+                                                    SLOT(updateBox()),
+                                                    this);
+    box_scale_y_property_ = new rviz::FloatProperty("y_scale",
+                                                    1.0,
+                                                    "Box length (y), in meters.",
+                                                    box_category_,
+                                                    SLOT(updateBox()),
+                                                    this);
+    box_scale_z_property_ = new rviz::FloatProperty("z_scale",
+                                                    1.0,
+                                                    "Box length (z), in meters.",
+                                                    box_category_,
+                                                    SLOT(updateBox()),
+                                                    this);
+    box_color_property_  = new rviz::ColorProperty("Box color",
+                                                   Qt::red,
+                                                   "Color to draw IMU box",
+                                                   box_category_,
+                                                   SLOT(updateBox()),
+                                                   this);
+    box_alpha_property_ = new rviz::FloatProperty("Box alpha",
+                                                  1.0,
+                                                  "0 is fully transparent, 1.0 is fully opaque.",
+                                                  box_category_,
+                                                  SLOT(updateBox()),
+                                                  this);
 
-  topic_property_ =
-    property_manager_->createProperty<rviz::ROSTopicStringProperty>(
-      "Topic",
-       property_prefix_,
-       boost::bind( &ImuDisplay::getTopic, this ),
-       boost::bind( &ImuDisplay::setTopic, this, _1 ),
-       parent_category_,
-       this );
+    // **** axes properties
+    axes_category_ = new rviz::Property("Axes properties",
+                                       QVariant(),
+                                       "The list of all the axes properties",
+                                       this
+                                       );
+    axes_enabled_property_ = new rviz::BoolProperty("Enable axes",
+                                                   axes_enabled_,
+                                                   "Enable the axes display",
+                                                   axes_category_,
+                                                   SLOT(updateAxes()),
+                                                   this);
+    axes_scale_property_ = new rviz::FloatProperty("Axes scale",
+                                                   true,
+                                                   "Axes size, in meters",
+                                                   axes_category_,
+                                                   SLOT(updateAxes()),
+                                                   this);
 
-  setPropertyHelpText( topic_property_, "sensor_msgs::Imu topic to subscribe to." );
+    // **** acceleration vector properties
+    acc_category_ = new rviz::Property("Acceleration properties",
+                                       QVariant(),
+                                       "The list of all the acceleration properties",
+                                       this
+                                       );
+    acc_enabled_property_ = new rviz::BoolProperty("Enable acceleration",
+                                                   acc_enabled_,
+                                                   "Enable the acceleration display",
+                                                   acc_category_,
+                                                   SLOT(updateAcc()),
+                                                   this);
 
-  rviz::ROSTopicStringPropertyPtr topic_prop = topic_property_.lock();
-  topic_prop->setMessageType( ros::message_traits::datatype<sensor_msgs::Imu>() );
-
-  // **** box properties
-
-  box_category_ = 
-    property_manager_->createCategory("Orientation box", 
-      property_prefix_, parent_category_, this);
-
-  box_enabled_property_ = 
-    property_manager_->createProperty<BoolProperty>( 
-      "Enable box", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getBoxEnabled, this),
-      boost::bind(&ImuDisplay::setBoxEnabled, this, _1), 
-      box_category_, 
-      this);
-
-  setPropertyHelpText(box_enabled_property_, "Enable the box display");
-   
-  box_scale_x_property_ = 
-    property_manager_->createProperty<FloatProperty>( 
-      "x scale", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getBoxScaleX, this),
-      boost::bind(&ImuDisplay::setBoxScaleX, this, _1), 
-      box_category_, 
-      this);
-
-  setPropertyHelpText(box_scale_x_property_, "Box length (x), in meters.");
-   
-  box_scale_y_property_ = 
-    property_manager_->createProperty<FloatProperty>( 
-      "y scale", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getBoxScaleY, this),
-      boost::bind(&ImuDisplay::setBoxScaleY, this, _1), 
-      box_category_, 
-      this);
-
-  setPropertyHelpText(box_scale_y_property_, "Box width (y), in meters.");
-   
-  box_scale_z_property_ = 
-    property_manager_->createProperty<FloatProperty>( 
-      "z scale", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getBoxScaleZ, this),
-      boost::bind(&ImuDisplay::setBoxScaleZ, this, _1), 
-      box_category_, 
-      this);
-
-  setPropertyHelpText(box_scale_z_property_, "Box height (z), in meters.");
-  
-  box_color_property_ =
-    property_manager_->createProperty<rviz::ColorProperty>( 
-      "Box color",
-      property_prefix_,
-      boost::bind( &ImuDisplay::getBoxColor, this),
-      boost::bind( &ImuDisplay::setBoxColor, this, _1),
-      box_category_,
-      this );
-
-  setPropertyHelpText(box_color_property_, "Color to draw IMU box.");
-
-  box_alpha_property_ =
-    property_manager_->createProperty<rviz::FloatProperty>( 
-      "Box alpha",
-      property_prefix_,
-      boost::bind(&ImuDisplay::getBoxAlpha, this),
-      boost::bind(&ImuDisplay::setBoxAlpha, this, _1),
-      box_category_,
-      this );
- 
-  setPropertyHelpText(box_alpha_property_, "0 is fully transparent, 1.0 is fully opaque.");
-
-  // **** axes properties
-
-  axes_category_ = 
-    property_manager_->createCategory("Orientation axes", 
-      property_prefix_, parent_category_, this);
-
-  axes_enabled_property_ = 
-    property_manager_->createProperty<BoolProperty>( 
-      "Enable axes", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getAxesEnabled, this),
-      boost::bind(&ImuDisplay::setAxesEnabled, this, _1), 
-      axes_category_, 
-      this);
-
-  setPropertyHelpText(axes_enabled_property_, "Enable the axes display");
-
-  axes_scale_property_ = 
-    property_manager_->createProperty<FloatProperty>( 
-      "Axes scale", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getAxesScale, this),
-      boost::bind(&ImuDisplay::setAxesScale, this, _1), 
-      axes_category_,
-      this);
-  
-  setPropertyHelpText(axes_scale_property_, "Axes size, in meters");
-
-  // **** acceleration vector properties
-
-  acc_category_ = 
-    property_manager_->createCategory("Acceleration vector", 
-      property_prefix_, parent_category_, this);
-
-  acc_enabled_property_ = 
-    property_manager_->createProperty<BoolProperty>( 
-      "Enable acceleration", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getAccEnabled, this),
-      boost::bind(&ImuDisplay::setAccEnabled, this, _1), 
-      acc_category_, 
-      this);
-
-  setPropertyHelpText(axes_enabled_property_, "Enable the acceleration display");
-
-  acc_derotated_property_ = 
-    property_manager_->createProperty<BoolProperty>( 
-      "Derotate acceleration", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getAccDerotated, this),
-      boost::bind(&ImuDisplay::setAccDerotated, this, _1), 
-      acc_category_, 
-      this);
-
-  setPropertyHelpText(axes_scale_property_, "If selected, the acceleration is derotated by the IMU orientation. Otherwise, the raw sensor reading is displayed.");
-
-  acc_scale_property_ = 
-    property_manager_->createProperty<FloatProperty>( 
-      "Acc. vector scale", 
-      property_prefix_, 
-      boost::bind(&ImuDisplay::getAccScale, this),
-      boost::bind(&ImuDisplay::setAccScale, this, _1), 
-      acc_category_,
-      this);
-  
-  setPropertyHelpText(axes_scale_property_, "Acceleration vector size, in meters");
-
-  acc_color_property_ =
-    property_manager_->createProperty<rviz::ColorProperty>( 
-      "Acc. vector color",
-      property_prefix_,
-      boost::bind( &ImuDisplay::getAccColor, this),
-      boost::bind( &ImuDisplay::setAccColor, this, _1),
-      acc_category_,
-      this );
-
-  setPropertyHelpText(box_color_property_, "Color to draw acceleration vector.");
-
-  box_alpha_property_ =
-    property_manager_->createProperty<rviz::FloatProperty>( 
-      "Acc. vector alpha",
-      property_prefix_,
-      boost::bind(&ImuDisplay::getAccAlpha, this),
-      boost::bind(&ImuDisplay::setAccAlpha, this, _1),
-      acc_category_,
-      this );
+    acc_derotated_property_ = new rviz::BoolProperty("Derotate acceleration",
+                                                     true,
+                                                     "If selected, the acceleration is derotated by the IMU orientation. Otherwise, the raw sensor reading is displayed.",
+                                                     acc_category_,
+                                                     SLOT(updateAcc()),
+                                                     this);
+    acc_scale_property_ = new rviz::FloatProperty("Acc. vector scale",
+                                                  true,
+                                                  "Acceleration vector size, in meters",
+                                                  acc_category_,
+                                                  SLOT(updateAcc()),
+                                                  this);
+    acc_color_property_ =  new rviz::ColorProperty("Acc. vector color",
+                                                   Qt::red,
+                                                   "Color to draw acceleration vector.",
+                                                   acc_category_,
+                                                   SLOT(updateAcc()),
+                                                   this);
+    acc_alpha_property_ = new rviz::FloatProperty("Acc. vector alpha",
+                                                 1.0,
+                                                 "0 is fully transparent, 1.0 is fully opaque.",
+                                                 acc_category_,
+                                                 SLOT(updateAcc()),
+                                                  this);
 }
 
 } // end namespace rviz
@@ -471,6 +281,6 @@ void ImuDisplay::createProperties()
 // Tell pluginlib about this class.  It is important to do this in
 // global scope, outside our package's namespace.
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_DECLARE_CLASS(rviz_imu_plugin, Imu, rviz::ImuDisplay, rviz::Display)
+PLUGINLIB_EXPORT_CLASS(rviz::ImuDisplay, rviz::Display)
 
 

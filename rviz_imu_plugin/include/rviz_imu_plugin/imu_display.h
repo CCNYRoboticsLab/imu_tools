@@ -38,6 +38,7 @@
 #include <rviz/visualization_manager.h>
 #include <rviz/properties/property.h>
 #include <rviz/frame_manager.h>
+#include <rviz/message_filter_display.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
 #include <tf/transform_listener.h>
@@ -46,6 +47,7 @@
 #include <rviz/properties/float_property.h>
 #include <rviz/properties/color_property.h>
 #include <rviz/properties/ros_topic_property.h>
+#include <rviz/display_group.h>
 
 #include "rviz_imu_plugin/imu_axes_visual.h"
 #include "rviz_imu_plugin/imu_orientation_visual.h"
@@ -59,15 +61,15 @@ class SceneNode;
 namespace rviz
 {
 
-class ImuDisplay: public rviz::Display
+class ImuDisplay: public rviz::MessageFilterDisplay<sensor_msgs::Imu>
 {
-  public:
+    Q_OBJECT
+public:
 
     ImuDisplay();
     virtual ~ImuDisplay();
 
     virtual void onInitialize();
-    virtual void fixedFrameChanged();
     virtual void reset();
     virtual void createProperties();
 
@@ -95,7 +97,7 @@ class ImuDisplay: public rviz::Display
     float getBoxScaleY()  { return box_visual_->getScaleY(); }
     float getBoxScaleZ()  { return box_visual_->getScaleZ(); }
     float getBoxAlpha()   { return box_visual_->getAlpha(); }
-    const Color& getBoxColor() { return box_visual_->getColor(); }
+    const QColor& getBoxColor() { return box_visual_->getColor(); }
 
     bool  getAxesEnabled() { return axes_enabled_; }
     float getAxesScale()   { return axes_visual_->getScale(); }
@@ -104,41 +106,23 @@ class ImuDisplay: public rviz::Display
     float getAccDerotated() { return acc_visual_->getDerotated(); }
     float getAccScale()     { return acc_visual_->getScale(); }
     float getAccAlpha()     { return acc_visual_->getAlpha(); }
-    const Color& getAccColor() { return acc_visual_->getColor(); }
+    const QColor& getAccColor() { return acc_visual_->getColor(); }
 
-  protected:
+protected Q_SLOTS:
 
-    virtual void onEnable();
-    virtual void onDisable();
+    void updateBox();
+    void updateAxes();
+    void updateAcc();
 
-  private:
-
-    // Differetn types of visuals
-    ImuOrientationVisual * box_visual_;
-    ImuAxesVisual        * axes_visual_;
-    ImuAccVisual         * acc_visual_;
-
-    // User-editable property variables.
-    std::string topic_;
-    bool box_enabled_;
-    bool axes_enabled_;
-    bool acc_enabled_;
-
-    // A node in the Ogre scene tree to be the parent of all our visuals.
-    Ogre::SceneNode* scene_node_;
-
-    // Data input: Subscriber and tf message filter.
-    message_filters::Subscriber<sensor_msgs::Imu> sub_;
-    tf::MessageFilter<sensor_msgs::Imu>* tf_filter_;
-    int messages_received_;
+private:
 
     // Property objects for user-editable properties.
-    rviz::RosTopicProperty* topic_property_;
 
-//    CategoryPropertyWPtr box_category_;
-//    CategoryPropertyWPtr axes_category_;
-//    CategoryPropertyWPtr acc_category_;
+    rviz::Property* box_category_;
+    rviz::Property* axes_category_;
+    rviz::Property* acc_category_;
 
+//    rviz::RosTopicProperty* topic_property_;
     rviz::BoolProperty*  box_enabled_property_;
     rviz::FloatProperty* box_scale_x_property_;
     rviz::FloatProperty* box_scale_y_property_;
@@ -155,16 +139,25 @@ class ImuDisplay: public rviz::Display
     rviz::ColorProperty* acc_color_property_;
     rviz::FloatProperty* acc_alpha_property_;
 
+    // Differetn types of visuals
+    ImuOrientationVisual * box_visual_;
+    ImuAxesVisual        * axes_visual_;
+    ImuAccVisual         * acc_visual_;
+
+    // User-editable property variables.
+    std::string topic_;
+    bool box_enabled_;
+    bool axes_enabled_;
+    bool acc_enabled_;
+
+    // A node in the Ogre scene tree to be the parent of all our visuals.
+    Ogre::SceneNode* scene_node_;
+
+    int messages_received_;
+
     // Function to handle an incoming ROS message.
-    void incomingMessage( const sensor_msgs::Imu::ConstPtr& msg);
+    void processMessage( const sensor_msgs::Imu::ConstPtr& msg);
 
-    // Internal helpers which do the work of subscribing and
-    // unsubscribing from the ROS topic.
-    void subscribe();
-    void unsubscribe();
-
-    // A helper to clear this display back to the initial state.
-    void clear();
 };
 
 } // end namespace rviz
