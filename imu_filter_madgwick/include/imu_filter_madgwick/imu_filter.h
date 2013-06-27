@@ -77,6 +77,7 @@ class ImuFilter
 
     double gain_;     // algorithm gain
     bool use_mag_;
+    bool publish_tf_;
     std::string fixed_frame_;
     std::string imu_frame_;
     double constant_dt_;
