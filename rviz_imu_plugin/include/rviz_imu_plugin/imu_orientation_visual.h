@@ -35,6 +35,7 @@
 #include <OGRE/OgreSceneManager.h>
 #include <rviz/ogre_helpers/shape.h>
 #include <rviz/helpers/color.h>
+#include <QColor>
 
 namespace rviz
 {
@@ -65,13 +66,13 @@ class ImuOrientationVisual
     void setScaleX(float x);
     void setScaleY(float y);
     void setScaleZ(float z);
-    void setColor(const Color& color);
+    void setColor(const QColor &color);
     void setAlpha(float alpha);
 
     float getScaleX() { return scale_x_; }
     float getScaleY() { return scale_y_; }
     float getScaleZ() { return scale_z_; }
-    const Color& getColor() { return color_; }
+    const QColor& getColor() { return color_; }
     float getAlpha() { return alpha_; }
 
     void show();
@@ -84,7 +85,7 @@ class ImuOrientationVisual
     Ogre::Quaternion orientation_;
 
     float scale_x_, scale_y_, scale_z_;
-    Color color_;
+    QColor color_;
     float alpha_;
 
     Shape * orientation_box_;
