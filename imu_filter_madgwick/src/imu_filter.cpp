@@ -38,6 +38,8 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    gain_ = 0.1;
   if (!nh_private_.getParam ("use_mag", use_mag_))
    use_mag_ = true;
+  if (!nh_private_.getParam ("publish_tf", publish_tf_))
+   publish_tf_ = true;
   if (!nh_private_.getParam ("fixed_frame", fixed_frame_))
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
@@ -139,7 +141,8 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     dt);
 
   publishFilteredMsg(imu_msg_raw);
-  publishTransform(imu_msg_raw);
+  if (publish_tf_)
+    publishTransform(imu_msg_raw);
 }
 
 void ImuFilter::imuMagCallback(
@@ -189,7 +192,8 @@ void ImuFilter::imuMagCallback(
     dt);
 
   publishFilteredMsg(imu_msg_raw);
-  publishTransform(imu_msg_raw);
+  if (publish_tf_)
+    publishTransform(imu_msg_raw);
 }
 
 void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
