@@ -39,7 +39,7 @@ ImuOrientationVisual::ImuOrientationVisual(Ogre::SceneManager* scene_manager, Og
   scale_y_(0.10),
   scale_z_(0.03),
   alpha_(1.0),
-  color_(Color(0.5, 0.5, 0.5))
+  color_(0.5, 0.5, 0.5)
 {
   scene_manager_ = scene_manager;
 
@@ -66,7 +66,7 @@ void ImuOrientationVisual::show()
   if (!orientation_box_)
   {
     orientation_box_ = new Shape(Shape::Cube, scene_manager_, frame_node_);
-    orientation_box_->setColor(color_.r_, color_.g_, color_.b_, alpha_);
+    orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
     orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
     orientation_box_->setOrientation(orientation_);
   }
@@ -114,18 +114,18 @@ void ImuOrientationVisual::setScaleZ(float z)
 
 }
 
-void ImuOrientationVisual::setColor(const Color& color)
+void ImuOrientationVisual::setColor(const QColor& color)
 {
   color_ = color;
   if (orientation_box_) 
-    orientation_box_->setColor(color_.r_, color_.g_, color_.b_, alpha_);
+    orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
 }
 
 void ImuOrientationVisual::setAlpha(float alpha) 
 { 
   alpha_ = alpha; 
   if (orientation_box_) 
-    orientation_box_->setColor(color_.r_, color_.g_, color_.b_, alpha_);
+    orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
 }
 
 void ImuOrientationVisual::setFramePosition(const Ogre::Vector3& position)
