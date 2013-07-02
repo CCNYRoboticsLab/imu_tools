@@ -76,6 +76,7 @@ class ImuFilter
     // **** paramaters
 
     double gain_;     // algorithm gain
+    double zeta_;	  // gyro drift bias gain
     bool use_mag_;
     bool publish_tf_;
     std::string fixed_frame_;
@@ -88,6 +89,7 @@ class ImuFilter
     bool initialized_;
     double q0, q1, q2, q3;  // quaternion
     ros::Time last_time_;
+    float w_bx_, w_by_, w_bz_; // 
 
     // **** member functions
 
