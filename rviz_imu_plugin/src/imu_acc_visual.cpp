@@ -41,7 +41,7 @@ ImuAccVisual::ImuAccVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* p
   head_radius_(1.00),
   scale_(0.05),
   alpha_(1.0),
-  color_(Color(1.0, 1.0, 0.0)),
+  color_(1.0, 1.0, 0.0),
   derotated_(true)
 {
   scene_manager_ = scene_manager;
@@ -69,7 +69,7 @@ void ImuAccVisual::show()
   if (!acc_vector_)
   {
     acc_vector_ = new Arrow(scene_manager_, frame_node_);
-    acc_vector_->setColor(color_.r_, color_.g_, color_.b_, alpha_);
+    acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
     acc_vector_->setDirection(direction_);
     acc_vector_->set(
       arrow_length_ * scale_, 
@@ -138,25 +138,25 @@ void ImuAccVisual::setScale(float scale)
   }
 }
 
-void ImuAccVisual::setColor(const Color& color)
+void ImuAccVisual::setColor(const QColor& color)
 {
   color_ = color;
   if (acc_vector_) 
-    acc_vector_->setColor(color_.r_, color_.g_, color_.b_, alpha_);
+    acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
 }
 
 void ImuAccVisual::setAlpha(float alpha) 
 { 
   alpha_ = alpha; 
   if (acc_vector_) 
-    acc_vector_->setColor(color_.r_, color_.g_, color_.b_, alpha_);
+    acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(),alpha_);
 }
 
 void ImuAccVisual::setDerotated(bool derotated) 
 { 
   derotated_ = derotated; 
   if (acc_vector_) 
-    acc_vector_->setColor(color_.r_, color_.g_, color_.b_, alpha_);
+    acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(),alpha_);
 }
 
 void ImuAccVisual::setFramePosition(const Ogre::Vector3& position)

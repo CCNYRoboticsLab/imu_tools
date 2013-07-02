@@ -35,7 +35,8 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
 #include <rviz/ogre_helpers/arrow.h>
-#include <rviz/helpers/color.h>
+#include <QColor>
+
 
 namespace rviz
 {
@@ -64,12 +65,12 @@ class ImuAccVisual
     // Set the color and alpha of the visual, which are user-editable
 
     void setScale(float scale);
-    void setColor(const Color& color);
+    void setColor(const QColor &color);
     void setAlpha(float alpha);
     void setDerotated(bool derotated);
 
     float getScale() { return scale_; }
-    const Color& getColor() { return color_; }
+    const QColor& getColor() { return color_; }
     float getAlpha() { return alpha_; }
     bool  getDerotated() { return derotated_; }
 
@@ -91,7 +92,7 @@ class ImuAccVisual
 
     float scale_;
     float alpha_;
-    Color color_;
+    QColor color_;
 
     bool derotated_;
  
