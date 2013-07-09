@@ -112,8 +112,9 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
   if (!initialized_)
   {
     // initialize roll/pitch orientation from acc. vector    
-    double roll  = atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
-    double pitch = atan2(lin_acc.y, sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));                    
+    double sign = copysignf(1.0, lin_acc.z);
+    double roll = atan2(lin_acc.y, sign * sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));
+    double pitch = -atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
     double yaw = 0.0;
                         
     tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
@@ -163,8 +164,9 @@ void ImuFilter::imuMagCallback(
   if (!initialized_)
   {
     // initialize roll/pitch orientation from acc. vector    
-    double roll  = atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
-    double pitch = atan2(lin_acc.y, sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));                    
+    double sign = copysignf(1.0, lin_acc.z);
+    double roll = atan2(lin_acc.y, sign * sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));
+    double pitch = -atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
     double yaw = 0.0; // TODO: initialize from magnetic raeding?
                         
     tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
