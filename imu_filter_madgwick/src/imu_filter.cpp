@@ -314,9 +314,9 @@ void ImuFilter::madgwickAHRSupdate(
 		_w_err_y = _2q0 * s2 + _2q1 * s3 - _2q2 * s0 - _2q3 * s1;
 		_w_err_z = _2q0 * s3 - _2q1 * s2 + _2q2 * s1 - _2q3 * s0;
 		
-		w_bx_ += _w_err_x * dt * zeta;
-		w_by_ += _w_err_y * dt * zeta;
-		w_bz_ += _w_err_z * dt * zeta;
+		w_bx_ += _w_err_x * dt * zeta_;
+		w_by_ += _w_err_y * dt * zeta_;
+		w_bz_ += _w_err_z * dt * zeta_;
 		
 		gx -= w_bx_;
 		gy -= w_by_;
