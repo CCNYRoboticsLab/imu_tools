@@ -1,0 +1,14 @@
+.cproject
+.project
+.pydevproject
+cmake_install.cmake
+bin/
+build/
+lib/
+*.cfgc
+imu_filter_madgwick/cfg/cpp/
+imu_filter_madgwick/docs/ImuFilterMadgwickConfig-usage.dox
+imu_filter_madgwick/docs/ImuFilterMadgwickConfig.dox
+imu_filter_madgwick/docs/ImuFilterMadgwickConfig.wikidoc
+imu_filter_madgwick/src/imu_filter_madgwick/__init__.py
+imu_filter_madgwick/src/imu_filter_madgwick/cfg/
