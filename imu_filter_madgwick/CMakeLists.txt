@@ -12,8 +12,8 @@ generate_dynamic_reconfigure_options(cfg/ImuFilterMadgwick.cfg)
 catkin_package(
   DEPENDS 
   CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs tf nodelet message_filters dynamic_reconfigure
-  INCLUDE_DIRS
-  LIBRARIES imu_filter imu_filter_nodelet
+  INCLUDE_DIRS include
+  LIBRARIES imu_filter
 )
 
 include_directories(
@@ -42,4 +42,9 @@ install(TARGETS imu_filter imu_filter_nodelet imu_filter_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
 )
