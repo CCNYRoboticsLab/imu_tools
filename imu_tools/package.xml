@@ -1,0 +1,20 @@
+<package>
+  <name> imu_tools </name>
+  <version>0.1.0</version>
+  <description>
+    Various tools for IMU devices
+  </description>
+  <maintainer email="ivan.dryanovski@gmail.com">Ivan Dryanovski</maintainer>
+  <license>BSD, GPL</license>
+
+  <url>http://ros.org/wiki/imu_tools</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>imu_filter_madgwick</run_depend>
+  <run_depend>rviz_imu_plugin</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>
