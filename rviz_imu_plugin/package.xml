@@ -1,0 +1,22 @@
+<package>
+  <name>rviz_imu_plugin</name>
+  <version>0.1.0</version>
+  <description>  
+    RVIZ plugin for IMU visualization
+  </description>
+  <license>BSD</license>
+  <url>http://ros.org/wiki/rviz_imu_plugin</url>
+  <author>Ivan Dryanovski</author>
+  <maintainer email="ivan.dryanovski@gmail.com">Ivan Dryanovski</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rviz</build_depend>
+  <run_depend>rviz</run_depend>
+
+  <export>
+    <rosdoc config="${prefix}/rosdoc.yaml"/>
+    <rviz plugin="${prefix}/plugin_description.xml"/>
+  </export>
+
+</package>
