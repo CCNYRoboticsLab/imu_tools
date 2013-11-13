@@ -111,19 +111,6 @@ class ImuFilter
                                float dt);
 
     void reconfigCallback(FilterConfig& config, uint32_t level);
-    
-    // Fast inverse square-root
-    // See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
-    static float invSqrt(float x) 
-    {
-      float halfx = 0.5f * x;
-      float y = x;
-      long i = *(long*)&y;
-      i = 0x5f3759df - (i>>1);
-      y = *(float*)&i;
-      y = y * (1.5f - (halfx * y * y));
-      return y;
-    }
 };
 
 #endif // IMU_FILTER_IMU_MADWICK_FILTER_H
