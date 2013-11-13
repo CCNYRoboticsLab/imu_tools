@@ -51,4 +51,4 @@ License
 
 References
 -----------------------------------
- [1] http://www.x-io.co.uk/node/8#open_source_ahrs_and_imu_algorithms
+ [1] http://www.x-io.co.uk/open-source-imu-and-ahrs-algorithms/
