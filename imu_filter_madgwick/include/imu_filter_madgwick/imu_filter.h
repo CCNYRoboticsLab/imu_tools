@@ -113,16 +113,20 @@ class ImuFilter
     void reconfigCallback(FilterConfig& config, uint32_t level);
     
     // Fast inverse square-root
-    // See: http://en.wikipedia.org/wiki/Fast_inverse_square_root
-    static float invSqrt(float x) 
+    // See: http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Reciprocal_of_the_square_root
+    static float invSqrt(float x)
     {
-      float halfx = 0.5f * x;
-      float y = x;
-      long i = *(long*)&y;
-      i = 0x5f3759df - (i>>1);
-      y = *(float*)&i;
-      y = y * (1.5f - (halfx * y * y));
-      return y;
+      float xhalf = 0.5f * x;
+      union
+      {
+        float x;
+        int i;
+      } u;
+      u.x = x;
+      u.i = 0x5f3759df - (u.i >> 1);
+      /* The next line can be repeated any number of times to increase accuracy */
+      u.x = u.x * (1.5f - xhalf * u.x * u.x);
+      return u.x;
     }
 };
 
