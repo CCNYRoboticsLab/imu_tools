@@ -27,14 +27,17 @@ link_directories(${catkin_LIBRARY_DIRS})
 
 # create imu_filter library
 add_library (imu_filter src/imu_filter.cpp)
+add_dependencies(imu_filter ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # create imu_filter_nodelet library
 add_library (imu_filter_nodelet src/imu_filter_nodelet.cpp)
+add_dependencies(imu_filter_nodelet ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter_nodelet imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # create imu_filter_node executable
 add_executable(imu_filter_node src/imu_filter_node.cpp)
+add_dependencies(imu_filter_node ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter_node imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 
