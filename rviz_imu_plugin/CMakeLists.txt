@@ -30,17 +30,12 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-link_directories(${catkin_LIBRARY_DIRS})
-
 ## Here we specify the list of source files
 set(SOURCE_FILES  src/imu_display.cpp
                   src/imu_orientation_visual.cpp
                   src/imu_axes_visual.cpp
                   src/imu_acc_visual.cpp
                   ${MOC_FILES})
-
-## Set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 ## Build libraries
 add_library(${PROJECT_NAME} ${SOURCE_FILES})

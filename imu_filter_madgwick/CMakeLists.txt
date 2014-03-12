@@ -22,8 +22,6 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
 )
 
-link_directories(${catkin_LIBRARY_DIRS})
-
 
 # create imu_filter library
 add_library (imu_filter src/imu_filter.cpp)
