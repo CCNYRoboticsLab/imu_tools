@@ -227,7 +227,6 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   boost::shared_ptr<ImuMsg> imu_msg = 
     boost::make_shared<ImuMsg>(*imu_msg_raw);
 
-  imu_msg->header.frame_id = fixed_frame_;
   tf::quaternionTFToMsg(q, imu_msg->orientation);  
   imu_publisher_.publish(imu_msg);
 }
