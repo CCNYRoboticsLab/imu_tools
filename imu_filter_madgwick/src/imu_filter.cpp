@@ -48,10 +48,15 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
     constant_dt_ = 0.0;
-  if (!nh_private_.getParam ("calibrated_", calibrated_))
-  calibrated_= true;
+
   if (!nh_private_.getParam ("publish_debug_topic", publish_debug_topic_))
-  publish_debug_topic_= true;
+    publish_debug_topic_= true;
+
+  if (!nh_private_.getParam ("~mag_bias/x", mag_bias_x_))
+    mag_bias_x_ = 0.0;
+  if (!nh_private_.getParam ("~mag_bias/y", mag_bias_y_))
+    mag_bias_y_ = 0.0;
+
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -173,20 +178,10 @@ void ImuFilter::imuMagCallback(
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
-  double mag_bias_x = 0.0;
-  double mag_bias_y = 0.0;
-
-  // TODO: read from file
-  if(calibrated_)
-  {
-    mag_bias_x = 9.7518270088248001e-06;
-    mag_bias_y =  -8.9287918252482411e-06;
-  }
-
   /*** Compensate for hard iron ***/
-  double mx = mag_fld.x - mag_bias_x;
-  double my = mag_fld.y - mag_bias_y;
-  double mz = mag_fld.z ;
+  double mx = mag_fld.x - mag_bias_x_;
+  double my = mag_fld.y - mag_bias_y_;
+  double mz = mag_fld.z;
 
   /*** Normalize Magnetometer data***/
   double norm = sqrt(mx * mx + my * my + mz * mz);
@@ -207,17 +202,18 @@ void ImuFilter::imuMagCallback(
   double head_z = mz; 
   double yaw = atan2(-head_y, head_x);
 
-  geometry_msgs::Vector3Stamped rpy;
-
-  rpy.vector.x = roll * 180.0 / M_PI;
-  rpy.vector.y = pitch * 180.0 / M_PI;
-  rpy.vector.z = yaw * 180.0 / M_PI;
-
-  rpy.header.stamp = time;
-  rpy.header.frame_id = imu_frame_;
-
   if(publish_debug_topic_)
+  {
+    geometry_msgs::Vector3Stamped rpy;
+
+    rpy.vector.x = roll * 180.0 / M_PI;
+    rpy.vector.y = pitch * 180.0 / M_PI;
+    rpy.vector.z = yaw * 180.0 / M_PI;
+    rpy.header.stamp = time;
+    rpy.header.frame_id = imu_frame_;
+    
     orientation_raw_publisher_.publish(rpy);
+  }
 
   if (!initialized_)
   {
@@ -284,17 +280,20 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   tf::quaternionTFToMsg(q, imu_msg->orientation);  
   imu_publisher_.publish(imu_msg);
 
-  geometry_msgs::Vector3Stamped rpy;
-  tf::Matrix3x3(q).getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
 
-  rpy.vector.x *= 180 / M_PI;
-  rpy.vector.y *= 180 / M_PI;
-  rpy.vector.z *= 180 / M_PI;
-
-  rpy.header = imu_msg_raw->header;
 
   if(publish_debug_topic_)
+  {
+    geometry_msgs::Vector3Stamped rpy;
+    tf::Matrix3x3(q).getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
+
+    rpy.vector.x *= 180 / M_PI;
+    rpy.vector.y *= 180 / M_PI;
+    rpy.vector.z *= 180 / M_PI;
+
+    rpy.header = imu_msg_raw->header;
     orientation_filtered_publisher_.publish(rpy);
+  }
 }
 
 void ImuFilter::madgwickAHRSupdate(

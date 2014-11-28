@@ -84,8 +84,9 @@ class ImuFilter
     std::string fixed_frame_;
     std::string imu_frame_;
     double constant_dt_;
-    bool calibrated_;
     bool publish_debug_topic_;
+    double mag_bias_x_;
+    double mag_bias_y_;
 
     // **** state variables
   
