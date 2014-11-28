@@ -23,6 +23,8 @@
  */
 
 #include "imu_filter_madgwick/imu_filter.h"
+#include <geometry_msgs/Vector3Stamped.h>
+
 
 ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   nh_(nh), 
@@ -46,6 +48,8 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
     constant_dt_ = 0.0;
+  if (!nh_private_.getParam ("calibrated_", calibrated_))
+  calibrated_= true;
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -70,6 +74,12 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
 
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(
     "imu/data", 5);
+
+  orientation_raw_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
+    "/imu/rpy/raw", 5);
+
+  orientation_filtered_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
+    "imu/rpy/filtered", 5);
 
   // **** register subscribers
 
@@ -157,17 +167,58 @@ void ImuFilter::imuMagCallback(
   const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
   const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration; 
   const geometry_msgs::Vector3& mag_fld = mag_msg->vector;
-  
+
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
+  double mag_bias_x = 0.0;
+  double mag_bias_y = 0.0;
+
+  // TODO: read from file
+  if(calibrated_)
+  {
+    mag_bias_x = 9.7518270088248001e-06;
+    mag_bias_x =  -8.9287918252482411e-06;
+  }
+
+  /*** Compensate for hard iron ***/
+  double mx = mag_fld.x - mag_bias_x;
+  double my = mag_fld.y - mag_bias_x;
+  double mz = mag_fld.z ;
+
+  /*** Normalize Magnetometer data***/
+  double norm = sqrt(mx * mx + my * my + mz * mz);
+  mx /= norm;
+  my /= norm;
+  mz /= norm;
+
+  /*** Tilt Compensation ***/
+  double sign = copysignf(1.0, lin_acc.z);
+  double roll = atan2(lin_acc.x, sign * sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));
+  double pitch = -atan2(lin_acc.y, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
+  double cos_roll = cos(roll);
+  double sin_roll = sin(roll);
+  double cos_pitch = cos(pitch);
+  double sin_pitch = sin(pitch);
+  double head_x = mx * cos_pitch + my * sin_pitch * sin_roll + mz * sin_pitch * cos_roll;
+  double head_y = my * cos_roll - mz * sin_roll;
+  double head_z = mz; 
+  double yaw = atan2(-head_y, head_x);
+
+  geometry_msgs::Vector3Stamped rpy;
+
+  rpy.vector.x = roll * 180.0 / M_PI;
+  rpy.vector.y = pitch * 180.0 / M_PI;
+  rpy.vector.z = yaw * 180.0 / M_PI;
+
+  rpy.header.stamp = time;
+  rpy.header.frame_id = imu_frame_;
+
+  orientation_raw_publisher_.publish(rpy);
+
   if (!initialized_)
   {
-    // initialize roll/pitch orientation from acc. vector    
-    double sign = copysignf(1.0, lin_acc.z);
-    double roll = atan2(lin_acc.y, sign * sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));
-    double pitch = -atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
-    double yaw = 0.0; // TODO: initialize from magnetic raeding?
+    // initialize roll/pitch orientation from acc. vector and yaw initialize from magnetic reading.
                         
     tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
     
@@ -196,7 +247,7 @@ void ImuFilter::imuMagCallback(
   madgwickAHRSupdate(
     ang_vel.x, ang_vel.y, ang_vel.z,
     lin_acc.x, lin_acc.y, lin_acc.z,
-    mag_fld.x, mag_fld.y, mag_fld.z,
+    head_x, head_y, head_z,
     dt);
 
   publishFilteredMsg(imu_msg_raw);
@@ -229,6 +280,17 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
 
   tf::quaternionTFToMsg(q, imu_msg->orientation);  
   imu_publisher_.publish(imu_msg);
+
+  geometry_msgs::Vector3Stamped rpy;
+  tf::Matrix3x3(q).getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
+
+  rpy.vector.x *= 180 / M_PI;
+  rpy.vector.y *= 180 / M_PI;
+  rpy.vector.z *= 180 / M_PI;
+
+  rpy.header = imu_msg_raw->header;
+
+  orientation_filtered_publisher_.publish(rpy);
 }
 
 void ImuFilter::madgwickAHRSupdate(

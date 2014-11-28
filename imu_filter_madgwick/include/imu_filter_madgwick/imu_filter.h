@@ -68,6 +68,8 @@ class ImuFilter
     boost::shared_ptr<ImuSubscriber> imu_subscriber_;
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
 
+    ros::Publisher orientation_raw_publisher_;
+    ros::Publisher orientation_filtered_publisher_;
     ros::Publisher imu_publisher_;
     tf::TransformBroadcaster tf_broadcaster_;
 
@@ -82,6 +84,7 @@ class ImuFilter
     std::string fixed_frame_;
     std::string imu_frame_;
     double constant_dt_;
+    bool calibrated_;
 
     // **** state variables
   
