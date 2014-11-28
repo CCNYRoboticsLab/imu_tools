@@ -85,6 +85,7 @@ class ImuFilter
     std::string imu_frame_;
     double constant_dt_;
     bool calibrated_;
+    bool publish_debug_topic_;
 
     // **** state variables
   

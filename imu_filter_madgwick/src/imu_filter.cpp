@@ -50,6 +50,8 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
     constant_dt_ = 0.0;
   if (!nh_private_.getParam ("calibrated_", calibrated_))
   calibrated_= true;
+  if (!nh_private_.getParam ("publish_debug_topic", publish_debug_topic_))
+  publish_debug_topic_= true;
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -178,12 +180,12 @@ void ImuFilter::imuMagCallback(
   if(calibrated_)
   {
     mag_bias_x = 9.7518270088248001e-06;
-    mag_bias_x =  -8.9287918252482411e-06;
+    mag_bias_y =  -8.9287918252482411e-06;
   }
 
   /*** Compensate for hard iron ***/
   double mx = mag_fld.x - mag_bias_x;
-  double my = mag_fld.y - mag_bias_x;
+  double my = mag_fld.y - mag_bias_y;
   double mz = mag_fld.z ;
 
   /*** Normalize Magnetometer data***/
@@ -214,7 +216,8 @@ void ImuFilter::imuMagCallback(
   rpy.header.stamp = time;
   rpy.header.frame_id = imu_frame_;
 
-  orientation_raw_publisher_.publish(rpy);
+  if(publish_debug_topic_)
+    orientation_raw_publisher_.publish(rpy);
 
   if (!initialized_)
   {
@@ -290,7 +293,8 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
 
   rpy.header = imu_msg_raw->header;
 
-  orientation_filtered_publisher_.publish(rpy);
+  if(publish_debug_topic_)
+    orientation_filtered_publisher_.publish(rpy);
 }
 
 void ImuFilter::madgwickAHRSupdate(
