@@ -197,6 +197,8 @@ void ImuFilter::imuMagCallback(
   double sin_roll = sin(roll);
   double cos_pitch = cos(pitch);
   double sin_pitch = sin(pitch);
+  
+  /***  from: http://cache.freescale.com/files/sensors/doc/app_note/AN4248.pdf (equation 22). ***/
   double head_x = mx * cos_pitch + my * sin_pitch * sin_roll + mz * sin_pitch * cos_roll;
   double head_y = my * cos_roll - mz * sin_roll;
   double head_z = mz; 
@@ -211,7 +213,7 @@ void ImuFilter::imuMagCallback(
     rpy.vector.z = yaw * 180.0 / M_PI;
     rpy.header.stamp = time;
     rpy.header.frame_id = imu_frame_;
-    
+
     orientation_raw_publisher_.publish(rpy);
   }
 
