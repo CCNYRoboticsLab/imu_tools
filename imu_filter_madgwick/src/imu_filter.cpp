@@ -57,6 +57,9 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("~mag_bias/y", mag_bias_y_))
     mag_bias_y_ = 0.0;
 
+  if (!nh_private_.getParam ("tilt_compensation", tilt_compensation_))
+    tilt_compensation_= true;
+
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -190,6 +193,7 @@ void ImuFilter::imuMagCallback(
   mz /= norm;
 
   /*** Tilt Compensation ***/
+  /***  From: http://cache.freescale.com/files/sensors/doc/app_note/AN4248.pdf (equation 22). ***/
   double sign = copysignf(1.0, lin_acc.z);
   double roll = atan2(lin_acc.x, sign * sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));
   double pitch = -atan2(lin_acc.y, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
@@ -197,12 +201,18 @@ void ImuFilter::imuMagCallback(
   double sin_roll = sin(roll);
   double cos_pitch = cos(pitch);
   double sin_pitch = sin(pitch);
-  
-  /***  from: http://cache.freescale.com/files/sensors/doc/app_note/AN4248.pdf (equation 22). ***/
-  double head_x = mx * cos_pitch + my * sin_pitch * sin_roll + mz * sin_pitch * cos_roll;
-  double head_y = my * cos_roll - mz * sin_roll;
-  double head_z = mz; 
-  double yaw = atan2(-head_y, head_x);
+  double yaw = 0.0;
+  double head_x = mx;
+  double head_y = my;
+  double head_z = mz;
+
+
+  if(tilt_compensation_)
+  {
+    head_x = mx * cos_pitch + my * sin_pitch * sin_roll + mz * sin_pitch * cos_roll;
+    head_y = my * cos_roll - mz * sin_roll;
+    yaw = atan2(-head_y, head_x);
+  }
 
   if(publish_debug_topic_)
   {
@@ -219,7 +229,7 @@ void ImuFilter::imuMagCallback(
 
   if (!initialized_)
   {
-    // initialize roll/pitch orientation from acc. vector and yaw initialize from magnetic reading.
+    // initialize roll/pitch orientation from acc. vector.
                         
     tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
     
