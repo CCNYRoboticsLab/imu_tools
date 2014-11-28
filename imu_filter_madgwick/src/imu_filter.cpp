@@ -52,10 +52,10 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("publish_debug_topic", publish_debug_topic_))
     publish_debug_topic_= true;
 
-  if (!nh_private_.getParam ("~mag_bias/x", mag_bias_x_))
-    mag_bias_x_ = 0.0;
-  if (!nh_private_.getParam ("~mag_bias/y", mag_bias_y_))
-    mag_bias_y_ = 0.0;
+  if (!nh_private_.getParam ("mag_bias_x", mag_bias_x_))
+    mag_bias_x_ = 9.2120916387327257e-06;
+  if (!nh_private_.getParam ("mag_bias_y", mag_bias_y_))
+    mag_bias_y_ = 2.0839800670303741e-05;
 
   if (!nh_private_.getParam ("tilt_compensation", tilt_compensation_))
     tilt_compensation_= true;
