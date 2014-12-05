@@ -45,12 +45,6 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
     constant_dt_ = 0.0;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
-  if (!nh_private_.getParam ("mag_bias/x", mag_bias_.x))
-    mag_bias_.x = 0.0;
-  if (!nh_private_.getParam ("mag_bias/y", mag_bias_.y))
-    mag_bias_.y = 0.0;
-  if (!nh_private_.getParam ("mag_bias/z", mag_bias_.z))
-    mag_bias_.z = 0.0;
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -507,6 +501,9 @@ void ImuFilter::reconfigCallback(FilterConfig& config, uint32_t level)
   zeta_ = config.zeta;
   ROS_INFO("Imu filter gain set to %f", gain_);
   ROS_INFO("Gyro drift bias set to %f", zeta_);
+  mag_bias_.x = config.mag_bias_x;
+  mag_bias_.y = config.mag_bias_y;
+  mag_bias_.z = config.mag_bias_z;
 }
 
 
