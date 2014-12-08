@@ -183,6 +183,12 @@ void ImuFilter::imuMagCallback(
 
   if (!initialized_)
   {
+    // wait for mag message without NaN / inf
+    if(!std::isfinite(mag_fld.x) || !std::isfinite(mag_fld.y) || !std::isfinite(mag_fld.z))
+    {
+      return;
+    }
+
     computeRPY(
       lin_acc.x, lin_acc.y, lin_acc.z,
       mx, my, mz,
@@ -222,7 +228,7 @@ void ImuFilter::imuMagCallback(
   if (publish_tf_)
     publishTransform(imu_msg_raw);
 
-  if(publish_debug_topics_)
+  if(publish_debug_topics_ && std::isfinite(mx) && std::isfinite(my) && std::isfinite(mz))
   {
     computeRPY(
       lin_acc.x, lin_acc.y, lin_acc.z,
