@@ -316,7 +316,7 @@ void ImuFilter::madgwickAHRSupdate(
 	float _w_err_x, _w_err_y, _w_err_z;
 
 	// Use IMU algorithm if magnetometer measurement invalid (avoids NaN in magnetometer normalisation)
-  if(std::isnan(mx) || std::isnan(my) || std::isnan(mz))
+  if(!std::isfinite(mx) || !std::isfinite(my) || !std::isfinite(mz))
   {
 		madgwickAHRSupdateIMU(gx, gy, gz, ax, ay, az, dt);
 		return;
