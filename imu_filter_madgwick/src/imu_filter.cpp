@@ -46,6 +46,14 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
     constant_dt_ = 0.0;
+  if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
+    publish_debug_topics_= false;
+  if (!nh_private_.getParam ("mag_bias/x", mag_bias_.x))
+    mag_bias_.x = 0.0;
+  if (!nh_private_.getParam ("mag_bias/y", mag_bias_.y))
+    mag_bias_.y = 0.0;
+  if (!nh_private_.getParam ("mag_bias/z", mag_bias_.z))
+    mag_bias_.z = 0.0;
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -62,17 +70,20 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
     ROS_INFO("Using constant dt of %f sec", constant_dt_);
 
   // **** register dynamic reconfigure
-  
   FilterConfigServer::CallbackType f = boost::bind(&ImuFilter::reconfigCallback, this, _1, _2);
   config_server_.setCallback(f);
   
   // **** register publishers
-
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(
     "imu/data", 5);
 
-  // **** register subscribers
+  rpy_filtered_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
+    "imu/rpy/filtered", 5);
 
+  rpy_raw_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
+    "imu/rpy/raw", 5);
+
+  // **** register subscribers
   // Synchronize inputs. Topic subscriptions happen on demand in the connection callback.
   int queue_size = 5;
 
@@ -157,18 +168,26 @@ void ImuFilter::imuMagCallback(
   const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
   const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration; 
   const geometry_msgs::Vector3& mag_fld = mag_msg->vector;
-  
+
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
+  /*** Compensate for hard iron ***/
+  double mx = mag_fld.x - mag_bias_.x;
+  double my = mag_fld.y - mag_bias_.y;
+  double mz = mag_fld.z - mag_bias_.z;
+
+  float roll = 0.0;
+  float pitch = 0.0;
+  float yaw = 0.0;
+
   if (!initialized_)
   {
-    // initialize roll/pitch orientation from acc. vector    
-    double sign = copysignf(1.0, lin_acc.z);
-    double roll = atan2(lin_acc.y, sign * sqrt(lin_acc.x*lin_acc.x + lin_acc.z*lin_acc.z));
-    double pitch = -atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
-    double yaw = 0.0; // TODO: initialize from magnetic raeding?
-                        
+    computeRPY(
+      lin_acc.x, lin_acc.y, lin_acc.z,
+      mx, my, mz,
+      roll, pitch, yaw);
+
     tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
     
     q1 = init_q.getX();
@@ -196,12 +215,22 @@ void ImuFilter::imuMagCallback(
   madgwickAHRSupdate(
     ang_vel.x, ang_vel.y, ang_vel.z,
     lin_acc.x, lin_acc.y, lin_acc.z,
-    mag_fld.x, mag_fld.y, mag_fld.z,
+    mx, my, mz,
     dt);
 
   publishFilteredMsg(imu_msg_raw);
   if (publish_tf_)
     publishTransform(imu_msg_raw);
+
+  if(publish_debug_topics_)
+  {
+    computeRPY(
+      lin_acc.x, lin_acc.y, lin_acc.z,
+      mx, my, mz,
+      roll, pitch, yaw);
+
+    publishRawMsg(time, roll, pitch, yaw);
+  }
 }
 
 void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
@@ -229,6 +258,48 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
 
   tf::quaternionTFToMsg(q, imu_msg->orientation);  
   imu_publisher_.publish(imu_msg);
+
+  if(publish_debug_topics_)
+  {
+    geometry_msgs::Vector3Stamped rpy;
+    tf::Matrix3x3(q).getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
+
+    rpy.header = imu_msg_raw->header;
+    rpy_filtered_debug_publisher_.publish(rpy);
+  }
+}
+
+void ImuFilter::publishRawMsg(const ros::Time& t,
+  float roll, float pitch, float yaw)
+{
+  geometry_msgs::Vector3Stamped rpy;
+  rpy.vector.x = roll;
+  rpy.vector.y = pitch;
+  rpy.vector.z = yaw ;
+  rpy.header.stamp = t;
+  rpy.header.frame_id = imu_frame_;
+  rpy_raw_debug_publisher_.publish(rpy);
+}
+
+void ImuFilter::computeRPY(
+  float ax, float ay, float az, 
+  float mx, float my, float mz,
+  float& roll, float& pitch, float& yaw)
+{ 
+  // initialize roll/pitch orientation from acc. vector.
+  double sign = copysignf(1.0, az);
+  roll = atan2(ay, sign * sqrt(ax*ax + az*az));
+  pitch = -atan2(ax, sqrt(ay*ay + az*az));
+  double cos_roll = cos(roll);
+  double sin_roll = sin(roll);
+  double cos_pitch = cos(pitch);
+  double sin_pitch = sin(pitch);
+
+  // initialize yaw orientation from magnetometer data.
+  /***  From: http://cache.freescale.com/files/sensors/doc/app_note/AN4248.pdf (equation 22). ***/
+  double head_x = mx * cos_pitch + my * sin_pitch * sin_roll + mz * sin_pitch * cos_roll;
+  double head_y = my * cos_roll - mz * sin_roll;
+  yaw = atan2(-head_y, head_x);
 }
 
 void ImuFilter::madgwickAHRSupdate(
@@ -251,7 +322,6 @@ void ImuFilter::madgwickAHRSupdate(
 		return;
 	}
 
-	
 	// Compute feedback only if accelerometer measurement valid (avoids NaN in accelerometer normalisation)
 	if(!((ax == 0.0f) && (ay == 0.0f) && (az == 0.0f))) 
   {
@@ -353,7 +423,6 @@ void ImuFilter::madgwickAHRSupdate(
 	q2 *= recipNorm;
 	q3 *= recipNorm;
 }
-
 
 void ImuFilter::madgwickAHRSupdateIMU(
   float gx, float gy, float gz, 
