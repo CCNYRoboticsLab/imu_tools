@@ -7,6 +7,7 @@
   <license>GPL</license>
   <url>http://ros.org/wiki/imu_filter_madgwick</url>
   <author>Ivan Dryanovski</author>
+  <maintainer email="martin.guenther1980@gmail.com">Martin Günther</maintainer>
   <maintainer email="ivan.dryanovski@gmail.com">Ivan Dryanovski</maintainer>
 
   <buildtool_depend>catkin</buildtool_depend>

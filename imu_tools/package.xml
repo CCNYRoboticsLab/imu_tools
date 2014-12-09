@@ -4,6 +4,7 @@
   <description>
     Various tools for IMU devices
   </description>
+  <maintainer email="martin.guenther1980@gmail.com">Martin Günther</maintainer>
   <maintainer email="ivan.dryanovski@gmail.com">Ivan Dryanovski</maintainer>
   <license>BSD, GPL</license>
 
