@@ -32,6 +32,7 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
 {
   ROS_INFO ("Starting ImuFilter");
 
+
   // **** get paramters
 
   if (!nh_private_.getParam ("gain", gain_))
@@ -70,8 +71,9 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
     ROS_INFO("Using constant dt of %f sec", constant_dt_);
 
   // **** register dynamic reconfigure
+  config_server_.reset(new FilterConfigServer(nh_private_));
   FilterConfigServer::CallbackType f = boost::bind(&ImuFilter::reconfigCallback, this, _1, _2);
-  config_server_.setCallback(f);
+  config_server_->setCallback(f);
   
   // **** register publishers
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(

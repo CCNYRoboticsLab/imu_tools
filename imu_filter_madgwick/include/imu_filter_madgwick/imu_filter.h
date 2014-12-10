@@ -73,7 +73,7 @@ class ImuFilter
     ros::Publisher imu_publisher_;
     tf::TransformBroadcaster tf_broadcaster_;
 
-    FilterConfigServer config_server_;
+    boost::shared_ptr<FilterConfigServer> config_server_;
     
     // **** paramaters
 
