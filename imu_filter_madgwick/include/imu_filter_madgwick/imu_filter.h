@@ -68,6 +68,8 @@ class ImuFilter
     boost::shared_ptr<ImuSubscriber> imu_subscriber_;
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
 
+    ros::Publisher rpy_filtered_debug_publisher_;
+    ros::Publisher rpy_raw_debug_publisher_;
     ros::Publisher imu_publisher_;
     tf::TransformBroadcaster tf_broadcaster_;
 
@@ -82,9 +84,10 @@ class ImuFilter
     std::string fixed_frame_;
     std::string imu_frame_;
     double constant_dt_;
+    bool publish_debug_topics_;
+    geometry_msgs::Vector3 mag_bias_;
 
     // **** state variables
-  
     boost::mutex mutex_;
     bool initialized_;
     double q0, q1, q2, q3;  // quaternion
@@ -101,6 +104,9 @@ class ImuFilter
     void publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw);
     void publishTransform(const ImuMsg::ConstPtr& imu_msg_raw);
 
+    void publishRawMsg(const ros::Time& t,
+                       float roll, float pitch, float yaw);
+
     void madgwickAHRSupdate(float gx, float gy, float gz, 
                             float ax, float ay, float az, 
                             float mx, float my, float mz,
@@ -111,7 +117,10 @@ class ImuFilter
                                float dt);
 
     void reconfigCallback(FilterConfig& config, uint32_t level);
-    
+
+    void computeRPY(float ax, float ay, float az, 
+                    float mx, float my, float mz,
+                    float& roll, float& pitch, float& yaw);
     // Fast inverse square-root
     // See: http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Reciprocal_of_the_square_root
     static float invSqrt(float x)
