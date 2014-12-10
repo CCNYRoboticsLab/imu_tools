@@ -2,6 +2,35 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add me as maintainer to package.xml
+* turn mag_bias into a dynamic reconfigure param
+  Also rename mag_bias/x --> mag_bias_x etc., since dynamic reconfigure
+  doesn't allow slashes.
+* gain and zeta already set via dynamic_reconfigure
+  Reading the params explicitly is not necessary. Instead,
+  dynamic_reconfigure will read them and set them as soon as we call
+  config_server->setCallback().
+* reconfigure server: use proper namespace
+  Before, the reconfigure server used the private namespace of the nodelet
+  *manager* instead of the nodelet, so the params on the parameter server
+  and the ones from dynamic_reconfigure were out of sync.
+* check for NaNs in magnetometer message
+  Some magnetometer drivers (e.g. phidgets_drivers) output NaNs, which
+  is a valid way of saying that this measurement is invalid. During
+  initialization, we simply wait for the first valid message, assuming
+  there will be one soon.
+* magnetometer msg check: isnan() -> !isfinite()
+  This catches both inf and NaN. Not sure whether sending inf in a Vector3
+  message is valid (Nan is), but this doesn't hurt and is just good
+  defensive programming.
+* Initialize yaw from calibrated magnetometer data
+  * Add magnetometer biases (mag_bias/x and mag_bias/y) for hard-iron compensation.
+  * Initialize yaw orientation from magnetometer reading.
+  * Add imu/rpy/raw and imu/rpy/filtered as debug topics. imu/rpy/raw can be used for computing magnetometer biases. imu/rpy/filtered topic is for user readability only.
+* Contributors: Martin Günther, Shokoofeh Pourmehr
+
 1.0.0 (2014-09-03)
 ------------------
 * First public release
