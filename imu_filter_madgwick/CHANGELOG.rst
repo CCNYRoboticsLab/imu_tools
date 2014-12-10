@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2014-12-10)
+------------------
 * add me as maintainer to package.xml
 * turn mag_bias into a dynamic reconfigure param
   Also rename mag_bias/x --> mag_bias_x etc., since dynamic reconfigure
