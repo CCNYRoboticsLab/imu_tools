@@ -35,10 +35,6 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
 
   // **** get paramters
 
-  if (!nh_private_.getParam ("gain", gain_))
-   gain_ = 0.1;
-  if (!nh_private_.getParam ("zeta", zeta_))
-   zeta_ = 0;
   if (!nh_private_.getParam ("use_mag", use_mag_))
    use_mag_ = true;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
