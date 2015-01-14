@@ -504,6 +504,7 @@ void ImuFilter::reconfigCallback(FilterConfig& config, uint32_t level)
   mag_bias_.x = config.mag_bias_x;
   mag_bias_.y = config.mag_bias_y;
   mag_bias_.z = config.mag_bias_z;
+  ROS_INFO("Magnetometer bias values: %f %f %f", mag_bias_.x, mag_bias_.y, mag_bias_.z);
 }
 
 
