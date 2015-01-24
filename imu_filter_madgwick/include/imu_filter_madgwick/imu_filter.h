@@ -81,6 +81,7 @@ class ImuFilter
     double zeta_;	  // gyro drift bias gain
     bool use_mag_;
     bool publish_tf_;
+    bool reverse_tf_;
     std::string fixed_frame_;
     std::string imu_frame_;
     double constant_dt_;

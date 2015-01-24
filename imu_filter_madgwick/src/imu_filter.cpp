@@ -39,6 +39,8 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    use_mag_ = true;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
    publish_tf_ = true;
+  if (!nh_private_.getParam ("reverse_tf", reverse_tf_))
+   reverse_tf_ = false;
   if (!nh_private_.getParam ("fixed_frame", fixed_frame_))
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
@@ -237,10 +239,20 @@ void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
   tf::Transform transform;
   transform.setOrigin( tf::Vector3( 0.0, 0.0, 0.0 ) );
   transform.setRotation( q );
-  tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
-                   imu_msg_raw->header.stamp,
-                   fixed_frame_,
-                   imu_frame_ ) );
+  if (reverse_tf_)
+  {
+    tf::Transform inv_transform = transform.inverse();
+    tf_broadcaster_.sendTransform( tf::StampedTransform( inv_transform,
+                     imu_msg_raw->header.stamp,
+                     imu_frame_,
+                     fixed_frame_) );
+  }
+  else {
+    tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
+                     imu_msg_raw->header.stamp,
+                     imu_frame_,
+                     fixed_frame_) );
+  }
 
 }
 
