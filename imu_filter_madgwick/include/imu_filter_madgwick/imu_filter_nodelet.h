@@ -26,7 +26,6 @@
 #define IMU_FILTER_MADGWICK_IMU_FILTER_NODELET_H
 
 #include <nodelet/nodelet.h>
-#include <pluginlib/class_list_macros.h>
 
 #include "imu_filter_madgwick/imu_filter.h"
 
@@ -36,7 +35,7 @@ class ImuFilterNodelet : public nodelet::Nodelet
     virtual void onInit();
 
   private:
-    ImuFilter * filter_;  // FIXME: change to smart pointer
+    boost::shared_ptr<ImuFilter> filter_;
 };
 
 #endif // IMU_FILTER_MADGWICK_IMU_FILTER_NODELET_H
