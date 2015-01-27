@@ -23,6 +23,10 @@
  */
 
 #include "imu_filter_madgwick/imu_filter.h"
+#include "geometry_msgs/TransformStamped.h"
+#include "geometry_msgs/Quaternion.h"
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
 
 ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   nh_(nh), 
@@ -120,7 +124,8 @@ void ImuFilter::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     double pitch = -atan2(lin_acc.x, sqrt(lin_acc.y*lin_acc.y + lin_acc.z*lin_acc.z));
     double yaw = 0.0;
                         
-    tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
+    tf2::Quaternion init_q;
+    init_q.setRPY(roll, pitch, yaw);
     
     q1 = init_q.getX();
     q2 = init_q.getY();
@@ -186,7 +191,8 @@ void ImuFilter::imuMagCallback(
       mx, my, mz,
       roll, pitch, yaw);
 
-    tf::Quaternion init_q = tf::createQuaternionFromRPY(roll, pitch, yaw);
+    tf2::Quaternion init_q;
+    init_q.setRPY(roll, pitch, yaw);
     
     q1 = init_q.getX();
     q2 = init_q.getY();
@@ -233,34 +239,36 @@ void ImuFilter::imuMagCallback(
 
 void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
 {
-  tf::Quaternion q(q1, q2, q3, q0);
-  tf::Transform transform;
-  transform.setOrigin( tf::Vector3( 0.0, 0.0, 0.0 ) );
-  transform.setRotation( q );
-  tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
-                   imu_msg_raw->header.stamp,
-                   fixed_frame_,
-                   imu_frame_ ) );
+
+  geometry_msgs::TransformStamped transform;
+  transform.header.stamp = imu_msg_raw->header.stamp;
+  transform.header.frame_id = fixed_frame_;
+  transform.child_frame_id = imu_frame_;
+  transform.transform.rotation.w = q0;
+  transform.transform.rotation.x = q1;
+  transform.transform.rotation.y = q2;
+  transform.transform.rotation.z = q3;
+  tf_broadcaster_.sendTransform(transform);
 
 }
 
 void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
 {
-  // create orientation quaternion
-  // q0 is the angle, q1, q2, q3 are the axes  
-  tf::Quaternion q(q1, q2, q3, q0);   
 
   // create and publish fitlered IMU message
   boost::shared_ptr<ImuMsg> imu_msg = 
     boost::make_shared<ImuMsg>(*imu_msg_raw);
 
-  tf::quaternionTFToMsg(q, imu_msg->orientation);  
+  imu_msg->orientation.w = q0;
+  imu_msg->orientation.x = q1;
+  imu_msg->orientation.y = q2;
+  imu_msg->orientation.z = q3;
   imu_publisher_.publish(imu_msg);
 
   if(publish_debug_topics_)
   {
     geometry_msgs::Vector3Stamped rpy;
-    tf::Matrix3x3(q).getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
+    tf2::Matrix3x3(tf2::Quaternion(q1,q2,q3,q0)).getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
 
     rpy.header = imu_msg_raw->header;
     rpy_filtered_debug_publisher_.publish(rpy);

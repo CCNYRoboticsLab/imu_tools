@@ -30,8 +30,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/Vector3Stamped.h>
-#include <tf/transform_datatypes.h>
-#include <tf/transform_broadcaster.h>
+#include "tf2_ros/transform_broadcaster.h"
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
@@ -71,7 +70,7 @@ class ImuFilter
     ros::Publisher rpy_filtered_debug_publisher_;
     ros::Publisher rpy_raw_debug_publisher_;
     ros::Publisher imu_publisher_;
-    tf::TransformBroadcaster tf_broadcaster_;
+    tf2_ros::TransformBroadcaster tf_broadcaster_;
 
     boost::shared_ptr<FilterConfigServer> config_server_;
     
