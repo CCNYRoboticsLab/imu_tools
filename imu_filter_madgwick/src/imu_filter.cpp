@@ -245,8 +245,8 @@ void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
   transform.header.stamp = imu_msg_raw->header.stamp;
   if (reverse_tf_)
   {
-    transform.header.frame_id = fixed_frame_;
-    transform.child_frame_id = imu_frame_;
+    transform.header.frame_id = imu_frame_;
+    transform.child_frame_id = fixed_frame_;
     transform.transform.rotation.w = q0;
     transform.transform.rotation.x = -q1;
     transform.transform.rotation.y = -q2;
