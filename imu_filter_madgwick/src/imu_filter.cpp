@@ -43,6 +43,8 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
    use_mag_ = true;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
    publish_tf_ = true;
+  if (!nh_private_.getParam ("reverse_tf", reverse_tf_))
+   reverse_tf_ = false;
   if (!nh_private_.getParam ("fixed_frame", fixed_frame_))
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
@@ -239,15 +241,25 @@ void ImuFilter::imuMagCallback(
 
 void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
 {
-
   geometry_msgs::TransformStamped transform;
   transform.header.stamp = imu_msg_raw->header.stamp;
-  transform.header.frame_id = fixed_frame_;
-  transform.child_frame_id = imu_frame_;
-  transform.transform.rotation.w = q0;
-  transform.transform.rotation.x = q1;
-  transform.transform.rotation.y = q2;
-  transform.transform.rotation.z = q3;
+  if (reverse_tf_)
+  {
+    transform.header.frame_id = fixed_frame_;
+    transform.child_frame_id = imu_frame_;
+    transform.transform.rotation.w = q0;
+    transform.transform.rotation.x = -q1;
+    transform.transform.rotation.y = -q2;
+    transform.transform.rotation.z = -q3;
+  }
+  else {
+    transform.header.frame_id = fixed_frame_;
+    transform.child_frame_id = imu_frame_;
+    transform.transform.rotation.w = q0;
+    transform.transform.rotation.x = q1;
+    transform.transform.rotation.y = q2;
+    transform.transform.rotation.z = q3;
+  }
   tf_broadcaster_.sendTransform(transform);
 
 }

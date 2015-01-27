@@ -2,6 +2,25 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.2 (2015-01-27)
+------------------
+* fix tf publishing (switch parent + child frames)
+  The orientation is between a fixed inertial frame (``fixed_frame_``) and
+  the frame that the IMU is mounted in (``imu_frame_``). Also,
+  ``imu_msg.header.frame`` should be ``imu_frame_``, but the corresponding TF
+  goes from ``fixed_frame_`` to ``imu_frame_``. This commit fixes that; for
+  the ``reverse_tf`` case, it was already correct.
+  Also see http://answers.ros.org/question/50870/what-frame-is-sensor_msgsimuorientation-relative-to/.
+  Note that tf publishing should be enabled for debug purposes only, since we can only
+  provide the orientation, not the translation.
+* Add ~reverse_tf parameter for the robots which does not have IMU on root-link
+* Log mag bias on startup to assist with debugging.
+* add boost depends to CMakeLists
+  All non-catkin things that we expose in our headers should be added to
+  the DEPENDS, so that packages which depend on our package will also
+  automatically link against it.
+* Contributors: Martin Günther, Mike Purvis, Ryohei Ueda
+
 1.0.1 (2014-12-10)
 ------------------
 * add me as maintainer to package.xml

@@ -2,6 +2,9 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.0.2 (2015-01-27)
+------------------
+
 1.0.1 (2014-12-10)
 ------------------
 * add me as maintainer to package.xml
