@@ -244,14 +244,14 @@ void ImuFilter::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
     tf::Transform inv_transform = transform.inverse();
     tf_broadcaster_.sendTransform( tf::StampedTransform( inv_transform,
                      imu_msg_raw->header.stamp,
-                     imu_frame_,
-                     fixed_frame_) );
+                     imu_frame_,        // frame_id
+                     fixed_frame_) );   // child_frame_id
   }
   else {
     tf_broadcaster_.sendTransform( tf::StampedTransform( transform,
                      imu_msg_raw->header.stamp,
-                     imu_frame_,
-                     fixed_frame_) );
+                     fixed_frame_,      // frame_id
+                     imu_frame_) );     // child_frame_id
   }
 
 }
