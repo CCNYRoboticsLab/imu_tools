@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.2 (2015-01-27)
+------------------
 * fix tf publishing (switch parent + child frames)
   The orientation is between a fixed inertial frame (``fixed_frame_``) and
   the frame that the IMU is mounted in (``imu_frame_``). Also,
