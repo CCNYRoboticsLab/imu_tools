@@ -12,7 +12,7 @@
     <remap from="imu/mag_in" to="imu/mag_ned"/>
     <remap from="imu/data_out" to="imu/data_enu"/>
     <remap from="imu/mag_out" to="imu/mag_enu"/>
-    <param name="target_frame" value="base_link"/>
+    <param name="target_frame" value="imu_link"/>
   </node>
 
 </launch>

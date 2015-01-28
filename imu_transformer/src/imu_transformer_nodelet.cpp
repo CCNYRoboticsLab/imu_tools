@@ -1,7 +1,10 @@
 #include "imu_transformer/imu_transformer_nodelet.h"
 #include "pluginlib/class_list_macros.h"
-#include "tf2_sensor_msgs/tf2_sensor_msgs.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+
+//#include "tf2_sensor_msgs/tf2_sensor_msgs.h"
+//Remove this header when https://github.com/ros/geometry_experimental/pull/78 is released
+#include "imu_transformer/tf2_sensor_msgs.h"
 
 namespace imu_transformer
 {
