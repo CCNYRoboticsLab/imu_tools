@@ -51,9 +51,9 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
 
-  double orientation_stdev;
-  nh_private_.param<double>("orientation_stdev", orientation_stdev, 0.0);
-  orientation_variance_ = orientation_stdev * orientation_stdev;
+  double orientation_stddev;
+  nh_private_.param<double>("orientation_stddev", orientation_stddev, 0.0);
+  orientation_variance_ = orientation_stddev * orientation_stddev;
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -538,6 +538,7 @@ void ImuFilter::reconfigCallback(FilterConfig& config, uint32_t level)
   mag_bias_.x = config.mag_bias_x;
   mag_bias_.y = config.mag_bias_y;
   mag_bias_.z = config.mag_bias_z;
+  orientation_variance_ = config.orientation_stddev * config.orientation_stddev;
   ROS_INFO("Magnetometer bias values: %f %f %f", mag_bias_.x, mag_bias_.y, mag_bias_.z);
 }
 
