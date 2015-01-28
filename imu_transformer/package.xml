@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package>
+  <name>imu_transformer</name>
+  <version>1.0.2</version>
+  <description>Node/nodelet combination to transform sensor_msgs::Imu data from one frame into another.
+    Launchfiles provided for common transforms between ENU and NED conventions</description>
+
+  <author email="pbovbel@clearpathrobotics.com">Paul Bovbel</author>
+  <maintainer email="pbovbel@clearpathrobotics.com">Paul Bovbel</maintainer>
+
+  <license>GPL</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>nodelet</build_depend>
+  <build_depend>message_filters</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>roslaunch</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>tf2</build_depend>
+  <build_depend>tf2_ros</build_depend>
+  <build_depend>tf2_sensor_msgs</build_depend>
+  <build_depend>tf2_geometry_msgs</build_depend>
+
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>message_filters</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>roslaunch</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>tf2</run_depend>
+  <run_depend>tf2_ros</run_depend>
+  <run_depend>tf2_sensor_msgs</run_depend>
+  <run_depend>tf2_geometry_msgs</run_depend>
+
+  <export>
+    <nodelet plugin="${prefix}/nodelets.xml"/>
+  </export>
+</package>

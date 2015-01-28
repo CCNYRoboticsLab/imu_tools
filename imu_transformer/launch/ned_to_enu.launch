@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Static tfs -->
+  <node pkg="tf" type="static_transform_publisher" name="tf_imu_ned_enu"
+        args="0 0 0 1.5708 0 3.1416 imu_link_ned imu_link 10" output="screen"/>
+
+  <!-- Transforms NED IMU data pulished in frame imu_link_ned on topics /imu/data_ned and /imu/mag_ned to
+   ENU data in frame imu_link published on /imu/data_enu and /imu/mag_enu -->
+  <node pkg="imu_transformer" type="imu_transformer_node" name="imu_data_transformer" output="screen">
+    <remap from="imu/data_in" to="imu/data_ned"/>
+    <remap from="imu/mag_in" to="imu/mag_ned"/>
+    <remap from="imu/data_out" to="imu/data_enu"/>
+    <remap from="imu/mag_out" to="imu/mag_enu"/>
+    <param name="target_frame" value="base_link"/>
+  </node>
+
+</launch>
