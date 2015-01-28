@@ -51,6 +51,10 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
 
+  double orientation_stdev;
+  nh_private_.param<double>("orientation_stdev", orientation_stdev, 0.0);
+  orientation_variance_ = orientation_stdev * orientation_stdev;
+
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
   {
@@ -274,6 +278,17 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   imu_msg->orientation.x = q1;
   imu_msg->orientation.y = q2;
   imu_msg->orientation.z = q3;
+
+  imu_msg->orientation_covariance[0] = orientation_variance_;
+  imu_msg->orientation_covariance[1] = 0.0;
+  imu_msg->orientation_covariance[2] = 0.0;
+  imu_msg->orientation_covariance[3] = 0.0;
+  imu_msg->orientation_covariance[4] = orientation_variance_;
+  imu_msg->orientation_covariance[5] = 0.0;
+  imu_msg->orientation_covariance[6] = 0.0;
+  imu_msg->orientation_covariance[7] = 0.0;
+  imu_msg->orientation_covariance[8] = orientation_variance_;
+
   imu_publisher_.publish(imu_msg);
 
   if(publish_debug_topics_)
