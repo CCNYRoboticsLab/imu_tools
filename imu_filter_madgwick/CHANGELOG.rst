@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.3 (2015-01-29)
+------------------
 * Add std dev parameter to orientation estimate covariance matrix
 * Port imu_filter_madgwick to tf2
 * Switch to smart pointer
