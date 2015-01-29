@@ -86,6 +86,7 @@ class ImuFilter
     double constant_dt_;
     bool publish_debug_topics_;
     geometry_msgs::Vector3 mag_bias_;
+    double orientation_variance_;
 
     // **** state variables
     boost::mutex mutex_;

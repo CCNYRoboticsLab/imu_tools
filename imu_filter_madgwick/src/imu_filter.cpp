@@ -274,6 +274,17 @@ void ImuFilter::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   imu_msg->orientation.x = q1;
   imu_msg->orientation.y = q2;
   imu_msg->orientation.z = q3;
+
+  imu_msg->orientation_covariance[0] = orientation_variance_;
+  imu_msg->orientation_covariance[1] = 0.0;
+  imu_msg->orientation_covariance[2] = 0.0;
+  imu_msg->orientation_covariance[3] = 0.0;
+  imu_msg->orientation_covariance[4] = orientation_variance_;
+  imu_msg->orientation_covariance[5] = 0.0;
+  imu_msg->orientation_covariance[6] = 0.0;
+  imu_msg->orientation_covariance[7] = 0.0;
+  imu_msg->orientation_covariance[8] = orientation_variance_;
+
   imu_publisher_.publish(imu_msg);
 
   if(publish_debug_topics_)
@@ -523,6 +534,7 @@ void ImuFilter::reconfigCallback(FilterConfig& config, uint32_t level)
   mag_bias_.x = config.mag_bias_x;
   mag_bias_.y = config.mag_bias_y;
   mag_bias_.z = config.mag_bias_z;
+  orientation_variance_ = config.orientation_stddev * config.orientation_stddev;
   ROS_INFO("Magnetometer bias values: %f %f %f", mag_bias_.x, mag_bias_.y, mag_bias_.z);
 }
 
