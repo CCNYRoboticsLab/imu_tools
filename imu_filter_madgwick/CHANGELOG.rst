@@ -2,6 +2,13 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add std dev parameter to orientation estimate covariance matrix
+* Port imu_filter_madgwick to tf2
+* Switch to smart pointer
+* Contributors: Paul Bovbel, Martin Günther
+
 1.0.2 (2015-01-27)
 ------------------
 * fix tf publishing (switch parent + child frames)
