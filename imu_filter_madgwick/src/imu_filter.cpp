@@ -51,10 +51,6 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
 
-  double orientation_stddev;
-  nh_private_.param<double>("orientation_stddev", orientation_stddev, 0.0);
-  orientation_variance_ = orientation_stddev * orientation_stddev;
-
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
   {
