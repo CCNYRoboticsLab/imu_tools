@@ -35,7 +35,6 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
 {
   ROS_INFO ("Starting ImuFilter");
 
-
   // **** get paramters
 
   if (!nh_private_.getParam ("use_mag", use_mag_))
@@ -72,25 +71,25 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   
   // **** register publishers
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(
-    "imu/data", 5);
+    ros::names::resolve("imu") + "/data", 5);
 
   rpy_filtered_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-    "imu/rpy/filtered", 5);
+    ros::names::resolve("imu") + "/rpy/filtered", 5);
 
   rpy_raw_debug_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-    "imu/rpy/raw", 5);
+    ros::names::resolve("imu") + "/rpy/raw", 5);
 
   // **** register subscribers
   // Synchronize inputs. Topic subscriptions happen on demand in the connection callback.
   int queue_size = 5;
 
   imu_subscriber_.reset(new ImuSubscriber(
-    nh_, "imu/data_raw", queue_size));
+    nh_, ros::names::resolve("imu") + "/data_raw", queue_size));
 
   if (use_mag_)
   {
     mag_subscriber_.reset(new MagSubscriber(
-      nh_, "imu/mag", queue_size));
+      nh_, ros::names::resolve("imu") + "/mag", queue_size));
 
     sync_.reset(new Synchronizer(
       SyncPolicy(queue_size), *imu_subscriber_, *mag_subscriber_));
