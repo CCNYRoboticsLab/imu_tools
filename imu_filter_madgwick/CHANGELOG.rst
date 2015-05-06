@@ -2,6 +2,15 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update dynamic reconfigure param descriptions
+* only advertise debug topics if they are used
+* allow remapping of the whole imu namespace
+  with this change, all topics can be remapped at once, like this:
+  rosrun imu_filter_madgwick imu_filter_node imu:=my_imu
+* Contributors: Martin Günther
+
 1.0.3 (2015-01-29)
 ------------------
 * Add std dev parameter to orientation estimate covariance matrix
