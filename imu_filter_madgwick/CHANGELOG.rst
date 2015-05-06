@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.4 (2015-05-06)
+------------------
 * update dynamic reconfigure param descriptions
 * only advertise debug topics if they are used
 * allow remapping of the whole imu namespace
