@@ -50,6 +50,10 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
 
+  // For ROS Jade, make this default to true.
+  if (!nh_private_.getParam ("use_magnetic_field_msg", use_magnetic_field_msg_))
+    use_magnetic_field_msg_ = false;
+
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
   {
@@ -91,8 +95,24 @@ ImuFilter::ImuFilter(ros::NodeHandle nh, ros::NodeHandle nh_private):
 
   if (use_mag_)
   {
-    mag_subscriber_.reset(new MagSubscriber(
-      nh_, ros::names::resolve("imu") + "/mag", queue_size));
+    if (use_magnetic_field_msg_)
+    {
+      mag_subscriber_.reset(new MagSubscriber(
+        nh_, ros::names::resolve("imu") + "/mag", queue_size));
+    }
+    else
+    {
+      mag_subscriber_.reset(new MagSubscriber(
+        nh_, ros::names::resolve("imu") + "/magnetic_field", queue_size));
+
+      // Initialize the shim to support republishing Vector3Stamped messages from /mag as MagneticField
+      // messages on the /magnetic_field topic.
+      mag_republisher_ = nh_.advertise<MagMsg>(
+        ros::names::resolve("imu") + "/magnetic_field", 5);
+      vector_mag_subscriber_.reset(new MagVectorSubscriber(
+        nh_, ros::names::resolve("imu") + "/mag", queue_size));
+      vector_mag_subscriber_->registerCallback(&ImuFilter::imuMagVectorCallback, this);
+    }
 
     sync_.reset(new Synchronizer(
       SyncPolicy(queue_size), *imu_subscriber_, *mag_subscriber_));
@@ -166,8 +186,8 @@ void ImuFilter::imuMagCallback(
   boost::mutex::scoped_lock(mutex_);
   
   const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
-  const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration; 
-  const geometry_msgs::Vector3& mag_fld = mag_msg->vector;
+  const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration;
+  const geometry_msgs::Vector3& mag_fld = mag_msg->magnetic_field;
 
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
@@ -540,4 +560,11 @@ void ImuFilter::reconfigCallback(FilterConfig& config, uint32_t level)
   ROS_INFO("Magnetometer bias values: %f %f %f", mag_bias_.x, mag_bias_.y, mag_bias_.z);
 }
 
-
+void ImuFilter::imuMagVectorCallback(const MagVectorMsg::ConstPtr& mag_vector_msg)
+{
+  MagMsg mag_msg;
+  mag_msg.header = mag_vector_msg->header;
+  mag_msg.magnetic_field = mag_vector_msg->vector;
+  mag_msg.magnetic_field_covariance[0] = -1;
+  imu_republisher.publish(mag_msg);
+}
