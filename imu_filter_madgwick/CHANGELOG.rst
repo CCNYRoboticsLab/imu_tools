@@ -2,6 +2,16 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add "~use_magnetic_field_msg" param.
+  This allows the user to subscribe to the /imu/mag topic as a
+  sensor_msgs/MagneticField rather than a geometry_msgs/Vector3Stamped.
+  The default for now is false, which preserves the legacy behaviour via a
+  separate subscriber which converts Vector3Stamped to MagneticField and
+  republishes.
+* Contributors: Mike Purvis, Martin Günther
+
 1.0.4 (2015-05-06)
 ------------------
 * update dynamic reconfigure param descriptions
