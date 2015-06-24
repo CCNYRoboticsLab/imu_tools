@@ -24,12 +24,12 @@ include_directories(
 
 
 # create imu_filter library
-add_library (imu_filter src/imu_filter.cpp)
+add_library (imu_filter src/imu_filter.cpp  include/imu_filter_madgwick/imu_filter.h)
 add_dependencies(imu_filter ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # create imu_filter_nodelet library
-add_library (imu_filter_nodelet src/imu_filter_nodelet.cpp)
+add_library (imu_filter_nodelet src/imu_filter_nodelet.cpp include/imu_filter_madgwick/imu_filter_nodelet.h)
 add_dependencies(imu_filter_nodelet ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter_nodelet imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
