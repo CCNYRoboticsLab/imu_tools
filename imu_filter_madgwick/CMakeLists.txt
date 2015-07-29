@@ -24,7 +24,7 @@ include_directories(
 
 
 # create imu_filter library
-add_library (imu_filter src/imu_filter.cpp  include/imu_filter_madgwick/imu_filter.h)
+add_library (imu_filter src/imu_filter.cpp  src/imu_filter_ros.cpp  include/imu_filter_madgwick/imu_filter.h)
 add_dependencies(imu_filter ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
