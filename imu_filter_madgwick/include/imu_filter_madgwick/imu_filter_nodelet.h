@@ -27,7 +27,7 @@
 
 #include <nodelet/nodelet.h>
 
-#include "imu_filter_madgwick/imu_filter.h"
+#include "imu_filter_madgwick/imu_filter_ros.h"
 
 class ImuFilterNodelet : public nodelet::Nodelet
 {
@@ -35,7 +35,7 @@ class ImuFilterNodelet : public nodelet::Nodelet
     virtual void onInit();
 
   private:
-    boost::shared_ptr<ImuFilter> filter_;
+    boost::shared_ptr<ImuFilterRos> filter_;
 };
 
 #endif // IMU_FILTER_MADGWICK_IMU_FILTER_NODELET_H
