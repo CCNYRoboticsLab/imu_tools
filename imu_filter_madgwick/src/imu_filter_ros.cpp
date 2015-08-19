@@ -52,8 +52,11 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
   // For ROS Jade, make this default to true.
   if (!nh_private_.getParam ("use_magnetic_field_msg", use_magnetic_field_msg_))
   {
-      ROS_WARN("Deprecation Warning: The parameter use_magnetic_field_msg was not set, default is 'false'.");
-      ROS_WARN("Starting with ROS Jade, use_magnetic_field_msg will default to 'true'!");
+      if (use_mag_)
+      {
+          ROS_WARN("Deprecation Warning: The parameter use_magnetic_field_msg was not set, default is 'false'.");
+          ROS_WARN("Starting with ROS Jade, use_magnetic_field_msg will default to 'true'!");
+      }
       use_magnetic_field_msg_ = false;
   }
 
