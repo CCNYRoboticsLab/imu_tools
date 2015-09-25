@@ -45,6 +45,11 @@ install(TARGETS imu_filter imu_filter_nodelet imu_filter_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+install(DIRECTORY include/${PROJECT_NAME}/
+   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+   FILES_MATCHING PATTERN "*.h"
+)
+
 install(FILES imu_filter_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   )
