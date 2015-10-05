@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(imu_complementary_filter)
 
 find_package(catkin REQUIRED COMPONENTS
+  cmake_modules
   message_filters
   roscpp
   rospy
