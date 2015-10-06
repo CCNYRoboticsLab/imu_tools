@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.6 (2015-10-06)
+------------------
 * Add new package: imu_complementary_filter
 * Contributors: Roberto G. Valentini, Martin Günther, Michael Görner
 

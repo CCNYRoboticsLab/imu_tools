@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.6 (2015-10-06)
+------------------
 * Split ImuFilter class into ImuFilter and ImuFilterRos in order to
   have a C++ API to the Madgwick algorithm
 * Properly install header files.
