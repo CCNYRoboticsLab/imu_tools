@@ -104,6 +104,8 @@ void ComplementaryFilterROS::initializeParams()
     publish_tf_ = false;
   if (!nh_private_.getParam ("reverse_tf", reverse_tf_))
     reverse_tf_ = false;
+  if (!nh_private_.getParam ("constant_dt", constant_dt_))
+    constant_dt_ = 0.0;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_ = false;
   if (!nh_private_.getParam ("gain_acc", gain_acc))
@@ -132,6 +134,15 @@ void ComplementaryFilterROS::initializeParams()
     if(!filter_.setBiasAlpha(bias_alpha))
       ROS_WARN("Invalid bias_alpha passed to ComplementaryFilter.");
   }
+
+  // check for illegal constant_dt values
+  if (constant_dt_ < 0.0)
+  {
+    // if constant_dt_ is 0.0 (default), use IMU timestamp to determine dt
+    // otherwise, it will be constant
+    ROS_WARN("constant_dt parameter is %f, must be >= 0.0. Setting to 0.0", constant_dt_);
+    constant_dt_ = 0.0;
+  }
 }
 
 void ComplementaryFilterROS::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
@@ -148,8 +159,13 @@ void ComplementaryFilterROS::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     return; 
   }
 
-  // Calculate dt.
-  double dt = (time - time_prev_).toSec();
+  // determine dt: either constant, or from IMU timestamp
+  double dt;
+  if (constant_dt_ > 0.0)
+    dt = constant_dt_;
+  else
+    dt = (time - time_prev_).toSec();
+
   time_prev_ = time;
 
   // Update the filter.    

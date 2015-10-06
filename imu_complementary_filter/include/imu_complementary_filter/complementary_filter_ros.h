@@ -84,6 +84,7 @@ class ComplementaryFilterROS
     bool use_mag_;
     bool publish_tf_;
     bool reverse_tf_;
+    double constant_dt_;
     bool publish_debug_topics_;
     std::string fixed_frame_;
 
