@@ -49,18 +49,27 @@ ComplementaryFilterROS::ComplementaryFilterROS(
   int queue_size = 5;
 
   // Register publishers:
-  imu_publisher_ = nh_.advertise<sensor_msgs::Imu>("imu/data", queue_size);
-  roll_publisher_ = nh_.advertise<std_msgs::Float64>("imu/roll", queue_size);
-  pitch_publisher_ = nh_.advertise<std_msgs::Float64>("imu/pitch", queue_size);
-  yaw_publisher_ = nh_.advertise<std_msgs::Float64>("imu/yaw", queue_size);
-   
+  imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(ros::names::resolve("imu") + "/data", queue_size);
+
+  if (publish_debug_topics_)
+  {
+      rpy_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
+                  ros::names::resolve("imu") + "/rpy/filtered", queue_size);
+
+      if (filter_.getDoBiasEstimation())
+      {
+        state_publisher_ = nh_.advertise<std_msgs::Bool>(
+                    ros::names::resolve("imu") + "/steady_state", queue_size);
+      }
+  }
+
   // Register IMU raw data subscriber.
-  imu_subscriber_.reset(new ImuSubscriber(nh_, "imu/data_raw", queue_size));
+  imu_subscriber_.reset(new ImuSubscriber(nh_, ros::names::resolve("imu") + "/data_raw", queue_size));
 
   // Register magnetic data subscriber.
   if (use_mag_)
   {
-    mag_subscriber_.reset(new MagSubscriber(nh_, "imu/mag", queue_size));
+    mag_subscriber_.reset(new MagSubscriber(nh_, ros::names::resolve("imu") + "/mag", queue_size));
 
     sync_.reset(new Synchronizer(
         SyncPolicy(queue_size), *imu_subscriber_, *mag_subscriber_));
@@ -71,12 +80,6 @@ ComplementaryFilterROS::ComplementaryFilterROS(
   {
     imu_subscriber_->registerCallback(
         &ComplementaryFilterROS::imuCallback, this);
-  }
-
-  if (filter_.getDoBiasEstimation())
-  {
-    state_publisher_ = nh_.advertise<std_msgs::Bool>("imu/steady_state", 
-        queue_size);
   }
 }
 
@@ -97,6 +100,14 @@ void ComplementaryFilterROS::initializeParams()
     fixed_frame_ = "odom";
   if (!nh_private_.getParam ("use_mag", use_mag_))
     use_mag_ = false;
+  if (!nh_private_.getParam ("publish_tf", publish_tf_))
+    publish_tf_ = false;
+  if (!nh_private_.getParam ("reverse_tf", reverse_tf_))
+    reverse_tf_ = false;
+  if (!nh_private_.getParam ("constant_dt", constant_dt_))
+    constant_dt_ = 0.0;
+  if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
+    publish_debug_topics_ = false;
   if (!nh_private_.getParam ("gain_acc", gain_acc))
     gain_acc = 0.01;
   if (!nh_private_.getParam ("gain_mag", gain_mag))
@@ -123,6 +134,15 @@ void ComplementaryFilterROS::initializeParams()
     if(!filter_.setBiasAlpha(bias_alpha))
       ROS_WARN("Invalid bias_alpha passed to ComplementaryFilter.");
   }
+
+  // check for illegal constant_dt values
+  if (constant_dt_ < 0.0)
+  {
+    // if constant_dt_ is 0.0 (default), use IMU timestamp to determine dt
+    // otherwise, it will be constant
+    ROS_WARN("constant_dt parameter is %f, must be >= 0.0. Setting to 0.0", constant_dt_);
+    constant_dt_ = 0.0;
+  }
 }
 
 void ComplementaryFilterROS::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
@@ -139,8 +159,13 @@ void ComplementaryFilterROS::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
     return; 
   }
 
-  // Calculate dt.
-  double dt = (time - time_prev_).toSec();
+  // determine dt: either constant, or from IMU timestamp
+  double dt;
+  if (constant_dt_ > 0.0)
+    dt = constant_dt_;
+  else
+    dt = (time - time_prev_).toSec();
+
   time_prev_ = time;
 
   // Update the filter.    
@@ -215,38 +240,50 @@ void ComplementaryFilterROS::publish(
 
   imu_publisher_.publish(imu_msg);
 
-  // Create and publish roll, pitch, yaw angles
-  double roll, pitch, yaw;
-  tf::Matrix3x3 M;
-  M.setRotation(q);
-  M.getRPY(roll, pitch, yaw);
-  std_msgs::Float64 roll_msg;
-  std_msgs::Float64 pitch_msg;
-  std_msgs::Float64 yaw_msg;
-  roll_msg.data = roll;
-  pitch_msg.data = pitch;
-  yaw_msg.data = yaw;
-  roll_publisher_.publish(roll_msg);
-  pitch_publisher_.publish(pitch_msg);
-  yaw_publisher_.publish(yaw_msg);
-
-  // Publish whether we are in the steady state, when doing bias estimation
-  if (filter_.getDoBiasEstimation())
+  if (publish_debug_topics_)
   {
-    std_msgs::Bool state_msg;
-    state_msg.data = filter_.getSteadyState();
-    state_publisher_.publish(state_msg);
+      // Create and publish roll, pitch, yaw angles
+      geometry_msgs::Vector3Stamped rpy;
+      rpy.header = imu_msg_raw->header;
+
+      tf::Matrix3x3 M;
+      M.setRotation(q);
+      M.getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
+      rpy_publisher_.publish(rpy);
+
+      // Publish whether we are in the steady state, when doing bias estimation
+      if (filter_.getDoBiasEstimation())
+      {
+        std_msgs::Bool state_msg;
+        state_msg.data = filter_.getSteadyState();
+        state_publisher_.publish(state_msg);
+      }
   }
 
-  // Create and publish the ROS tf.
-  tf::Transform transform;
-  transform.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
-  transform.setRotation(q);
-  tf_broadcaster_.sendTransform(
-      tf::StampedTransform(transform,
-                           imu_msg_raw->header.stamp,
-                           fixed_frame_,
-                           imu_msg_raw->header.frame_id));
+  if (publish_tf_)
+  {
+      // Create and publish the ROS tf.
+      tf::Transform transform;
+      transform.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
+      transform.setRotation(q);
+
+      if (reverse_tf_)
+      {
+          tf_broadcaster_.sendTransform(
+              tf::StampedTransform(transform.inverse(),
+                                   imu_msg_raw->header.stamp,
+                                   imu_msg_raw->header.frame_id,
+                                   fixed_frame_));
+      }
+      else
+      {
+          tf_broadcaster_.sendTransform(
+              tf::StampedTransform(transform,
+                                   imu_msg_raw->header.stamp,
+                                   fixed_frame_,
+                                   imu_msg_raw->header.frame_id));
+      }
+  }
 }
 
 }  // namespace imu_tools
