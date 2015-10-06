@@ -100,6 +100,8 @@ void ComplementaryFilterROS::initializeParams()
     fixed_frame_ = "odom";
   if (!nh_private_.getParam ("use_mag", use_mag_))
     use_mag_ = false;
+  if (!nh_private_.getParam ("publish_tf", publish_tf_))
+    publish_tf_ = false;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_ = false;
   if (!nh_private_.getParam ("gain_acc", gain_acc))
@@ -246,15 +248,18 @@ void ComplementaryFilterROS::publish(
       }
   }
 
-  // Create and publish the ROS tf.
-  tf::Transform transform;
-  transform.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
-  transform.setRotation(q);
-  tf_broadcaster_.sendTransform(
-      tf::StampedTransform(transform,
-                           imu_msg_raw->header.stamp,
-                           fixed_frame_,
-                           imu_msg_raw->header.frame_id));
+  if (publish_tf_)
+  {
+      // Create and publish the ROS tf.
+      tf::Transform transform;
+      transform.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
+      transform.setRotation(q);
+      tf_broadcaster_.sendTransform(
+          tf::StampedTransform(transform,
+                               imu_msg_raw->header.stamp,
+                               fixed_frame_,
+                               imu_msg_raw->header.frame_id));
+  }
 }
 
 }  // namespace imu_tools
