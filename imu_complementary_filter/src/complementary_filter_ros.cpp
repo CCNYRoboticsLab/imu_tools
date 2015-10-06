@@ -102,6 +102,8 @@ void ComplementaryFilterROS::initializeParams()
     use_mag_ = false;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
     publish_tf_ = false;
+  if (!nh_private_.getParam ("reverse_tf", reverse_tf_))
+    reverse_tf_ = false;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_ = false;
   if (!nh_private_.getParam ("gain_acc", gain_acc))
@@ -254,11 +256,23 @@ void ComplementaryFilterROS::publish(
       tf::Transform transform;
       transform.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
       transform.setRotation(q);
-      tf_broadcaster_.sendTransform(
-          tf::StampedTransform(transform,
-                               imu_msg_raw->header.stamp,
-                               fixed_frame_,
-                               imu_msg_raw->header.frame_id));
+
+      if (reverse_tf_)
+      {
+          tf_broadcaster_.sendTransform(
+              tf::StampedTransform(transform.inverse(),
+                                   imu_msg_raw->header.stamp,
+                                   imu_msg_raw->header.frame_id,
+                                   fixed_frame_));
+      }
+      else
+      {
+          tf_broadcaster_.sendTransform(
+              tf::StampedTransform(transform,
+                                   imu_msg_raw->header.stamp,
+                                   fixed_frame_,
+                                   imu_msg_raw->header.frame_id));
+      }
   }
 }
 
