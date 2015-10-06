@@ -82,7 +82,7 @@ class ComplementaryFilterROS
          
     // Parameters:
     bool use_mag_;
-    double constant_dt_;
+    bool publish_debug_topics_;
     std::string fixed_frame_;
 
     // State variables:

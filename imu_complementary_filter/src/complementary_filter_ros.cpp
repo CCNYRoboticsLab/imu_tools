@@ -50,10 +50,19 @@ ComplementaryFilterROS::ComplementaryFilterROS(
 
   // Register publishers:
   imu_publisher_ = nh_.advertise<sensor_msgs::Imu>("imu/data", queue_size);
-  roll_publisher_ = nh_.advertise<std_msgs::Float64>("imu/roll", queue_size);
-  pitch_publisher_ = nh_.advertise<std_msgs::Float64>("imu/pitch", queue_size);
-  yaw_publisher_ = nh_.advertise<std_msgs::Float64>("imu/yaw", queue_size);
-   
+
+  if (publish_debug_topics_)
+  {
+      roll_publisher_ = nh_.advertise<std_msgs::Float64>("imu/roll", queue_size);
+      pitch_publisher_ = nh_.advertise<std_msgs::Float64>("imu/pitch", queue_size);
+      yaw_publisher_ = nh_.advertise<std_msgs::Float64>("imu/yaw", queue_size);
+      if (filter_.getDoBiasEstimation())
+      {
+        state_publisher_ = nh_.advertise<std_msgs::Bool>("imu/steady_state",
+            queue_size);
+      }
+  }
+
   // Register IMU raw data subscriber.
   imu_subscriber_.reset(new ImuSubscriber(nh_, "imu/data_raw", queue_size));
 
@@ -71,12 +80,6 @@ ComplementaryFilterROS::ComplementaryFilterROS(
   {
     imu_subscriber_->registerCallback(
         &ComplementaryFilterROS::imuCallback, this);
-  }
-
-  if (filter_.getDoBiasEstimation())
-  {
-    state_publisher_ = nh_.advertise<std_msgs::Bool>("imu/steady_state", 
-        queue_size);
   }
 }
 
@@ -97,6 +100,8 @@ void ComplementaryFilterROS::initializeParams()
     fixed_frame_ = "odom";
   if (!nh_private_.getParam ("use_mag", use_mag_))
     use_mag_ = false;
+  if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
+    publish_debug_topics_ = false;
   if (!nh_private_.getParam ("gain_acc", gain_acc))
     gain_acc = 0.01;
   if (!nh_private_.getParam ("gain_mag", gain_mag))
@@ -215,27 +220,30 @@ void ComplementaryFilterROS::publish(
 
   imu_publisher_.publish(imu_msg);
 
-  // Create and publish roll, pitch, yaw angles
-  double roll, pitch, yaw;
-  tf::Matrix3x3 M;
-  M.setRotation(q);
-  M.getRPY(roll, pitch, yaw);
-  std_msgs::Float64 roll_msg;
-  std_msgs::Float64 pitch_msg;
-  std_msgs::Float64 yaw_msg;
-  roll_msg.data = roll;
-  pitch_msg.data = pitch;
-  yaw_msg.data = yaw;
-  roll_publisher_.publish(roll_msg);
-  pitch_publisher_.publish(pitch_msg);
-  yaw_publisher_.publish(yaw_msg);
-
-  // Publish whether we are in the steady state, when doing bias estimation
-  if (filter_.getDoBiasEstimation())
+  if (publish_debug_topics_)
   {
-    std_msgs::Bool state_msg;
-    state_msg.data = filter_.getSteadyState();
-    state_publisher_.publish(state_msg);
+      // Create and publish roll, pitch, yaw angles
+      double roll, pitch, yaw;
+      tf::Matrix3x3 M;
+      M.setRotation(q);
+      M.getRPY(roll, pitch, yaw);
+      std_msgs::Float64 roll_msg;
+      std_msgs::Float64 pitch_msg;
+      std_msgs::Float64 yaw_msg;
+      roll_msg.data = roll;
+      pitch_msg.data = pitch;
+      yaw_msg.data = yaw;
+      roll_publisher_.publish(roll_msg);
+      pitch_publisher_.publish(pitch_msg);
+      yaw_publisher_.publish(yaw_msg);
+
+      // Publish whether we are in the steady state, when doing bias estimation
+      if (filter_.getDoBiasEstimation())
+      {
+        std_msgs::Bool state_msg;
+        state_msg.data = filter_.getSteadyState();
+        state_publisher_.publish(state_msg);
+      }
   }
 
   // Create and publish the ROS tf.
