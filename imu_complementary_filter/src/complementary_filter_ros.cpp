@@ -155,7 +155,7 @@ void ComplementaryFilterROS::imuMagCallback(const ImuMsg::ConstPtr& imu_msg_raw,
 {
   const geometry_msgs::Vector3& a = imu_msg_raw->linear_acceleration; 
   const geometry_msgs::Vector3& w = imu_msg_raw->angular_velocity;
-  const geometry_msgs::Vector3& m = mag_msg->vector;
+  const geometry_msgs::Vector3& m = mag_msg->magnetic_field;
   const ros::Time& time = imu_msg_raw->header.stamp;
     
   // Initialize.
