@@ -32,7 +32,7 @@
 #ifndef IMU_TOOLS_COMPLEMENTARY_FILTER_ROS_H
 #define IMU_TOOLS_COMPLEMENTARY_FILTER_ROS_H
 
-#include <geometry_msgs/Vector3Stamped.h>
+#include <sensor_msgs/MagneticField.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/synchronizer.h>
@@ -56,9 +56,9 @@ class ComplementaryFilterROS
 
     // Convenience typedefs
     typedef sensor_msgs::Imu ImuMsg;
-    typedef geometry_msgs::Vector3Stamped MagMsg;
+    typedef sensor_msgs::MagneticField MagMsg;
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Imu, 
-        geometry_msgs::Vector3Stamped> MySyncPolicy;
+        MagMsg> MySyncPolicy;
     typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg> 
         SyncPolicy;
     typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;    
