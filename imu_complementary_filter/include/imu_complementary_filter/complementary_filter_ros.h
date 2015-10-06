@@ -33,6 +33,7 @@
 #define IMU_TOOLS_COMPLEMENTARY_FILTER_ROS_H
 
 #include <sensor_msgs/MagneticField.h>
+#include <geometry_msgs/Vector3Stamped.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/synchronizer.h>
@@ -74,9 +75,7 @@ class ComplementaryFilterROS
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
 
     ros::Publisher imu_publisher_;
-    ros::Publisher roll_publisher_;
-    ros::Publisher pitch_publisher_;
-    ros::Publisher yaw_publisher_;
+    ros::Publisher rpy_publisher_;
     ros::Publisher state_publisher_;
     tf::TransformBroadcaster tf_broadcaster_;
          

@@ -53,9 +53,8 @@ ComplementaryFilterROS::ComplementaryFilterROS(
 
   if (publish_debug_topics_)
   {
-      roll_publisher_ = nh_.advertise<std_msgs::Float64>("imu/roll", queue_size);
-      pitch_publisher_ = nh_.advertise<std_msgs::Float64>("imu/pitch", queue_size);
-      yaw_publisher_ = nh_.advertise<std_msgs::Float64>("imu/yaw", queue_size);
+      rpy_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>("imu/rpy/filtered", queue_size);
+
       if (filter_.getDoBiasEstimation())
       {
         state_publisher_ = nh_.advertise<std_msgs::Bool>("imu/steady_state",
@@ -243,19 +242,13 @@ void ComplementaryFilterROS::publish(
   if (publish_debug_topics_)
   {
       // Create and publish roll, pitch, yaw angles
-      double roll, pitch, yaw;
+      geometry_msgs::Vector3Stamped rpy;
+      rpy.header = imu_msg_raw->header;
+
       tf::Matrix3x3 M;
       M.setRotation(q);
-      M.getRPY(roll, pitch, yaw);
-      std_msgs::Float64 roll_msg;
-      std_msgs::Float64 pitch_msg;
-      std_msgs::Float64 yaw_msg;
-      roll_msg.data = roll;
-      pitch_msg.data = pitch;
-      yaw_msg.data = yaw;
-      roll_publisher_.publish(roll_msg);
-      pitch_publisher_.publish(pitch_msg);
-      yaw_publisher_.publish(yaw_msg);
+      M.getRPY(rpy.vector.x, rpy.vector.y, rpy.vector.z);
+      rpy_publisher_.publish(rpy);
 
       // Publish whether we are in the steady state, when doing bias estimation
       if (filter_.getDoBiasEstimation())
