@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.7 (2015-10-07)
+------------------
 * Allow remapping imu namespace
 * Publish RPY as Vector3Stamped
 * Add params: constant_dt, publish_tf, reverse_tf, publish_debug_topics
