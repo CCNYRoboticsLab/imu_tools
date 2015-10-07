@@ -12,6 +12,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>imu_complementary_filter</run_depend>
   <run_depend>imu_filter_madgwick</run_depend>
   <run_depend>rviz_imu_plugin</run_depend>
 
