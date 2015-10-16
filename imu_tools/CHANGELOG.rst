@@ -2,6 +2,9 @@
 Changelog for package imu_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.8 (2015-10-07)
 ------------------
 * Add imu_complementary_filter to meta package
