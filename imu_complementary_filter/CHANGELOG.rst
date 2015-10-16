@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.9 (2015-10-16)
+------------------
 * complementary: Add Eigen dependency
   Fixes `#54 <https://github.com/ccny-ros-pkg/imu_tools/issues/54>`_.
 * Contributors: Martin Günther
