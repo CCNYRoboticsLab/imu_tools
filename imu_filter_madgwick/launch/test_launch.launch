@@ -1,0 +1,29 @@
+<launch>
+	<arg name="bag_path" default="/home/abs8rng/Code/workspaces/testing_ws/src/imu_tools/imu_filter_madgwick/sample/" />
+	<arg name="bag_name_1" default="ardrone_imu" />
+	<node pkg="rosbag" type="play" name="player" output="screen" args="-l $(arg bag_path)$(arg bag_name_1).bag"/>
+
+  <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgwick_imu_filter_node" output="screen">
+	<param name="mag_subscribe_topic_name" value="/ardrone/mag" />
+	<param name="imu_subscribe_topic_name" value="/ardrone/imu" />
+
+	<param name="imu_publish_topic_name" value="madgwick_imu_filter_node/imu" />
+	<param name="mag_publish_topic_name" value="NOTUSED" />
+
+	<param name="use_mag" value="false" />
+	<param name="use_magnetic_field_msg" value="true" />
+  </node>
+
+  <node pkg="imu_visualization" type="display_3D_visualization.py" name="Filtered_data_vis_node" output="screen">
+	<param name="imu_topic" value="madgwick_imu_filter_node/imu" />
+	<param name="imu_name" value="ardrone_filtered" />
+	<!-- <param name="mag_topic" value="/imu/mag_msg" /> -->
+  </node>
+
+  <node pkg="imu_visualization" type="display_3D_visualization.py" name="Raw_data_vis_node" output="screen">
+	<param name="imu_topic" value="/ardrone/imu" />
+	<param name="imu_name" value="ardrone_raw" />
+	<!-- <param name="mag_topic" value="/ardrone/mag" /> -->
+  </node>
+
+</launch>
