@@ -91,6 +91,10 @@ class ImuFilterRos
     bool publish_debug_topics_;
     geometry_msgs::Vector3 mag_bias_;
     double orientation_variance_;
+    std::string mag_topic_sub_;
+    std::string mag_topic_pub_;
+    std::string imu_topic_sub_;
+    std::string imu_topic_pub_;
 
     // **** state variables
     boost::mutex mutex_;
