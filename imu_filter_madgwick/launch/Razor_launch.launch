@@ -1,0 +1,33 @@
+<launch>
+  <arg name="razor_config_file" default="$(find razor_imu_9dof)/config/my_razor.yaml"/>
+  <node pkg="razor_imu_9dof" type="imu_node.py" name="imu_node" output="screen">
+    <rosparam file="$(arg razor_config_file)" command="load"/>
+  </node>
+
+  <node pkg="imu_filter_madgwick" type="imu_filter_node" name="madgwick_imu_filter_node" output="screen">
+    <param name="mag_subscribe_topic_name" value="/sensor/imu/razor_imu/mag_calib" />
+    <param name="imu_subscribe_topic_name" value="/sensor/imu/razor_imu/data" />
+
+    <param name="imu_publish_topic_name" value="madgwick_imu_filter_node/imu" />
+    <param name="mag_publish_topic_name" value="NOTUSED" />
+
+    <param name="use_mag" value="true" /> <!-- Use magnetometer data ?? -->
+    <param name="use_magnetic_field_msg" value="true" /> <!-- is the magnetometer data in the standard message type ?? -->
+
+    <!-- Load imu parameters -->
+    <rosparam command="load" file="$(find imu_visualization)/configs/Razor_imu_sensor_config.yaml" />
+  </node>
+
+  <node pkg="imu_visualization" type="display_3D_visualization.py" name="Filtered_data_vis_node" output="screen">
+    <param name="imu_topic" value="madgwick_imu_filter_node/imu" />
+    <param name="imu_name" value="Razor_filtered" />
+    <param name="mag_topic" value="/sensor/imu/razor_imu/mag_calib" />
+  </node>
+
+  <node pkg="imu_visualization" type="display_3D_visualization.py" name="Raw_data_vis_node" output="screen">
+    <param name="imu_topic" value="/sensor/imu/razor_imu/data" />
+    <param name="imu_name" value="Razor_raw" />
+    <param name="mag_topic" value="/sensor/imu/razor_imu/mag_calib" />
+  </node>
+
+</launch>

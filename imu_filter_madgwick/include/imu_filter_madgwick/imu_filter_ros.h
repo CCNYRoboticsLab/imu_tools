@@ -96,6 +96,10 @@ class ImuFilterRos
     std::string imu_topic_sub_;
     std::string imu_topic_pub_;
 
+    std::vector<double> gyro_offset_;
+    std::vector<double> acc_offset_;
+    std::vector<double> acc_scaling_;
+
     // **** state variables
     boost::mutex mutex_;
     bool initialized_;

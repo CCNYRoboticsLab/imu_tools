@@ -40,6 +40,8 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
   const std::string mag_publish_topic_name_default = "imu/mag_corrected"; // currently not used, should be used for publishing corrected magnetic fields
   const std::string imu_subscribe_topic_name_default = "imu/data_raw";
   const std::string imu_publish_topic_name_default = "imu/data";
+  std::vector<double> zero_3 (3,0.0);
+  std::vector<double> ones_3 (3,1.0);
 
   // **** get paramters
 
@@ -55,6 +57,19 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
     constant_dt_ = 0.0;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
+
+  if (!nh_private.hasParam ("gyro_offset") || !nh_private.hasParam ("acc_offset") || !nh_private.hasParam ("acc_scaling")){
+    ROS_WARN ("No configuration parameters found ...");
+  }
+  else{
+    ROS_INFO ("the configuration parameters for the IMU are");
+    nh_private.param ("gyro_offset", gyro_offset_, zero_3);
+    nh_private.param ("acc_offset", acc_offset_, zero_3);
+    nh_private.param ("acc_scaling", acc_scaling_, ones_3);
+//    ROS_INFO (gyro_offset_);
+//    ROS_INFO (acc_offset_);
+//    ROS_INFO (acc_scaling_);
+  }
 
   nh_private.param("mag_subscribe_topic_name", mag_topic_sub_, mag_subscribe_topic_name_default);
   nh_private.param("mag_publish_topic_name", mag_topic_pub_, mag_publish_topic_name_default);
@@ -206,6 +221,10 @@ void ImuFilterRos::imuMagCallback(
   const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration;
   const geometry_msgs::Vector3& mag_fld = mag_msg->magnetic_field;
 
+  geometry_msgs::Vector3 lin_acc_corr;
+  geometry_msgs::Vector3 ang_vel_corr;
+
+
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
@@ -213,6 +232,16 @@ void ImuFilterRos::imuMagCallback(
   double mx = mag_fld.x - mag_bias_.x;
   double my = mag_fld.y - mag_bias_.y;
   double mz = mag_fld.z - mag_bias_.z;
+
+  /*** Compensate accelerometer ***/
+  lin_acc_corr.x = (lin_acc.x-acc_offset_[0])*acc_scaling_[0];
+  lin_acc_corr.y = (lin_acc.y-acc_offset_[1])*acc_scaling_[1];
+  lin_acc_corr.z = (lin_acc.z-acc_offset_[2])*acc_scaling_[2];
+
+  /*** Compensate gyroscopes ***/
+  ang_vel_corr.x = ang_vel.x - gyro_offset_[0];
+  ang_vel_corr.y = ang_vel.y - gyro_offset_[1];
+  ang_vel_corr.z = ang_vel.z - gyro_offset_[2];
 
   float roll = 0.0;
   float pitch = 0.0;
@@ -227,7 +256,7 @@ void ImuFilterRos::imuMagCallback(
     }
 
     computeRPY(
-      lin_acc.x, lin_acc.y, lin_acc.z,
+      lin_acc_corr.x, lin_acc_corr.y, lin_acc_corr.z,
       mx, my, mz,
       roll, pitch, yaw);
 
@@ -250,8 +279,8 @@ void ImuFilterRos::imuMagCallback(
   last_time_ = time;
 
   filter_.madgwickAHRSupdate(
-    ang_vel.x, ang_vel.y, ang_vel.z,
-    lin_acc.x, lin_acc.y, lin_acc.z,
+    ang_vel_corr.x, ang_vel_corr.y, ang_vel_corr.z,
+    lin_acc_corr.x, lin_acc_corr.y, lin_acc_corr.z,
     mx, my, mz,
     dt);
 
@@ -262,7 +291,7 @@ void ImuFilterRos::imuMagCallback(
   if(publish_debug_topics_ && std::isfinite(mx) && std::isfinite(my) && std::isfinite(mz))
   {
     computeRPY(
-      lin_acc.x, lin_acc.y, lin_acc.z,
+      lin_acc_corr.x, lin_acc_corr.y, lin_acc_corr.z,
       mx, my, mz,
       roll, pitch, yaw);
 

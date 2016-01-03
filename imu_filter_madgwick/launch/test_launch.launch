@@ -10,8 +10,8 @@
 	<param name="imu_publish_topic_name" value="madgwick_imu_filter_node/imu" />
 	<param name="mag_publish_topic_name" value="NOTUSED" />
 
-	<param name="use_mag" value="false" />
-	<param name="use_magnetic_field_msg" value="true" />
+	<param name="use_mag" value="true" /> <!-- Use magnetometer data ?? -->
+	<param name="use_magnetic_field_msg" value="false" /> <!-- is the magnetometer data in the standard message type ?? -->
   </node>
 
   <node pkg="imu_visualization" type="display_3D_visualization.py" name="Filtered_data_vis_node" output="screen">
