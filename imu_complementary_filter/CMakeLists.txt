@@ -28,7 +28,6 @@ include_directories(
 ## Declare a cpp library
 add_library(complementary_filter
   src/complementary_filter.cpp
-  src/complementary_filter_node.cpp
   src/complementary_filter_ros.cpp
   include/imu_complementary_filter/complementary_filter.h
   include/imu_complementary_filter/complementary_filter_ros.h
