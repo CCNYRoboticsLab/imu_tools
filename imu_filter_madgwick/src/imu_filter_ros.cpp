@@ -48,17 +48,8 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
     constant_dt_ = 0.0;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
-
-  // For ROS Jade, make this default to true.
   if (!nh_private_.getParam ("use_magnetic_field_msg", use_magnetic_field_msg_))
-  {
-      if (use_mag_)
-      {
-          ROS_WARN("Deprecation Warning: The parameter use_magnetic_field_msg was not set, default is 'false'.");
-          ROS_WARN("Starting with ROS Jade, use_magnetic_field_msg will default to 'true'!");
-      }
-      use_magnetic_field_msg_ = false;
-  }
+    use_magnetic_field_msg_ = true;
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
