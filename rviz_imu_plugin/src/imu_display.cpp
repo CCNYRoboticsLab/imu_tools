@@ -28,7 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "rviz_imu_plugin/imu_display.h"
+#include "imu_display.h"
 
 #include <rviz/properties/status_property.h>
 

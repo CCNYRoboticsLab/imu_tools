@@ -28,7 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "rviz_imu_plugin/imu_orientation_visual.h"
+#include "imu_orientation_visual.h"
 
 namespace rviz
 {

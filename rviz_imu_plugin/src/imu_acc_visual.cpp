@@ -28,7 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "rviz_imu_plugin/imu_acc_visual.h"
+#include "imu_acc_visual.h"
 
 namespace rviz
 {

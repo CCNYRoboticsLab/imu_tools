@@ -49,9 +49,9 @@
 #include <rviz/properties/ros_topic_property.h>
 #include <rviz/display_group.h>
 
-#include "rviz_imu_plugin/imu_axes_visual.h"
-#include "rviz_imu_plugin/imu_orientation_visual.h"
-#include "rviz_imu_plugin/imu_acc_visual.h"
+#include "imu_axes_visual.h"
+#include "imu_orientation_visual.h"
+#include "imu_acc_visual.h"
 
 namespace Ogre
 {
