@@ -2,6 +2,9 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.10 (2016-04-22)
 -------------------
 * Remove Eigen dependency

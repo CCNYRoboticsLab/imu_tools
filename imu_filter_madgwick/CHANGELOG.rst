@@ -2,6 +2,11 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Jade: Change default: use_magnetic_field_msg = true
+* Contributors: Martin Guenther
+
 1.0.10 (2016-04-22)
 -------------------
 
