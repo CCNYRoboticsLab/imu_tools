@@ -2,8 +2,8 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.10 (2016-04-22)
+-------------------
 * Support qt4/qt5 using rviz's exported qt version
   Closes `#58 <https://github.com/ccny-ros-pkg/imu_tools/issues/58>`_ .
   This fixes the build on Kinetic, where only Qt5 is available, and
