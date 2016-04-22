@@ -2,6 +2,13 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove Eigen dependency
+  Eigen is not actually used anywhere. Thanks @asimay!
+* Removed main function from shared library
+* Contributors: Martin Guenther, Matthias Nieuwenhuisen
+
 1.0.9 (2015-10-16)
 ------------------
 * complementary: Add Eigen dependency
