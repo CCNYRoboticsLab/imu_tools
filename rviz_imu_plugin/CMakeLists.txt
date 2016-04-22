@@ -3,20 +3,27 @@ project(rviz_imu_plugin)
 
 find_package(catkin REQUIRED COMPONENTS rviz)
 
-## This plugin includes Qt widgets, so we must include Qt like so:
-find_package(Qt4 4.6 REQUIRED COMPONENTS QtCore QtGui)
-include(${QT_USE_FILE})
+## This setting causes Qt's "MOC" generation to happen automatically.
+set(CMAKE_AUTOMOC ON)
+
+## This plugin includes Qt widgets, so we must include Qt.
+## We'll use the version that rviz used so they are compatible.
+if(rviz_QT_VERSION VERSION_LESS "5")
+  message(STATUS "Using Qt4 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
+  include(${QT_USE_FILE})
+else()
+  message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt5Widgets REQUIRED)
+  find_package(Qt5Core REQUIRED)
+  find_package(Qt5OpenGL REQUIRED)
+  ## Set the QT_LIBRARIES variable for Qt5, so it can be used below.
+  set(QT_LIBRARIES Qt5::Widgets)
+endif()
 
 ## I prefer the Qt signals and slots to avoid defining "emit", "slots",
 ## etc because they can conflict with boost signals, so define QT_NO_KEYWORDS here.
 add_definitions(-DQT_NO_KEYWORDS)
-
-## Here we specify which header files need to be run through "moc",
-## Qt's meta-object compiler.
-qt4_wrap_cpp(MOC_FILES
-  include/rviz_imu_plugin/imu_display.h
-)
-
 
 catkin_package(
   DEPENDS 
@@ -30,18 +37,20 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Here we specify the list of source files
-set(SOURCE_FILES  src/imu_display.cpp
-                  src/imu_orientation_visual.cpp
-                  src/imu_axes_visual.cpp
-                  src/imu_acc_visual.cpp
-                  ${MOC_FILES})
+## Here we specify the list of source files.
+## The generated MOC files are included automatically as headers.
+set(SRC_FILES  src/imu_display.cpp
+               src/imu_orientation_visual.cpp
+               src/imu_axes_visual.cpp
+               src/imu_acc_visual.cpp)
 
 ## Build libraries
-add_library(${PROJECT_NAME} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SRC_FILES})
 
 ## Link the library with whatever Qt libraries have been defined by
-## the ``find_package(Qt4 ...)`` line above.
+## the ``find_package(Qt4 ...)`` line above, or by the
+## ``set(QT_LIBRARIES Qt5::Widgets)``, and with whatever libraries
+## catkin has included.
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES})
 
 install(TARGETS
