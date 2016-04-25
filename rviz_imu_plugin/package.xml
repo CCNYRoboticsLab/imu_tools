@@ -1,7 +1,7 @@
 <package>
   <name>rviz_imu_plugin</name>
   <version>1.0.11</version>
-  <description>  
+  <description>
     RVIZ plugin for IMU visualization
   </description>
   <license>BSD</license>
@@ -12,12 +12,18 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>roscpp</build_depend>
   <build_depend>rviz</build_depend>
+
+  <run_depend>libqt5-core</run_depend>
+  <run_depend>libqt5-gui</run_depend>
+  <run_depend>libqt5-widgets</run_depend>
+  <run_depend>roscpp</run_depend>
   <run_depend>rviz</run_depend>
 
   <export>
     <rosdoc config="${prefix}/rosdoc.yaml"/>
     <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>
-
 </package>
