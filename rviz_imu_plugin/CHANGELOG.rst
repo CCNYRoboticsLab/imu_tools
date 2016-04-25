@@ -2,6 +2,12 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add qt5 dependencies to rviz_imu_plugin package.xml
+  This fixes the compilation errors on Kinetic for Debian Jessie.
+* Contributors: Martin Guenther
+
 1.0.11 (2016-04-22)
 -------------------
 
