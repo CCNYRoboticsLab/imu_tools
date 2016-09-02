@@ -52,4 +52,16 @@ install(DIRECTORY include/${PROJECT_NAME}/
 
 install(FILES imu_filter_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+
+
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(${PROJECT_NAME}-madgwick_test
+    test/madgwick_test.cpp
   )
+  target_link_libraries(${PROJECT_NAME}-madgwick_test
+    imu_filter
+    ${catkin_LIBRARIES}
+  )
+endif()
