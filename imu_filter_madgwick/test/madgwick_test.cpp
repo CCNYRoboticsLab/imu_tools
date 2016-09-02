@@ -4,6 +4,8 @@
 
 #define FILTER_ITERATIONS 10000
 
+
+template <EarthFrame::EarthFrame FRAME>
 void filterStationary(
     float Ax, float Ay, float Az,
     float Mx, float My, float Mz,
@@ -17,6 +19,7 @@ void filterStationary(
 
   // initialize with some orientation
   filter.setOrientation(q0,q1,q2,q3);
+  filter.setEarthFrame(FRAME);
 
   for (int i = 0; i < FILTER_ITERATIONS; i++) {
       filter.madgwickAHRSupdate(Gx, Gy, Gz, Ax, Ay, Az, Mx, My, Mz, dt);
@@ -25,18 +28,41 @@ void filterStationary(
   filter.getOrientation(q0,q1,q2,q3);
 }
 
-#define TEST_STATIONARY_NWU(in_am, exp_result)       \
+
+#define TEST_STATIONARY_ENU(in_am, exp_result)       \
+  TEST(MadgwickTest, Stationary_ENU_ ## in_am){      \
+    double q0 = .5, q1 = .5, q2 = .5, q3 = .5;       \
+    filterStationary<EarthFrame::ENU>(in_am, q0, q1, q2, q3);  \
+    ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }
+
+#define TEST_STATIONARY_NED(in_am, exp_result)       \
   TEST(MadgwickTest, Stationary_NED_ ## in_am){      \
     double q0 = .5, q1 = .5, q2 = .5, q3 = .5;       \
-    filterStationary(in_am, q0, q1, q2, q3);  \
+    filterStationary<EarthFrame::NED>(in_am, q0, q1, q2, q3);  \
+    ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }
+
+#define TEST_STATIONARY_NWU(in_am, exp_result)       \
+  TEST(MadgwickTest, Stationary_NWU_ ## in_am){      \
+    double q0 = .5, q1 = .5, q2 = .5, q3 = .5;       \
+    filterStationary<EarthFrame::NWU>(in_am, q0, q1, q2, q3);  \
     ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }
 
 TEST_STATIONARY_NWU(AM_NORTH_EAST_DOWN, QUAT_X_180)
 TEST_STATIONARY_NWU(AM_NORTH_WEST_UP, QUAT_IDENTITY)
-
-// Real sensor data tests
 TEST_STATIONARY_NWU(AM_WEST_NORTH_DOWN_RSD, QUAT_WEST_NORTH_DOWN_RSD_NWU)
 TEST_STATIONARY_NWU(AM_NE_NW_UP_RSD, QUAT_NE_NW_UP_RSD_NWU)
+
+TEST_STATIONARY_ENU(AM_EAST_NORTH_UP, QUAT_IDENTITY)
+TEST_STATIONARY_ENU(AM_SOUTH_UP_WEST, QUAT_XMYMZ_120)
+TEST_STATIONARY_ENU(AM_SOUTH_EAST_UP, QUAT_MZ_90)
+TEST_STATIONARY_ENU(AM_WEST_NORTH_DOWN_RSD, QUAT_WEST_NORTH_DOWN_RSD_ENU)
+TEST_STATIONARY_ENU(AM_NE_NW_UP_RSD, QUAT_NE_NW_UP_RSD_ENU)
+
+TEST_STATIONARY_NED(AM_NORTH_EAST_DOWN, QUAT_IDENTITY)
+TEST_STATIONARY_NED(AM_NORTH_WEST_UP, QUAT_X_180)
+TEST_STATIONARY_NED(AM_WEST_NORTH_DOWN_RSD, QUAT_WEST_NORTH_DOWN_RSD_NED)
+TEST_STATIONARY_NED(AM_NE_NW_UP_RSD, QUAT_NE_NW_UP_RSD_NED)
+
 
 
 

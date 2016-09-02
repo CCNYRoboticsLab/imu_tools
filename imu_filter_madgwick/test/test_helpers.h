@@ -10,7 +10,11 @@
 template <typename T>
 static inline void normalize_quaternion(T& q0, T& q1, T& q2, T& q3) {
   T invNorm = 1 / sqrt(q0*q0 + q1*q1 + q2*q2 + q3*q3);
-  if (q0 < 0) invNorm *= -1.0;
+  T max = q0;
+  if (fabs(max) < fabs(q1)) max = q1;
+  if (fabs(max) < fabs(q2)) max = q2;
+  if (fabs(max) < fabs(q3)) max = q3;
+  if (max < 0) invNorm *= -1.0;
 
   q0 *= invNorm;
   q1 *= invNorm;
@@ -54,7 +58,11 @@ static inline bool quat_equal(T q0, T q1, T q2, T q3, T qr0, T qr1, T qr2, T qr3
 #define QUAT_X_180 0.0, 1.0, 0.0, 0.0
 #define QUAT_XMYMZ_120 0.5, 0.5, -0.5, -0.5
 #define QUAT_WEST_NORTH_DOWN_RSD_NWU 0.01, 0.86, 0.50, 0.012 /* axis: (0.864401, 0.502559, 0.0120614) | angle: 178.848deg */
+#define QUAT_WEST_NORTH_DOWN_RSD_ENU 0.0, -0.25, -0.97, -0.02/* Axis: (-0.2, -0.96, 0.02), Angle: 180deg */
+#define QUAT_WEST_NORTH_DOWN_RSD_NED 0.86, -0.01, 0.01, -0.50 /* Axis: -Z, Angle: 60deg */
 #define QUAT_NE_NW_UP_RSD_NWU 0.91, 0.03, -0.02, -0.41 /* axis: (0.0300376, -0.020025, -0.410513) | angle: 48.6734deg */
+#define QUAT_NE_NW_UP_RSD_ENU 0.93, 0.03, 0.0, 0.35 /* Axis: Z,  Angle: 41deg */
+#define QUAT_NE_NW_UP_RSD_NED 0.021, -0.91, -0.41, 0.02 /* Axis: (0.9, 0.4, 0.0), Angle: 180deg */
 
 
 #endif /* TEST_TEST_HELPERS_H_ */

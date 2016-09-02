@@ -81,6 +81,7 @@ class ImuFilterRos
     boost::shared_ptr<FilterConfigServer> config_server_;
 
     // **** paramaters
+    EarthFrame::EarthFrame earth_frame_;
     bool use_mag_;
     bool use_magnetic_field_msg_;
     bool publish_tf_;
@@ -115,10 +116,6 @@ class ImuFilterRos
                        float roll, float pitch, float yaw);
 
     void reconfigCallback(FilterConfig& config, uint32_t level);
-
-    void computeRPY(float ax, float ay, float az,
-                    float mx, float my, float mz,
-                    float& roll, float& pitch, float& yaw);
 };
 
 #endif // IMU_FILTER_IMU_MADWICK_FILTER_ROS_H
