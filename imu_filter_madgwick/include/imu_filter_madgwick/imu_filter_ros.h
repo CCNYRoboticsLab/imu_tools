@@ -84,6 +84,7 @@ class ImuFilterRos
     EarthFrame::EarthFrame earth_frame_;
     bool use_mag_;
     bool use_magnetic_field_msg_;
+    bool stateless_;
     bool publish_tf_;
     bool reverse_tf_;
     std::string fixed_frame_;

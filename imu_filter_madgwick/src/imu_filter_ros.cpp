@@ -36,6 +36,8 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
   ROS_INFO ("Starting ImuFilter");
 
   // **** get paramters
+  if (!nh_private_.getParam ("stateless", stateless_))
+    stateless_ = false;
   if (!nh_private_.getParam ("use_mag", use_mag_))
    use_mag_ = true;
   if (!nh_private_.getParam ("publish_tf", publish_tf_))
@@ -170,7 +172,7 @@ void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
-  if (!initialized_)
+  if (!initialized_ || stateless_)
   {
     geometry_msgs::Quaternion init_q;
     StatelessOrientation::computeOrientation(earth_frame_, lin_acc, init_q);
@@ -190,10 +192,11 @@ void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 
   last_time_ = time;
 
-  filter_.madgwickAHRSupdateIMU(
-    ang_vel.x, ang_vel.y, ang_vel.z,
-    lin_acc.x, lin_acc.y, lin_acc.z,
-    dt);
+  if (!stateless_)
+    filter_.madgwickAHRSupdateIMU(
+      ang_vel.x, ang_vel.y, ang_vel.z,
+      lin_acc.x, lin_acc.y, lin_acc.z,
+      dt);
 
   publishFilteredMsg(imu_msg_raw);
   if (publish_tf_)
@@ -223,7 +226,7 @@ void ImuFilterRos::imuMagCallback(
   double pitch = 0.0;
   double yaw = 0.0;
 
-  if (!initialized_)
+  if (!initialized_ || stateless_)
   {
     // wait for mag message without NaN / inf
     if(!std::isfinite(mag_fld.x) || !std::isfinite(mag_fld.y) || !std::isfinite(mag_fld.z))
@@ -248,11 +251,12 @@ void ImuFilterRos::imuMagCallback(
 
   last_time_ = time;
 
-  filter_.madgwickAHRSupdate(
-    ang_vel.x, ang_vel.y, ang_vel.z,
-    lin_acc.x, lin_acc.y, lin_acc.z,
-    mag_compensated.x, mag_compensated.y, mag_compensated.z,
-    dt);
+  if (!stateless_)
+    filter_.madgwickAHRSupdate(
+      ang_vel.x, ang_vel.y, ang_vel.z,
+      lin_acc.x, lin_acc.y, lin_acc.z,
+      mag_compensated.x, mag_compensated.y, mag_compensated.z,
+      dt);
 
   publishFilteredMsg(imu_msg_raw);
   if (publish_tf_)
