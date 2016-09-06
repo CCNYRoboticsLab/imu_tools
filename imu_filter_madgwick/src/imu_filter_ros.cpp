@@ -62,27 +62,23 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
       use_magnetic_field_msg_ = false;
   }
 
-  bool use_ned, use_nwu;
+  std::string earth_frame;
   // Default should become false for next release
-  if (!nh_private_.getParam ("use_ned", use_ned)) {
-      use_ned = false;
-  }
-  // Default should become false for next release
-  if (!nh_private_.getParam ("use_nwu", use_nwu)) {
-      use_nwu = true;
-      ROS_WARN("Deprecation Warning: The parameter use_nwu was not set, default is 'true'.");
-      ROS_WARN("Starting with ROS Lunar, use_nwu will default to 'false'!");
-  }
-  if (use_ned && use_nwu) {
-      ROS_WARN("Cannot use NED and NWU. Using NED.");
-      use_nwu = false;
+  if (!nh_private_.getParam ("earth_frame", earth_frame)) {
+    earth_frame = "nwu";
+    ROS_WARN("Deprecation Warning: The parameter earth_frame was not set, default is 'nwu'.");
+    ROS_WARN("Starting with ROS Lunar, earth_frame will default to 'enu'!");
   }
 
-  if (use_ned) {
+  if (earth_frame == "ned") {
     earth_frame_ = EarthFrame::NED;
-  } else if (use_nwu){
+  } else if (earth_frame == "nwu"){
     earth_frame_ = EarthFrame::NWU;
+  } else if (earth_frame == "enu"){
+    earth_frame_ = EarthFrame::ENU;
   } else {
+    ROS_ERROR("The parameter earth_frame was set to invalid value '%s'.", earth_frame.c_str());
+    ROS_ERROR("Valid values are 'enu', 'ned' and 'nwu'. Setting to 'enu'.");
     earth_frame_ = EarthFrame::ENU;
   }
   filter_.setEarthFrame(earth_frame_);
