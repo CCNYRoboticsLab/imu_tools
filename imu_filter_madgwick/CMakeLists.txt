@@ -24,12 +24,12 @@ include_directories(
 
 
 # create imu_filter library
-add_library (imu_filter src/imu_filter.cpp  src/imu_filter_ros.cpp  include/imu_filter_madgwick/imu_filter.h)
+add_library (imu_filter src/imu_filter.cpp  src/imu_filter_ros.cpp src/stateless_orientation.cpp)
 add_dependencies(imu_filter ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # create imu_filter_nodelet library
-add_library (imu_filter_nodelet src/imu_filter_nodelet.cpp include/imu_filter_madgwick/imu_filter_nodelet.h)
+add_library (imu_filter_nodelet src/imu_filter_nodelet.cpp)
 add_dependencies(imu_filter_nodelet ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter_nodelet imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
@@ -52,4 +52,17 @@ install(DIRECTORY include/${PROJECT_NAME}/
 
 install(FILES imu_filter_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+
+
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(${PROJECT_NAME}-madgwick_test
+    test/stateless_orientation_test.cpp
+    test/madgwick_test.cpp
   )
+  target_link_libraries(${PROJECT_NAME}-madgwick_test
+    imu_filter
+    ${catkin_LIBRARIES}
+  )
+endif()

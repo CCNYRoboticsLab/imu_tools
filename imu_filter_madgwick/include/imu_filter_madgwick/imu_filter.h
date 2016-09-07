@@ -25,6 +25,9 @@
 #ifndef IMU_FILTER_MADWICK_IMU_FILTER_H
 #define IMU_FILTER_MADWICK_IMU_FILTER_H
 
+#include <imu_filter_madgwick/world_frame.h>
+#include <iostream>
+
 class ImuFilter
 {
   public:
@@ -34,31 +37,13 @@ class ImuFilter
 
   private:
     // **** paramaters
-    double gain_;     // algorithm gain
-    double zeta_;	  // gyro drift bias gain
+    double gain_;    // algorithm gain
+    double zeta_;    // gyro drift bias gain
+    WorldFrame::WorldFrame world_frame_;    // NWU, ENU, NED
 
     // **** state variables
     double q0, q1, q2, q3;  // quaternion
     float w_bx_, w_by_, w_bz_; // 
-
-    // **** member functions
-
-    // Fast inverse square-root
-    // See: http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Reciprocal_of_the_square_root
-    static float invSqrt(float x)
-    {
-      float xhalf = 0.5f * x;
-      union
-      {
-        float x;
-        int i;
-      } u;
-      u.x = x;
-      u.i = 0x5f3759df - (u.i >> 1);
-      /* The next line can be repeated any number of times to increase accuracy */
-      u.x = u.x * (1.5f - xhalf * u.x * u.x);
-      return u.x;
-    }
 
 public:
     void setAlgorithmGain(double gain)
@@ -69,6 +54,11 @@ public:
     void setDriftBiasGain(double zeta)
     {
         zeta_ = zeta;
+    }
+
+    void setWorldFrame(WorldFrame::WorldFrame frame)
+    {
+        world_frame_ = frame;
     }
 
     void getOrientation(double& q0, double& q1, double& q2, double& q3)

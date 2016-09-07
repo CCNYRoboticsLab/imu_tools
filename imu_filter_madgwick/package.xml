@@ -32,6 +32,8 @@
   <run_depend>message_filters</run_depend>
   <run_depend>dynamic_reconfigure</run_depend>
 
+  <test_depend>rosunit</test_depend>
+
   <export>
     <nodelet plugin="${prefix}/imu_filter_nodelet.xml" />
   </export>
