@@ -1,6 +1,6 @@
 <package>
   <name> imu_tools </name>
-  <version>1.0.10</version>
+  <version>1.0.12</version>
   <description>
     Various tools for IMU devices
   </description>

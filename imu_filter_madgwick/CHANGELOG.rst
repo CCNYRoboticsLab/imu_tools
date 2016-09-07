@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.12 (2016-09-07)
+-------------------
 * Add parameter "world_frame": optionally use ENU or NED instead of NWU
   convention (from `#60 <https://github.com/ccny-ros-pkg/imu_tools/issues/60>`_;
   closes `#36 <https://github.com/ccny-ros-pkg/imu_tools/issues/36>`_)
