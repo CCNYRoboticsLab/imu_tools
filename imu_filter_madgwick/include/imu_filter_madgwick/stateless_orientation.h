@@ -27,19 +27,19 @@
 
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Quaternion.h>
-#include <imu_filter_madgwick/earth_frame.h>
+#include <imu_filter_madgwick/world_frame.h>
 
 class StatelessOrientation
 {
 public:
   static bool computeOrientation(
-    EarthFrame::EarthFrame frame,
+    WorldFrame::WorldFrame frame,
     geometry_msgs::Vector3 acceleration,
     geometry_msgs::Vector3 magneticField,
     geometry_msgs::Quaternion& orientation);
 
   static bool computeOrientation(
-    EarthFrame::EarthFrame frame,
+    WorldFrame::WorldFrame frame,
     geometry_msgs::Vector3 acceleration,
     geometry_msgs::Quaternion& orientation);
 

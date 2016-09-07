@@ -2,7 +2,7 @@
 #include "test_helpers.h"
 
 
-template<EarthFrame::EarthFrame FRAME>
+template<WorldFrame::WorldFrame FRAME>
 bool computeOrientation(
     float Ax, float Ay, float Az,
     float Mx, float My, float Mz,
@@ -23,7 +23,7 @@ bool computeOrientation(
   return res;
 }
 
-template<EarthFrame::EarthFrame FRAME>
+template<WorldFrame::WorldFrame FRAME>
 bool computeOrientation(
     float Ax, float Ay, float Az,
     double& q0, double& q1, double& q2, double& q3) {
@@ -46,31 +46,31 @@ bool computeOrientation(
 #define TEST_STATELESS_ENU(in_am, exp_result)       \
   TEST(StatelessOrientationTest, Stationary_ENU_ ## in_am){      \
   double q0, q1, q2, q3;                                         \
-  ASSERT_TRUE(computeOrientation<EarthFrame::ENU>(in_am, q0, q1, q2, q3)); \
+  ASSERT_TRUE(computeOrientation<WorldFrame::ENU>(in_am, q0, q1, q2, q3)); \
   ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }                \
   TEST(StatelessOrientationTest, Stationary_ENU_NM_ ## in_am){   \
   double q0, q1, q2, q3;                                         \
-  ASSERT_TRUE(computeOrientation<EarthFrame::ENU>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
+  ASSERT_TRUE(computeOrientation<WorldFrame::ENU>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
   ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATELESS_NED(in_am, exp_result)       \
   TEST(StatelessOrientationTest, Stationary_NED_ ## in_am){      \
   double q0, q1, q2, q3;                                         \
-  ASSERT_TRUE(computeOrientation<EarthFrame::NED>(in_am, q0, q1, q2, q3));  \
+  ASSERT_TRUE(computeOrientation<WorldFrame::NED>(in_am, q0, q1, q2, q3));  \
   ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }                \
   TEST(StatelessOrientationTest, Stationary_NED_NM_ ## in_am){   \
   double q0, q1, q2, q3;                                         \
-  ASSERT_TRUE(computeOrientation<EarthFrame::NED>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
+  ASSERT_TRUE(computeOrientation<WorldFrame::NED>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
   ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATELESS_NWU(in_am, exp_result)       \
   TEST(StatelessOrientationTest, Stationary_NWU_ ## in_am){      \
   double q0, q1, q2, q3;                                         \
-  ASSERT_TRUE(computeOrientation<EarthFrame::NWU>(in_am, q0, q1, q2, q3));  \
+  ASSERT_TRUE(computeOrientation<WorldFrame::NWU>(in_am, q0, q1, q2, q3));  \
   ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }                \
   TEST(StatelessOrientationTest, Stationary_NWU_NM_ ## in_am){   \
   double q0, q1, q2, q3;                                         \
-  ASSERT_TRUE(computeOrientation<EarthFrame::NWU>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
+  ASSERT_TRUE(computeOrientation<WorldFrame::NWU>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
   ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 TEST_STATELESS_ENU(AM_EAST_NORTH_UP, QUAT_IDENTITY)
@@ -94,7 +94,7 @@ TEST_STATELESS_NWU(AM_NE_NW_UP_RSD, QUAT_NE_NW_UP_RSD_NWU)
 
 TEST(StatelessOrientationTest, Check_NoAccel){
   double q0, q1, q2, q3;
-  ASSERT_FALSE(computeOrientation<EarthFrame::ENU>(
+  ASSERT_FALSE(computeOrientation<WorldFrame::ENU>(
     0.0, 0.0, 0.0,
     0.0, 0.0005, -0.0005,
     q0, q1, q2, q3));
@@ -102,7 +102,7 @@ TEST(StatelessOrientationTest, Check_NoAccel){
 
 TEST(StatelessOrientationTest, Check_NoMag){
   double q0, q1, q2, q3;
-  ASSERT_FALSE(computeOrientation<EarthFrame::ENU>(
+  ASSERT_FALSE(computeOrientation<WorldFrame::ENU>(
     0.0, 0.0, 9.81,
     0.0, 0.0, 0.0,
     q0, q1, q2, q3));

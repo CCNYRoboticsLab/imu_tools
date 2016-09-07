@@ -81,7 +81,7 @@ class ImuFilterRos
     boost::shared_ptr<FilterConfigServer> config_server_;
 
     // **** paramaters
-    EarthFrame::EarthFrame earth_frame_;
+    WorldFrame::WorldFrame world_frame_;
     bool use_mag_;
     bool use_magnetic_field_msg_;
     bool stateless_;

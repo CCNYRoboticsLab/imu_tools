@@ -51,7 +51,7 @@ static inline T normalizeVector(T& vx, T& vy, T& vz) {
 
 
 bool StatelessOrientation::computeOrientation(
-  EarthFrame::EarthFrame frame,
+  WorldFrame::WorldFrame frame,
   geometry_msgs::Vector3 A,
   geometry_msgs::Vector3 E,
   geometry_msgs::Quaternion& orientation) {
@@ -89,7 +89,7 @@ bool StatelessOrientation::computeOrientation(
   // Create matrix for basis transformation
   tf2::Matrix3x3 R;
   switch (frame) {
-    case EarthFrame::NED:
+    case WorldFrame::NED:
       // vector space world W:
       // Basis: bwx (1,0,0) north, bwy (0,1,0) east, bwz (0,0,1) down
       // vector space local L:
@@ -104,7 +104,7 @@ bool StatelessOrientation::computeOrientation(
       R[2][0] = Mz;     R[2][1] = Hz;     R[2][2] = -Az;
       break;
 
-    case EarthFrame::NWU:
+    case WorldFrame::NWU:
       // vector space world W:
       // Basis: bwx (1,0,0) north, bwy (0,1,0) west, bwz (0,0,1) up
       // vector space local L:
@@ -120,7 +120,7 @@ bool StatelessOrientation::computeOrientation(
       break;
 
     default:
-    case EarthFrame::ENU:
+    case WorldFrame::ENU:
       // vector space world W:
       // Basis: bwx (1,0,0) east, bwy (0,1,0) north, bwz (0,0,1) up
       // vector space local L:
@@ -146,7 +146,7 @@ bool StatelessOrientation::computeOrientation(
 
 
 bool StatelessOrientation::computeOrientation(
-  EarthFrame::EarthFrame frame,
+  WorldFrame::WorldFrame frame,
   geometry_msgs::Vector3 A,
   geometry_msgs::Quaternion& orientation) {
 

@@ -62,26 +62,26 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
       use_magnetic_field_msg_ = false;
   }
 
-  std::string earth_frame;
+  std::string world_frame;
   // Default should become false for next release
-  if (!nh_private_.getParam ("earth_frame", earth_frame)) {
-    earth_frame = "nwu";
-    ROS_WARN("Deprecation Warning: The parameter earth_frame was not set, default is 'nwu'.");
-    ROS_WARN("Starting with ROS Lunar, earth_frame will default to 'enu'!");
+  if (!nh_private_.getParam ("world_frame", world_frame)) {
+    world_frame = "nwu";
+    ROS_WARN("Deprecation Warning: The parameter world_frame was not set, default is 'nwu'.");
+    ROS_WARN("Starting with ROS Lunar, world_frame will default to 'enu'!");
   }
 
-  if (earth_frame == "ned") {
-    earth_frame_ = EarthFrame::NED;
-  } else if (earth_frame == "nwu"){
-    earth_frame_ = EarthFrame::NWU;
-  } else if (earth_frame == "enu"){
-    earth_frame_ = EarthFrame::ENU;
+  if (world_frame == "ned") {
+    world_frame_ = WorldFrame::NED;
+  } else if (world_frame == "nwu"){
+    world_frame_ = WorldFrame::NWU;
+  } else if (world_frame == "enu"){
+    world_frame_ = WorldFrame::ENU;
   } else {
-    ROS_ERROR("The parameter earth_frame was set to invalid value '%s'.", earth_frame.c_str());
+    ROS_ERROR("The parameter world_frame was set to invalid value '%s'.", world_frame.c_str());
     ROS_ERROR("Valid values are 'enu', 'ned' and 'nwu'. Setting to 'enu'.");
-    earth_frame_ = EarthFrame::ENU;
+    world_frame_ = WorldFrame::ENU;
   }
-  filter_.setEarthFrame(earth_frame_);
+  filter_.setWorldFrame(world_frame_);
 
   // check for illegal constant_dt values
   if (constant_dt_ < 0.0)
@@ -171,7 +171,7 @@ void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
   if (!initialized_ || stateless_)
   {
     geometry_msgs::Quaternion init_q;
-    StatelessOrientation::computeOrientation(earth_frame_, lin_acc, init_q);
+    StatelessOrientation::computeOrientation(world_frame_, lin_acc, init_q);
     filter_.setOrientation(init_q.w, init_q.x, init_q.y, init_q.z);
 
     // initialize time
@@ -231,7 +231,7 @@ void ImuFilterRos::imuMagCallback(
     }
 
     geometry_msgs::Quaternion init_q;
-    StatelessOrientation::computeOrientation(earth_frame_, lin_acc, mag_compensated, init_q);
+    StatelessOrientation::computeOrientation(world_frame_, lin_acc, mag_compensated, init_q);
     filter_.setOrientation(init_q.w, init_q.x, init_q.y, init_q.z);
 
     last_time_ = time;
@@ -261,7 +261,7 @@ void ImuFilterRos::imuMagCallback(
   if(publish_debug_topics_)
   {
     geometry_msgs::Quaternion orientation;
-    if (StatelessOrientation::computeOrientation(earth_frame_, lin_acc, mag_compensated, orientation))
+    if (StatelessOrientation::computeOrientation(world_frame_, lin_acc, mag_compensated, orientation))
     {
       tf2::Matrix3x3(tf2::Quaternion(orientation.x, orientation.y, orientation.z, orientation.w)).getRPY(roll, pitch, yaw, 0);
       publishRawMsg(time, roll, pitch, yaw);

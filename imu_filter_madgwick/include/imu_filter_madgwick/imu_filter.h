@@ -25,7 +25,7 @@
 #ifndef IMU_FILTER_MADWICK_IMU_FILTER_H
 #define IMU_FILTER_MADWICK_IMU_FILTER_H
 
-#include <imu_filter_madgwick/earth_frame.h>
+#include <imu_filter_madgwick/world_frame.h>
 #include <iostream>
 
 class ImuFilter
@@ -39,7 +39,7 @@ class ImuFilter
     // **** paramaters
     double gain_;    // algorithm gain
     double zeta_;    // gyro drift bias gain
-    EarthFrame::EarthFrame earth_frame_;    // NWU, ENU, NED
+    WorldFrame::WorldFrame world_frame_;    // NWU, ENU, NED
 
     // **** state variables
     double q0, q1, q2, q3;  // quaternion
@@ -56,9 +56,9 @@ public:
         zeta_ = zeta;
     }
 
-    void setEarthFrame(EarthFrame::EarthFrame frame)
+    void setWorldFrame(WorldFrame::WorldFrame frame)
     {
-        earth_frame_ = frame;
+        world_frame_ = frame;
     }
 
     void getOrientation(double& q0, double& q1, double& q2, double& q3)

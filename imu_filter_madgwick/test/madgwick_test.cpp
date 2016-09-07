@@ -5,7 +5,7 @@
 #define FILTER_ITERATIONS 10000
 
 
-template <EarthFrame::EarthFrame FRAME>
+template <WorldFrame::WorldFrame FRAME>
 void filterStationary(
     float Ax, float Ay, float Az,
     float Mx, float My, float Mz,
@@ -19,7 +19,7 @@ void filterStationary(
 
   // initialize with some orientation
   filter.setOrientation(q0,q1,q2,q3);
-  filter.setEarthFrame(FRAME);
+  filter.setWorldFrame(FRAME);
 
   for (int i = 0; i < FILTER_ITERATIONS; i++) {
       filter.madgwickAHRSupdate(Gx, Gy, Gz, Ax, Ay, Az, Mx, My, Mz, dt);
@@ -29,7 +29,7 @@ void filterStationary(
 }
 
 
-template <EarthFrame::EarthFrame FRAME>
+template <WorldFrame::WorldFrame FRAME>
 void filterStationary(
     float Ax, float Ay, float Az,
     double& q0, double& q1, double& q2, double& q3) {
@@ -42,7 +42,7 @@ void filterStationary(
 
   // initialize with some orientation
   filter.setOrientation(q0,q1,q2,q3);
-  filter.setEarthFrame(FRAME);
+  filter.setWorldFrame(FRAME);
 
   for (int i = 0; i < FILTER_ITERATIONS; i++) {
       filter.madgwickAHRSupdateIMU(Gx, Gy, Gz, Ax, Ay, Az, dt);
@@ -55,31 +55,31 @@ void filterStationary(
 #define TEST_STATIONARY_ENU(in_am, exp_result)       \
   TEST(MadgwickTest, Stationary_ENU_ ## in_am){      \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
-  filterStationary<EarthFrame::ENU>(in_am, q0, q1, q2, q3);  \
+  filterStationary<WorldFrame::ENU>(in_am, q0, q1, q2, q3);  \
   ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }    \
   TEST(MadgwickTest, Stationary_ENU_NM_ ## in_am){   \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
-  filterStationary<EarthFrame::ENU>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
+  filterStationary<WorldFrame::ENU>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
   ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATIONARY_NED(in_am, exp_result)       \
   TEST(MadgwickTest, Stationary_NED_ ## in_am){      \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
-  filterStationary<EarthFrame::NED>(in_am, q0, q1, q2, q3);  \
+  filterStationary<WorldFrame::NED>(in_am, q0, q1, q2, q3);  \
   ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }    \
   TEST(MadgwickTest, Stationary_NED_NM_ ## in_am){   \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
-  filterStationary<EarthFrame::NED>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
+  filterStationary<WorldFrame::NED>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
   ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATIONARY_NWU(in_am, exp_result)       \
   TEST(MadgwickTest, Stationary_NWU_ ## in_am){      \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
-  filterStationary<EarthFrame::NWU>(in_am, q0, q1, q2, q3);  \
+  filterStationary<WorldFrame::NWU>(in_am, q0, q1, q2, q3);  \
   ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }    \
   TEST(MadgwickTest, Stationary_NWU_NM_ ## in_am){   \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
-  filterStationary<EarthFrame::NWU>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
+  filterStationary<WorldFrame::NWU>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
   ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 TEST_STATIONARY_NWU(AM_NORTH_EAST_DOWN, QUAT_X_180)
