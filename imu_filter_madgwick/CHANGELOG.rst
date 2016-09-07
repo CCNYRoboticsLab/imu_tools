@@ -2,6 +2,23 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add parameter "world_frame": optionally use ENU or NED instead of NWU
+  convention (from `#60 <https://github.com/ccny-ros-pkg/imu_tools/issues/60>`_;
+  closes `#36 <https://github.com/ccny-ros-pkg/imu_tools/issues/36>`_)
+* Add parameter "stateless" for debugging purposes: don't do any stateful
+  filtering, but instead publish the orientation directly computed from the
+  latest accelerometer (+ optionally magnetometer) readings alone
+* Replace the (buggy) Euler-angle-based initialization routine
+  (ImuFilterRos::computeRPY) by a correct transformation
+  matrix based one (StatelessOrientation::computeOrientation) and make it
+  available as a library function
+* Refactor madgwickAHRSupdate() (pull out some functions, remove micro
+  optimizations to improve readability)
+* Add unit tests
+* Contributors: Martin Guenther, Michael Stoll
+
 1.0.10 (2016-04-22)
 -------------------
 
