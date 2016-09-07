@@ -2,6 +2,11 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add missing dependency on tf2_geometry_msgs
+* Contributors: Martin Guenther
+
 1.1.1 (2016-09-07)
 ------------------
 * Add parameter "world_frame": optionally use ENU or NED instead of NWU
