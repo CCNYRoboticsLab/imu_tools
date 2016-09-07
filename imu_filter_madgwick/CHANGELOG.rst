@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.2 (2016-09-07)
+------------------
 * Add missing dependency on tf2_geometry_msgs
 * Contributors: Martin Guenther
 
