@@ -37,6 +37,13 @@
 
 namespace imu_tools {
 
+const double ComplementaryFilter::kGravity = 9.81;
+const double ComplementaryFilter::gamma_ = 0.01;
+// Bias estimation steady state thresholds
+const double ComplementaryFilter::kAngularVelocityThreshold = 0.2;
+const double ComplementaryFilter::kAccelerationThreshold = 0.1;
+const double ComplementaryFilter::kDeltaAngularVelocityThreshold = 0.01;
+
 ComplementaryFilter::ComplementaryFilter() :
     gain_acc_(0.01),
     gain_mag_(0.01),

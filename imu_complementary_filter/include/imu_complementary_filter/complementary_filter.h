@@ -89,12 +89,12 @@ class ComplementaryFilter
                 double dt);
 
   private:
-    static const double kGravity = 9.81;
-    static const double gamma_ = 0.01;
+    static const double kGravity;
+    static const double gamma_;
     // Bias estimation steady state thresholds
-    static const double kAngularVelocityThreshold = 0.2;
-    static const double kAccelerationThreshold = 0.1;
-    static const double kDeltaAngularVelocityThreshold = 0.01;
+    static const double kAngularVelocityThreshold;
+    static const double kAccelerationThreshold;
+    static const double kDeltaAngularVelocityThreshold;
 
     // Gain parameter for the complementary filter, belongs in [0, 1].
     double gain_acc_;
