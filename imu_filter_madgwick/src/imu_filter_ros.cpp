@@ -151,7 +151,7 @@ ImuFilterRos::~ImuFilterRos()
 
 void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 {
-  boost::mutex::scoped_lock(mutex_);
+  boost::mutex::scoped_lock lock(mutex_);
 
   const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
   const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration;
@@ -194,7 +194,7 @@ void ImuFilterRos::imuMagCallback(
   const ImuMsg::ConstPtr& imu_msg_raw,
   const MagMsg::ConstPtr& mag_msg)
 {
-  boost::mutex::scoped_lock(mutex_);
+  boost::mutex::scoped_lock lock(mutex_);
 
   const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
   const geometry_msgs::Vector3& lin_acc = imu_msg_raw->linear_acceleration;
@@ -339,7 +339,7 @@ void ImuFilterRos::publishRawMsg(const ros::Time& t,
 void ImuFilterRos::reconfigCallback(FilterConfig& config, uint32_t level)
 {
   double gain, zeta;
-  boost::mutex::scoped_lock(mutex_);
+  boost::mutex::scoped_lock lock(mutex_);
   gain = config.gain;
   zeta = config.zeta;
   filter_.setAlgorithmGain(gain);
