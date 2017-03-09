@@ -54,11 +54,11 @@ static inline bool quat_eq_ex_z(T q0, T q1, T q2, T q3, T qr0, T qr1, T qr2, T q
       qr_.getZ());
 }
 
-#define ASSERT_QUAT_EQAL_(q0, q1, q2, q3, qr0, qr1, qr2, qr3) ASSERT_TRUE(quat_equal(q0, q1, q2, q3, qr0, qr1, qr2, qr3)) << "q0: " << q0 << ", q1: " << q1 << ", q2: " << q2 << ", q3: " << q3;
-#define ASSERT_QUAT_EQAL(...) ASSERT_QUAT_EQAL_(__VA_ARGS__)
+#define ASSERT_QUAT_EQUAL_(q0, q1, q2, q3, qr0, qr1, qr2, qr3) ASSERT_TRUE(quat_equal(q0, q1, q2, q3, qr0, qr1, qr2, qr3)) << "q0: " << q0 << ", q1: " << q1 << ", q2: " << q2 << ", q3: " << q3;
+#define ASSERT_QUAT_EQUAL(...) ASSERT_QUAT_EQUAL_(__VA_ARGS__)
 
-#define ASSERT_QUAT_EQAL_EX_Z_(q0, q1, q2, q3, qr0, qr1, qr2, qr3) ASSERT_TRUE(quat_eq_ex_z(q0, q1, q2, q3, qr0, qr1, qr2, qr3)) << "q0: " << q0 << ", q1: " << q1 << ", q2: " << q2 << ", q3: " << q3;
-#define ASSERT_QUAT_EQAL_EX_Z(...) ASSERT_QUAT_EQAL_EX_Z_(__VA_ARGS__)
+#define ASSERT_QUAT_EQUAL_EX_Z_(q0, q1, q2, q3, qr0, qr1, qr2, qr3) ASSERT_TRUE(quat_eq_ex_z(q0, q1, q2, q3, qr0, qr1, qr2, qr3)) << "q0: " << q0 << ", q1: " << q1 << ", q2: " << q2 << ", q3: " << q3;
+#define ASSERT_QUAT_EQUAL_EX_Z(...) ASSERT_QUAT_EQUAL_EX_Z_(__VA_ARGS__)
 
 // Well known states
 // scheme: AM_x_y_z
