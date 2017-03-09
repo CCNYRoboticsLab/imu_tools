@@ -22,6 +22,12 @@ static inline void normalize_quaternion(T& q0, T& q1, T& q2, T& q3) {
   q3 *= invNorm;
 }
 
+// Tests for normalization in the same way as tf2:
+// https://github.com/ros/geometry2/blob/bd490515b1434caeff521ea14901dfe04063ca27/tf2/src/buffer_core.cpp#L244-L247
+template <typename T>
+static inline bool is_normalized(T q0, T q1, T q2, T q3) {
+  return std::abs((q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3) - 1.0f) < 10e-6;
+}
 
 template <typename T>
 static inline bool quat_equal(T q0, T q1, T q2, T q3, T qr0, T qr1, T qr2, T qr3) {
@@ -53,6 +59,9 @@ static inline bool quat_eq_ex_z(T q0, T q1, T q2, T q3, T qr0, T qr1, T qr2, T q
       qr_.getY(),
       qr_.getZ());
 }
+
+#define ASSERT_IS_NORMALIZED_(q0, q1, q2, q3) ASSERT_TRUE(is_normalized(q0, q1, q2, q3)) << "q0: " << q0 << ", q1: " << q1 << ", q2: " << q2 << ", q3: " << q3;
+#define ASSERT_IS_NORMALIZED(...) ASSERT_IS_NORMALIZED_(__VA_ARGS__)
 
 #define ASSERT_QUAT_EQUAL_(q0, q1, q2, q3, qr0, qr1, qr2, qr3) ASSERT_TRUE(quat_equal(q0, q1, q2, q3, qr0, qr1, qr2, qr3)) << "q0: " << q0 << ", q1: " << q1 << ", q2: " << q2 << ", q3: " << q3;
 #define ASSERT_QUAT_EQUAL(...) ASSERT_QUAT_EQUAL_(__VA_ARGS__)
