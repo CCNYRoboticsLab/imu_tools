@@ -1,5 +1,5 @@
 #include <imu_filter_madgwick/imu_filter.h>
-#include <math.h>
+#include <cmath>
 #include "test_helpers.h"
 
 #define FILTER_ITERATIONS 10000
@@ -56,31 +56,37 @@ void filterStationary(
   TEST(MadgwickTest, Stationary_ENU_ ## in_am){      \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
   filterStationary<WorldFrame::ENU>(in_am, q0, q1, q2, q3);  \
-  ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }    \
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);              \
+  ASSERT_QUAT_EQUAL(q0, q1, q2, q3, exp_result); }   \
   TEST(MadgwickTest, Stationary_ENU_NM_ ## in_am){   \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
   filterStationary<WorldFrame::ENU>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
-  ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);              \
+  ASSERT_QUAT_EQUAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATIONARY_NED(in_am, exp_result)       \
   TEST(MadgwickTest, Stationary_NED_ ## in_am){      \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
   filterStationary<WorldFrame::NED>(in_am, q0, q1, q2, q3);  \
-  ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }    \
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);              \
+  ASSERT_QUAT_EQUAL(q0, q1, q2, q3, exp_result); }   \
   TEST(MadgwickTest, Stationary_NED_NM_ ## in_am){   \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
   filterStationary<WorldFrame::NED>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
-  ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);              \
+  ASSERT_QUAT_EQUAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATIONARY_NWU(in_am, exp_result)       \
   TEST(MadgwickTest, Stationary_NWU_ ## in_am){      \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
   filterStationary<WorldFrame::NWU>(in_am, q0, q1, q2, q3);  \
-  ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }    \
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);              \
+  ASSERT_QUAT_EQUAL(q0, q1, q2, q3, exp_result); }   \
   TEST(MadgwickTest, Stationary_NWU_NM_ ## in_am){   \
   double q0 = .5, q1 = .5, q2 = .5, q3 = .5;         \
   filterStationary<WorldFrame::NWU>(ACCEL_ONLY(in_am), q0, q1, q2, q3);  \
-  ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);              \
+  ASSERT_QUAT_EQUAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 TEST_STATIONARY_NWU(AM_NORTH_EAST_DOWN, QUAT_X_180)
 TEST_STATIONARY_NWU(AM_NORTH_WEST_UP, QUAT_IDENTITY)

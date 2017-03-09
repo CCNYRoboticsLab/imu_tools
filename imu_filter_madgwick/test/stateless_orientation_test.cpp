@@ -47,31 +47,37 @@ bool computeOrientation(
   TEST(StatelessOrientationTest, Stationary_ENU_ ## in_am){      \
   double q0, q1, q2, q3;                                         \
   ASSERT_TRUE(computeOrientation<WorldFrame::ENU>(in_am, q0, q1, q2, q3)); \
-  ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }                \
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);                          \
+  ASSERT_QUAT_EQUAL(q0, q1, q2, q3, exp_result); }               \
   TEST(StatelessOrientationTest, Stationary_ENU_NM_ ## in_am){   \
   double q0, q1, q2, q3;                                         \
   ASSERT_TRUE(computeOrientation<WorldFrame::ENU>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
-  ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);                          \
+  ASSERT_QUAT_EQUAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATELESS_NED(in_am, exp_result)       \
   TEST(StatelessOrientationTest, Stationary_NED_ ## in_am){      \
   double q0, q1, q2, q3;                                         \
   ASSERT_TRUE(computeOrientation<WorldFrame::NED>(in_am, q0, q1, q2, q3));  \
-  ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }                \
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);                          \
+  ASSERT_QUAT_EQUAL(q0, q1, q2, q3, exp_result); }               \
   TEST(StatelessOrientationTest, Stationary_NED_NM_ ## in_am){   \
   double q0, q1, q2, q3;                                         \
   ASSERT_TRUE(computeOrientation<WorldFrame::NED>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
-  ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);                          \
+  ASSERT_QUAT_EQUAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 #define TEST_STATELESS_NWU(in_am, exp_result)       \
   TEST(StatelessOrientationTest, Stationary_NWU_ ## in_am){      \
   double q0, q1, q2, q3;                                         \
   ASSERT_TRUE(computeOrientation<WorldFrame::NWU>(in_am, q0, q1, q2, q3));  \
-  ASSERT_QUAT_EQAL(q0, q1, q2, q3, exp_result); }                \
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);                          \
+  ASSERT_QUAT_EQUAL(q0, q1, q2, q3, exp_result); }               \
   TEST(StatelessOrientationTest, Stationary_NWU_NM_ ## in_am){   \
   double q0, q1, q2, q3;                                         \
   ASSERT_TRUE(computeOrientation<WorldFrame::NWU>(ACCEL_ONLY(in_am), q0, q1, q2, q3)); \
-  ASSERT_QUAT_EQAL_EX_Z(q0, q1, q2, q3, exp_result); }
+  ASSERT_IS_NORMALIZED(q0, q1, q2, q3);                          \
+  ASSERT_QUAT_EQUAL_EX_Z(q0, q1, q2, q3, exp_result); }
 
 TEST_STATELESS_ENU(AM_EAST_NORTH_UP, QUAT_IDENTITY)
 TEST_STATELESS_ENU(AM_SOUTH_UP_WEST, QUAT_XMYMZ_120)
