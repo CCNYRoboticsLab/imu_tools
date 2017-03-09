@@ -79,7 +79,7 @@ static inline bool quat_eq_ex_z(T q0, T q1, T q2, T q3, T qr0, T qr1, T qr2, T q
 // Well known quaternion
 // scheme: QUAT_axis_angle
 #define QUAT_IDENTITY  1.0, 0.0, 0.0, 0.0
-#define QUAT_MZ_90 0.5, 0.0, 0.0, -0.5
+#define QUAT_MZ_90 0.707107, 0.0, 0.0, -0.707107
 #define QUAT_X_180 0.0, 1.0, 0.0, 0.0
 #define QUAT_XMYMZ_120 0.5, 0.5, -0.5, -0.5
 #define QUAT_WEST_NORTH_DOWN_RSD_NWU 0.01, 0.86, 0.50, 0.012 /* axis: (0.864401, 0.502559, 0.0120614) | angle: 178.848deg */
