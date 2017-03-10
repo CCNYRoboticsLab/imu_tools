@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.3 (2017-03-10)
+------------------
 * Return precisely normalized quaternions
   Fixes `#67 <https://github.com/ccny-ros-pkg/imu_tools/issues/67>`_ : TF_DENORMALIZED_QUATERNION warning added in TF2 0.5.14.
 * Tests: Check that output quaternions are normalized
