@@ -2,6 +2,14 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Return precisely normalized quaternions
+  Fixes `#67 <https://github.com/ccny-ros-pkg/imu_tools/issues/67>`_ : TF_DENORMALIZED_QUATERNION warning added in TF2 0.5.14.
+* Tests: Check that output quaternions are normalized
+* Fixed lock so it stays in scope until end of method.
+* Contributors: Jason Mercer, Martin Günther
+
 1.0.13 (2016-09-07)
 -------------------
 * Add missing dependency on tf2_geometry_msgs

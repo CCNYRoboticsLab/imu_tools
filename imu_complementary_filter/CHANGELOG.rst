@@ -2,6 +2,14 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* complementary_filter: move const initializations out of header
+  Initialization of static consts other than int (here: float) inside the
+  class declaration is not permitted in C++. It works in gcc (due to a
+  non-standard extension), but throws an error in C++11.
+* Contributors: Martin Guenther
+
 1.0.13 (2016-09-07)
 -------------------
 
