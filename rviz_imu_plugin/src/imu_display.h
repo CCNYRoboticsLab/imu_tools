@@ -110,6 +110,7 @@ public:
 
 protected Q_SLOTS:
 
+    void updateTop();
     void updateBox();
     void updateAxes();
     void updateAcc();
@@ -117,6 +118,7 @@ protected Q_SLOTS:
 private:
 
     // Property objects for user-editable properties.
+    rviz::BoolProperty*  fixed_frame_orientation_property_;
 
     rviz::Property* box_category_;
     rviz::Property* axes_category_;
@@ -146,6 +148,7 @@ private:
 
     // User-editable property variables.
     std::string topic_;
+    bool fixed_frame_orientation_;
     bool box_enabled_;
     bool axes_enabled_;
     bool acc_enabled_;

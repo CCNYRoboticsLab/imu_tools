@@ -36,6 +36,7 @@ namespace rviz
 {
 
 ImuDisplay::ImuDisplay():
+    fixed_frame_orientation_(true),
     box_enabled_(false),
     axes_enabled_(true),
     acc_enabled_(false),
@@ -92,6 +93,9 @@ void ImuDisplay::reset()
     acc_visual_->hide();
 }
 
+void ImuDisplay::updateTop() {
+    fixed_frame_orientation_ = fixed_frame_orientation_property_->getBool();
+}
 
 void ImuDisplay::updateBox() {
     box_enabled_ = box_enabled_property_->getBool();
@@ -150,6 +154,18 @@ void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
         return;
     }
 
+    if (fixed_frame_orientation_) {
+        /* Display IMU orientation is in the world-fixed frame. */
+        Ogre::Vector3 unused;
+        if(!context_->getFrameManager()->getTransform(context_->getFrameManager()->getFixedFrame(),
+                                                      msg->header.stamp,
+                                                      unused, orientation ))
+        {
+            ROS_ERROR("Error getting fixed frame transform");
+            return;
+        }
+    }
+
     if (box_enabled_)
     {
         box_visual_->setMessage(msg);
@@ -175,6 +191,14 @@ void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
 
 void ImuDisplay::createProperties()
 {
+    // **** top level properties
+    fixed_frame_orientation_property_ = new rviz::BoolProperty("fixed_frame_orientation",
+                                                   fixed_frame_orientation_,
+                                                   "Use world fixed frame for display orientation instead of IMU reference frame",
+                                                   this,
+                                                   SLOT(updateTop()),
+                                                   this);
+
     // **** box properties
     box_category_ = new rviz::Property("Box properties",
                                        QVariant(),
