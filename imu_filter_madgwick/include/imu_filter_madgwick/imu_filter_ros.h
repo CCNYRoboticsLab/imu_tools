@@ -65,9 +65,9 @@ class ImuFilterRos
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
 
-    boost::shared_ptr<Synchronizer> sync_;
     boost::shared_ptr<ImuSubscriber> imu_subscriber_;
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
+    boost::shared_ptr<Synchronizer> sync_;
 
     // Adapter to support the use_magnetic_field_msg param.
     boost::shared_ptr<MagVectorSubscriber> vector_mag_subscriber_;
