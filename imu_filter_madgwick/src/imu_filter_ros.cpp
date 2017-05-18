@@ -151,11 +151,16 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
   {
     imu_subscriber_->registerCallback(&ImuFilterRos::imuCallback, this);
   }
+
+  check_topics_timer_ = nh_.createTimer(ros::Duration(10.0), &ImuFilterRos::checkTopicsTimerCallback, this);
 }
 
 ImuFilterRos::~ImuFilterRos()
 {
   ROS_INFO ("Destroying ImuFilter");
+
+  // Explicitly stop callbacks; they could execute after we're destroyed
+  check_topics_timer_.stop();
 }
 
 void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
@@ -167,6 +172,12 @@ void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
+
+  if (!initialized_)
+  {
+    check_topics_timer_.stop();
+    ROS_INFO("First IMU message received.");
+  }
 
   if (!initialized_ || stateless_)
   {
@@ -221,6 +232,12 @@ void ImuFilterRos::imuMagCallback(
   double roll = 0.0;
   double pitch = 0.0;
   double yaw = 0.0;
+
+  if (!initialized_)
+  {
+    check_topics_timer_.stop();
+    ROS_INFO("First pair of IMU and magnetometer messages received.");
+  }
 
   if (!initialized_ || stateless_)
   {
@@ -369,4 +386,13 @@ void ImuFilterRos::imuMagVectorCallback(const MagVectorMsg::ConstPtr& mag_vector
   mag_msg.magnetic_field = mag_vector_msg->vector;
   // leaving mag_msg.magnetic_field_covariance set to all zeros (= "covariance unknown")
   mag_republisher_.publish(mag_msg);
+}
+
+void ImuFilterRos::checkTopicsTimerCallback(const ros::TimerEvent&)
+{
+  if (use_mag_)
+    ROS_WARN_STREAM("Still waiting for data on topics " << ros::names::resolve("imu") << "/data_raw"
+                    << " and " << ros::names::resolve("imu") << "/mag" << "...");
+  else
+    ROS_WARN_STREAM("Still waiting for data on topic " << ros::names::resolve("imu") << "/data_raw" << "...");
 }
