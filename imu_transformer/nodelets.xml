@@ -1,0 +1,9 @@
+<library path="lib/libimu_transformer_nodelet">
+  <class name="imu_transformer/imu_transformer_nodelet"
+         type="imu_transformer::ImuTransformerNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      IMU Transformer Nodelet
+    </description>
+  </class>
+</library>
