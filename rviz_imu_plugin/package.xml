@@ -1,6 +1,6 @@
 <package>
   <name>rviz_imu_plugin</name>
-  <version>1.0.14</version>
+  <version>1.0.15</version>
   <description>  
     RVIZ plugin for IMU visualization
   </description>

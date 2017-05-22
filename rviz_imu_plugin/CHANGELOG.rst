@@ -2,8 +2,8 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.15 (2017-05-22)
+-------------------
 * Add option to display orientation in world frame (`#69 <https://github.com/ccny-ros-pkg/imu_tools/issues/69>`_)
   Per REP 145 IMU orientation is in the world frame. Rotating the
   orientation data to transform into the sensor frame results in strange
