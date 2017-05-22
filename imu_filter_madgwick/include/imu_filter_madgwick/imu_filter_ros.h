@@ -65,9 +65,9 @@ class ImuFilterRos
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
 
-    boost::shared_ptr<Synchronizer> sync_;
     boost::shared_ptr<ImuSubscriber> imu_subscriber_;
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
+    boost::shared_ptr<Synchronizer> sync_;
 
     // Adapter to support the use_magnetic_field_msg param.
     boost::shared_ptr<MagVectorSubscriber> vector_mag_subscriber_;
@@ -79,6 +79,7 @@ class ImuFilterRos
     tf2_ros::TransformBroadcaster tf_broadcaster_;
 
     boost::shared_ptr<FilterConfigServer> config_server_;
+    ros::Timer check_topics_timer_;
 
     // **** paramaters
     WorldFrame::WorldFrame world_frame_;
@@ -117,6 +118,7 @@ class ImuFilterRos
                        float roll, float pitch, float yaw);
 
     void reconfigCallback(FilterConfig& config, uint32_t level);
+    void checkTopicsTimerCallback(const ros::TimerEvent&);
 };
 
 #endif // IMU_FILTER_IMU_MADWICK_FILTER_ROS_H
