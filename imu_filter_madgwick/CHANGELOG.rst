@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.4 (2017-05-22)
+------------------
 * Print warning if waiting for topic
   Closes `#61 <https://github.com/ccny-ros-pkg/imu_tools/issues/61>`_.
 * Fix boost::lock_error on shutdown
