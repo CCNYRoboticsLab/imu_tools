@@ -54,12 +54,8 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
     use_magnetic_field_msg_ = true;
 
   std::string world_frame;
-  // Default should become false for next release
-  if (!nh_private_.getParam ("world_frame", world_frame)) {
-    world_frame = "nwu";
-    ROS_WARN("Deprecation Warning: The parameter world_frame was not set, default is 'nwu'.");
-    ROS_WARN("Starting with ROS Lunar, world_frame will default to 'enu'!");
-  }
+  if (!nh_private_.getParam ("world_frame", world_frame))
+    world_frame = "enu";
 
   if (world_frame == "ned") {
     world_frame_ = WorldFrame::NED;
