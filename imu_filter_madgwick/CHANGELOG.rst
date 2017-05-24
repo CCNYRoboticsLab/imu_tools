@@ -2,6 +2,14 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Initial release into Lunar
+* Remove support for Vector3 mag messages
+* Change default world_frame = enu
+* Rewrite rosbags: Use MagneticField for magnetometer
+* Contributors: Martin Günther
+
 1.1.4 (2017-05-22)
 ------------------
 * Print warning if waiting for topic
