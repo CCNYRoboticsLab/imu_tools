@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.5 (2017-05-24)
+------------------
 * Initial release into Lunar
 * Remove support for Vector3 mag messages
 * Change default world_frame = enu
