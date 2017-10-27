@@ -36,4 +36,4 @@ void ImuFilterNodelet::onInit()
   filter_.reset(new ImuFilterRos(nh, nh_private));
 }
 
-PLUGINLIB_DECLARE_CLASS(imu_filter_madgwick, ImuFilterNodelet, ImuFilterNodelet, nodelet::Nodelet);
+PLUGINLIB_EXPORT_CLASS(ImuFilterNodelet, nodelet::Nodelet)
