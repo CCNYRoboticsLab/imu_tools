@@ -186,7 +186,12 @@ void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
   if (constant_dt_ > 0.0)
     dt = constant_dt_;
   else
+  {
     dt = (time - last_time_).toSec();
+    if (time.isZero())
+      ROS_WARN_STREAM_THROTTLE(5.0, "The IMU message time stamp is zero, and the parameter constant_dt is not set!" <<
+                                    " The filter will not update the orientation.");
+  }
 
   last_time_ = time;
 
@@ -251,7 +256,12 @@ void ImuFilterRos::imuMagCallback(
   if (constant_dt_ > 0.0)
     dt = constant_dt_;
   else
+  {
     dt = (time - last_time_).toSec();
+    if (time.isZero())
+      ROS_WARN_STREAM_THROTTLE(5.0, "The IMU message time stamp is zero, and the parameter constant_dt is not set!" <<
+                                    " The filter will not update the orientation.");
+  }
 
   last_time_ = time;
 
