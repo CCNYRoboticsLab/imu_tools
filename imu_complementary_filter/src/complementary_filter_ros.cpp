@@ -118,7 +118,13 @@ void ComplementaryFilterROS::initializeParams()
     bias_alpha = 0.01;
   if (!nh_private_.getParam ("do_adaptive_gain", do_adaptive_gain))
     do_adaptive_gain = true;
-
+  
+  double orientation_stddev;
+  if (!nh_private_.getParam ("orientation_stddev", orientation_stddev))
+    orientation_stddev = 0.0;
+  
+  orientation_variance_ = orientation_stddev * orientation_stddev;
+ 
   filter_.setDoBiasEstimation(do_bias_estimation);
   filter_.setDoAdaptiveGain(do_adaptive_gain);
 
@@ -229,6 +235,16 @@ void ComplementaryFilterROS::publish(
   boost::shared_ptr<sensor_msgs::Imu> imu_msg = 
       boost::make_shared<sensor_msgs::Imu>(*imu_msg_raw);
   tf::quaternionTFToMsg(q, imu_msg->orientation);
+  
+  imu_msg->orientation_covariance[0] = orientation_variance_;
+  imu_msg->orientation_covariance[1] = 0.0;
+  imu_msg->orientation_covariance[2] = 0.0;
+  imu_msg->orientation_covariance[3] = 0.0;
+  imu_msg->orientation_covariance[4] = orientation_variance_;
+  imu_msg->orientation_covariance[5] = 0.0;
+  imu_msg->orientation_covariance[6] = 0.0;
+  imu_msg->orientation_covariance[7] = 0.0;
+  imu_msg->orientation_covariance[8] = orientation_variance_;
 
   // Account for biases.
   if (filter_.getDoBiasEstimation())
