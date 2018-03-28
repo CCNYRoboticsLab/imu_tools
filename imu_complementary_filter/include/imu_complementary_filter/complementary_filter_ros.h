@@ -86,6 +86,7 @@ class ComplementaryFilterROS
     double constant_dt_;
     bool publish_debug_topics_;
     std::string fixed_frame_;
+    double orientation_variance_;
 
     // State variables:
     ComplementaryFilter filter_;
