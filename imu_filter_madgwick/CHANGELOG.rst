@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.6 (2018-05-25)
+------------------
 * Remove outdated Makefile
 * update to use non deprecated pluginlib macro (`#77 <https://github.com/ccny-ros-pkg/imu_tools/issues/77>`_)
 * Add warning when IMU time stamp is zero
