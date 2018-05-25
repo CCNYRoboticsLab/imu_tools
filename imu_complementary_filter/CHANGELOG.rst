@@ -2,6 +2,12 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add std dev parameter to orientation estimate from filter (`#85 <https://github.com/ccny-ros-pkg/imu_tools/issues/85>`_)
+  Similar to `#41 <https://github.com/ccny-ros-pkg/imu_tools/issues/41>`_, but not using dynamic_reconfigure as not implemented for complementary filter
+* Contributors: Stefan Kohlbrecher
+
 1.1.4 (2017-05-22)
 ------------------
 
