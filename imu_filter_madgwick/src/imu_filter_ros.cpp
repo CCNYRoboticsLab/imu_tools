@@ -164,17 +164,21 @@ void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
   ros::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
-  if (!initialized_)
-  {
-    check_topics_timer_.stop();
-    ROS_INFO("First IMU message received.");
-  }
-
   if (!initialized_ || stateless_)
   {
     geometry_msgs::Quaternion init_q;
-    StatelessOrientation::computeOrientation(world_frame_, lin_acc, init_q);
+    if (!StatelessOrientation::computeOrientation(world_frame_, lin_acc, init_q))
+    {
+      ROS_WARN_THROTTLE(5.0, "The IMU seems to be in free fall, cannot determine gravity direction!");
+      return;
+    }
     filter_.setOrientation(init_q.w, init_q.x, init_q.y, init_q.z);
+  }
+
+  if (!initialized_)
+  {
+    ROS_INFO("First IMU message received.");
+    check_topics_timer_.stop();
 
     // initialize time
     last_time_ = time;
@@ -229,12 +233,6 @@ void ImuFilterRos::imuMagCallback(
   double pitch = 0.0;
   double yaw = 0.0;
 
-  if (!initialized_)
-  {
-    check_topics_timer_.stop();
-    ROS_INFO("First pair of IMU and magnetometer messages received.");
-  }
-
   if (!initialized_ || stateless_)
   {
     // wait for mag message without NaN / inf
@@ -244,9 +242,20 @@ void ImuFilterRos::imuMagCallback(
     }
 
     geometry_msgs::Quaternion init_q;
-    StatelessOrientation::computeOrientation(world_frame_, lin_acc, mag_compensated, init_q);
+    if (!StatelessOrientation::computeOrientation(world_frame_, lin_acc, mag_compensated, init_q))
+    {
+      ROS_WARN_THROTTLE(5.0, "The IMU seems to be in free fall or close to magnetic north pole, cannot determine gravity direction!");
+      return;
+    }
     filter_.setOrientation(init_q.w, init_q.x, init_q.y, init_q.z);
+  }
 
+  if (!initialized_)
+  {
+    ROS_INFO("First pair of IMU and magnetometer messages received.");
+    check_topics_timer_.stop();
+
+    // initialize time
     last_time_ = time;
     initialized_ = true;
   }
