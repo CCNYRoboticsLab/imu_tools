@@ -73,7 +73,7 @@ public:
     virtual void reset();
     virtual void createProperties();
 
-    void setTopic(const std::string& topic);
+    //void setTopic(const std::string& topic);
     const std::string& getTopic() { return topic_; }
 
     void setBoxEnabled(bool enabled);

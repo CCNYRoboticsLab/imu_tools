@@ -81,15 +81,18 @@ class ImuOrientationVisual
   private:
 
     void create();
+    inline bool checkQuaterinonValidity(
+        const sensor_msgs::Imu::ConstPtr& msg);
 
     Ogre::Quaternion orientation_;
 
     float scale_x_, scale_y_, scale_z_;
     QColor color_;
     float alpha_;
+    bool quat_valid_;
 
     Shape * orientation_box_;
-  
+
     // A SceneNode whose pose is set to match the coordinate frame of
     // the Imu message header.
     Ogre::SceneNode * frame_node_;
