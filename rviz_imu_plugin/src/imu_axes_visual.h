@@ -74,10 +74,13 @@ class ImuAxesVisual
   private:
 
     void create();
+    inline bool checkQuaterinonValidity(
+        const sensor_msgs::Imu::ConstPtr& msg);
 
     Ogre::Quaternion orientation_;
 
     float scale_;
+    bool quat_valid_;
 
     Axes * orientation_axes_;
   
