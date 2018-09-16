@@ -30,12 +30,14 @@
 
 #include "imu_axes_visual.h"
 
+#include <ros/ros.h>
+
 namespace rviz
 {
 
 ImuAxesVisual::ImuAxesVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node):
   orientation_axes_(NULL),
-  scale_(0.15)
+  scale_(0.15), quat_valid_(true)
 {
   scene_manager_ = scene_manager;
 
@@ -78,19 +80,35 @@ void ImuAxesVisual::hide()
 
 void ImuAxesVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
 {
-  orientation_ = Ogre::Quaternion(msg->orientation.w,
-                                  msg->orientation.x,
-                                  msg->orientation.y,
-                                  msg->orientation.z);
+  if (checkQuaterinonValidity(msg)) {
+    if (!quat_valid_) {
+      ROS_INFO("rviz_imu_plugin axes get valid quaternion, "
+               "axes show recovered");
+      quat_valid_ = true;
+    }
+    orientation_ = Ogre::Quaternion(msg->orientation.w,
+                                    msg->orientation.x,
+                                    msg->orientation.y,
+                                    msg->orientation.z);
+  } else {
+    if (quat_valid_) {
+      ROS_WARN("rviz_imu_plugin axes get invalid quaternion (%lf, %lf, %lf, %lf), "
+               "change orientation to fixed unit", msg->orientation.w,
+               msg->orientation.x,msg->orientation.y,msg->orientation.z);
+      quat_valid_ = false;
+    }
+    // if quaternion is invalid, give a unit quat to Ogre
+    orientation_ = Ogre::Quaternion();
+  }
 
-  if (orientation_axes_) 
+  if (orientation_axes_)
     orientation_axes_->setOrientation(orientation_);
 }
 
-void ImuAxesVisual::setScale(float scale) 
-{ 
-  scale_ = scale; 
-  if (orientation_axes_) 
+void ImuAxesVisual::setScale(float scale)
+{
+  scale_ = scale;
+  if (orientation_axes_)
    orientation_axes_->setScale(Ogre::Vector3(scale_, scale_, scale_));
 }
 
@@ -103,6 +121,23 @@ void ImuAxesVisual::setFrameOrientation(const Ogre::Quaternion& orientation)
 {
   frame_node_->setOrientation(orientation);
 }
+
+inline bool ImuAxesVisual::checkQuaterinonValidity(
+    const sensor_msgs::Imu::ConstPtr& msg) {
+
+  double x = msg->orientation.x,
+         y = msg->orientation.y,
+         z = msg->orientation.z,
+         w = msg->orientation.w;
+  // OGRE could handle unnormalized quaternion, but quat's length extremely small
+  // may indicates that invalid (0, 0, 0, 0) quat is passed, this will lead ogre
+  // crash unexpectly
+  if ( std::sqrt( x*x + y*y + z*z + w*w ) < 0.0001 ) {
+    return false;
+  }
+  return true;
+}
+
 
 } // end namespace rviz
 
