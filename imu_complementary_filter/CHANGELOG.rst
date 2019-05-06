@@ -2,6 +2,12 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove junk xml (`#93 <https://github.com/ccny-ros-pkg/imu_tools/issues/93>`_)
+* Fix C++14 builds (`#89 <https://github.com/ccny-ros-pkg/imu_tools/issues/89>`_)
+* Contributors: David V. Lu!!, Paul Bovbel
+
 1.2.0 (2018-05-25)
 ------------------
 * Add std dev parameter to orientation estimate from filter (`#85 <https://github.com/ccny-ros-pkg/imu_tools/issues/85>`_)
