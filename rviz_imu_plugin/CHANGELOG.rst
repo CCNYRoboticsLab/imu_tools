@@ -2,6 +2,12 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix includes, typos and log messages
+* print ros_warn and give unit quaternion to ogre to prevent rviz crash (`#90 <https://github.com/ccny-ros-pkg/imu_tools/issues/90>`_)
+* Contributors: Jackey-Huo, Martin Günther
+
 1.1.6 (2018-05-25)
 ------------------
 
