@@ -70,6 +70,8 @@ public:
     virtual ~ImuDisplay();
 
     virtual void onInitialize();
+    virtual void onEnable();
+    virtual void onDisable();
     virtual void reset();
     virtual void createProperties();
 
