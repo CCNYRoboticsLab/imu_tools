@@ -47,6 +47,35 @@ ImuDisplay::ImuDisplay():
 
 }
 
+void ImuDisplay::onEnable()
+{
+    MessageFilterDisplay<sensor_msgs::Imu>::onEnable();
+
+    if (box_enabled_)
+        box_visual_->show();
+    else
+        box_visual_->hide();
+
+    if (axes_enabled_)
+        axes_visual_->show();
+    else
+        axes_visual_->hide();
+
+    if (acc_enabled_)
+        acc_visual_->show();
+    else
+        acc_visual_->hide();
+}
+
+void ImuDisplay::onDisable()
+{
+    MessageFilterDisplay<sensor_msgs::Imu>::onDisable();
+
+    box_visual_->hide();
+    axes_visual_->hide();
+    acc_visual_->hide();
+}
+
 void ImuDisplay::onInitialize()
 {
     MFDClass::onInitialize();
@@ -57,26 +86,15 @@ void ImuDisplay::onInitialize()
     // create orientation box visual
     box_visual_ = new ImuOrientationVisual(
                 context_->getSceneManager(), scene_node_);
-    if (box_enabled_)
-        box_visual_->show();
-    else
-        box_visual_->hide();
 
     // create orientation axes visual
     axes_visual_ = new ImuAxesVisual(
                 context_->getSceneManager(), scene_node_);
-    if (axes_enabled_)
-        axes_visual_->show();
-    else
-        axes_visual_->hide();
 
     // create acceleration vector visual
     acc_visual_ = new ImuAccVisual(
                 context_->getSceneManager(), scene_node_);
-    if (acc_enabled_)
-        acc_visual_->show();
-    else
-        acc_visual_->hide();}
+}
 
 ImuDisplay::~ImuDisplay()
 {
@@ -99,7 +117,7 @@ void ImuDisplay::updateTop() {
 
 void ImuDisplay::updateBox() {
     box_enabled_ = box_enabled_property_->getBool();
-    if (box_enabled_)
+    if (isEnabled() && box_enabled_)
         box_visual_->show();
     else
         box_visual_->hide();
@@ -113,7 +131,7 @@ void ImuDisplay::updateBox() {
 
 void ImuDisplay::updateAxes() {
     axes_enabled_ = axes_enabled_property_->getBool();
-    if (axes_enabled_)
+    if (isEnabled() && axes_enabled_)
         axes_visual_->show();
     else
         axes_visual_->hide();
@@ -124,7 +142,7 @@ void ImuDisplay::updateAxes() {
 
 void ImuDisplay::updateAcc() {
     acc_enabled_ = acc_enabled_property_->getBool();
-    if (acc_enabled_)
+    if (isEnabled() && acc_enabled_)
         acc_visual_->show();
     else
         acc_visual_->hide();
@@ -137,6 +155,9 @@ void ImuDisplay::updateAcc() {
 
 void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
 {
+    if(!isEnabled())
+        return;
+
     ++messages_received_;
 
     std::stringstream ss;
