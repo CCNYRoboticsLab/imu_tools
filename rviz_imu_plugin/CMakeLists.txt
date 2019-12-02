@@ -47,6 +47,8 @@ set(SRC_FILES  src/imu_display.cpp
 ## Build libraries
 add_library(${PROJECT_NAME} ${SRC_FILES})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 ## Link the library with whatever Qt libraries have been defined by
 ## the ``find_package(Qt4 ...)`` line above, or by the
 ## ``set(QT_LIBRARIES Qt5::Widgets)``, and with whatever libraries
