@@ -309,3 +309,31 @@ void ImuFilter::madgwickAHRSupdateIMU(
   // Normalise quaternion
   normalizeQuaternion (q0, q1, q2, q3);
 }
+
+
+void ImuFilter::getGravity(float& rx, float& ry, float& rz,
+    float gravity)
+{
+    // Estimate gravity vector from current orientation
+    switch (world_frame_) {
+      case WorldFrame::NED:
+        // Gravity: [0, 0, -1]
+        rotateAndScaleVector(q0, q1, q2, q3,
+            0.0, 0.0, -2.0*gravity,
+            rx, ry, rz);
+        break;
+      case WorldFrame::NWU:
+        // Gravity: [0, 0, 1]
+        rotateAndScaleVector(q0, q1, q2, q3,
+            0.0, 0.0, 2.0*gravity,
+            rx, ry, rz);
+        break;
+      default:
+      case WorldFrame::ENU:
+        // Gravity: [0, 0, 1]
+        rotateAndScaleVector(q0, q1, q2, q3,
+            0.0, 0.0, 2.0*gravity,
+            rx, ry, rz);
+        break;
+    }
+}

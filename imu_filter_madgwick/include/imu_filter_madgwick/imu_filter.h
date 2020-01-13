@@ -44,7 +44,7 @@ class ImuFilter
 
     // **** state variables
     double q0, q1, q2, q3;  // quaternion
-    float w_bx_, w_by_, w_bz_; // 
+    float w_bx_, w_by_, w_bz_; //
 
 public:
     void setAlgorithmGain(double gain)
@@ -99,6 +99,9 @@ public:
     void madgwickAHRSupdateIMU(float gx, float gy, float gz,
                                float ax, float ay, float az,
                                float dt);
+
+    void getGravity(float& rx, float& ry, float& rz,
+                    float gravity = 9.80665);
 };
 
 #endif // IMU_FILTER_IMU_MADWICK_FILTER_H
