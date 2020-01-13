@@ -48,6 +48,8 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
    fixed_frame_ = "odom";
   if (!nh_private_.getParam ("constant_dt", constant_dt_))
     constant_dt_ = 0.0;
+  if (!nh_private_.getParam ("remove_gravity_vector", remove_gravity_vector_))
+    remove_gravity_vector_= false;
   if (!nh_private_.getParam ("publish_debug_topics", publish_debug_topics_))
     publish_debug_topics_= false;
   if (!nh_private_.getParam ("use_magnetic_field_msg", use_magnetic_field_msg_))
@@ -87,6 +89,11 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
     ROS_INFO("Using dt computed from message headers");
   else
     ROS_INFO("Using constant dt of %f sec", constant_dt_);
+
+  if (remove_gravity_vector_)
+    ROS_INFO("The gravity vector will be removed from the acceleration");
+  else
+    ROS_INFO("The gravity vector is kept in the IMU message.");
 
   // **** register dynamic reconfigure
   config_server_.reset(new FilterConfigServer(nh_private_));
@@ -346,6 +353,15 @@ void ImuFilterRos::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   imu_msg->orientation_covariance[6] = 0.0;
   imu_msg->orientation_covariance[7] = 0.0;
   imu_msg->orientation_covariance[8] = orientation_variance_;
+
+
+  if(remove_gravity_vector_) {
+    float gx, gy, gz;
+    filter_.getGravity(gx, gy, gz);
+    imu_msg->linear_acceleration.x -= gx;
+    imu_msg->linear_acceleration.y -= gy;
+    imu_msg->linear_acceleration.z -= gz;
+  }
 
   imu_publisher_.publish(imu_msg);
 
