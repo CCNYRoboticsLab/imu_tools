@@ -3,7 +3,7 @@ project(imu_filter_madgwick)
 
 find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs geometry_msgs tf2 tf2_geometry_msgs tf2_ros nodelet pluginlib message_filters dynamic_reconfigure)
 
-find_package(Boost REQUIRED COMPONENTS system thread signals)
+find_package(Boost REQUIRED COMPONENTS system thread)
 
 # Generate dynamic parameters
 generate_dynamic_reconfigure_options(cfg/ImuFilterMadgwick.cfg)
