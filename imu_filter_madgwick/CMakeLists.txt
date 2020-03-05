@@ -38,6 +38,9 @@ add_executable(imu_filter_node src/imu_filter_node.cpp)
 add_dependencies(imu_filter_node ${PROJECT_NAME}_gencfg)
 target_link_libraries(imu_filter_node imu_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
+add_executable(imu_add_covariances src/imu_add_covariances.cpp)
+# add_dependencies(imu_filter_node ${PROJECT_NAME}_gencfg)
+target_link_libraries(imu_add_covariances ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 install(TARGETS imu_filter imu_filter_nodelet imu_filter_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

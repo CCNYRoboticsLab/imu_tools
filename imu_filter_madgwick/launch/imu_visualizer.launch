@@ -1,0 +1,16 @@
+<launch>
+
+<node name="optic_flow_node" pkg="optic_flow_node" type="wide_field_optic_flow_node" output="screen" >
+        <param name="image_center_x" value="320"/>
+        <param name="image_center_y" value="240"/>
+        <param name="inner_ring_radius" value="220"/>
+        <param name="ring_dr" value="10"/>
+        <param name="num_ring_points" value="161"/>
+        <param name="num_rings" value="5"/>
+        <param name="pixel_scale" value="215"/>
+</node>
+
+<node pkg="tf2_ros" type="static_transform_publisher" name="tf_imu" args="0.0 0.0 0.0 0.0 0.0 0 1.0 map imu_link" />
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find nearness_estimation)/rviz/imu.rviz"/>
+
+</launch>
