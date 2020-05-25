@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.2 (2020-05-25)
+------------------
 * fix install path & boost linkage issues
 * Contributors: Martin Günther, Sean Yen
 
