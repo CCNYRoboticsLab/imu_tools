@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.8 (2020-05-25)
+------------------
 * Drop the signals component of Boost (`#103 <https://github.com/ccny-ros-pkg/imu_tools/issues/103>`_)
   Unused and is removed in Boost 1.71 (Ubuntu Focal). Signals2 is header-only.
 * Add the option to remove the gravity vector (`#101 <https://github.com/ccny-ros-pkg/imu_tools/issues/101>`_)
