@@ -2,6 +2,11 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix install path & boost linkage issues
+* Contributors: Sean Yen
+
 1.1.7 (2019-05-06)
 ------------------
 * Remove junk xml (`#93 <https://github.com/ccny-ros-pkg/imu_tools/issues/93>`_)

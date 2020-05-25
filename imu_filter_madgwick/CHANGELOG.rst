@@ -2,6 +2,15 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Drop the signals component of Boost (`#103 <https://github.com/ccny-ros-pkg/imu_tools/issues/103>`_)
+  Unused and is removed in Boost 1.71 (Ubuntu Focal). Signals2 is header-only.
+* Add the option to remove the gravity vector (`#101 <https://github.com/ccny-ros-pkg/imu_tools/issues/101>`_)
+* Rewrite rosbags: Use MagneticField for magnetometer
+* fix install path & boost linkage issues
+* Contributors: Alexis Paques, Martin Günther, Mike Purvis, Sean Yen
+
 1.1.7 (2019-05-06)
 ------------------
 * Skip messages and warn if computeOrientation fails
