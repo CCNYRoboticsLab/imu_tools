@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
+cmake_policy(SET CMP0048 NEW)
 project(imu_filter_madgwick)
 
 find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs geometry_msgs tf2 tf2_geometry_msgs tf2_ros nodelet pluginlib message_filters dynamic_reconfigure)
