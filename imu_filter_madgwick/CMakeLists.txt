@@ -36,7 +36,7 @@ ament_target_dependencies(imu_filter_madgwick
 )
 rclcpp_components_register_nodes(imu_filter_madgwick "ImuFilterMadgwickRos")
 
-add_executable(imu_filter_madgwick_node src/main.cpp)
+add_executable(imu_filter_madgwick_node src/imu_filter_node.cpp)
 target_link_libraries(imu_filter_madgwick_node imu_filter_madgwick)
 ament_target_dependencies(imu_filter_madgwick_node
   rclcpp)
@@ -54,5 +54,13 @@ install(TARGETS
 install(DIRECTORY
   launch config
   DESTINATION share/${PROJECT_NAME})
+
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  add_subdirectory(test)
+endif()
+
+ament_export_include_directories(include)
+ament_export_libraries(imu_filter_madgwick)
 
 ament_package()
