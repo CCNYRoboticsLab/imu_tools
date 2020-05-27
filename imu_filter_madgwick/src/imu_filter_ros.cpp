@@ -373,6 +373,14 @@ void ImuFilterMadgwickRos::publishFilteredMsg(const ImuMsg::SharedPtr imu_msg_ra
   imu_msg.orientation_covariance[7] = 0.0;
   imu_msg.orientation_covariance[8] = orientation_variance_;
 
+  if(remove_gravity_vector_) {
+    float gx, gy, gz;
+    filter_.getGravity(gx, gy, gz);
+    imu_msg.linear_acceleration.x -= gx;
+    imu_msg.linear_acceleration.y -= gy;
+    imu_msg.linear_acceleration.z -= gz;
+  }
+
   imu_publisher_->publish(imu_msg);
 
   if(publish_debug_topics_)
