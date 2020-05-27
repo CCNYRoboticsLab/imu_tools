@@ -21,15 +21,21 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <rclcpp/rclcpp.hpp>
 
 #include "imu_filter_madgwick/imu_filter_ros.h"
 
-int main (int argc, char **argv)
-{
-  ros::init (argc, argv, "ImuFilter");
-  ros::NodeHandle nh;
-  ros::NodeHandle nh_private("~");
-  ImuFilterRos imu_filter(nh, nh_private);
-  ros::spin();
+int main(int argc, char *argv[]) {
+  rclcpp::init(argc, argv);
+
+  rclcpp::executors::SingleThreadedExecutor exec;
+  rclcpp::NodeOptions options;
+
+  auto node = std::make_shared<ImuFilterMadgwickRos>(options);
+  exec.add_node(node);
+  exec.spin();
+
+  rclcpp::shutdown();
+
   return 0;
 }
