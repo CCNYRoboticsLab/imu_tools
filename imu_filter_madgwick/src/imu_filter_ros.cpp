@@ -56,8 +56,6 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
   declare_parameter("publish_debug_topics", false);
   get_parameter("publish_debug_topics", publish_debug_topics_);
 
-  RCLCPP_ERROR_STREAM(get_logger(), "use_mag: " << use_mag_ << " stateless: " << stateless_);
-
   std::string world_frame;
   declare_parameter("world_frame", "enu");
   get_parameter("world_frame", world_frame);
@@ -86,15 +84,15 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
   // if constant_dt_ is 0.0 (default), use IMU timestamp to determine dt
   // otherwise, it will be constant
   if (constant_dt_ == 0.0) {
-    RCLCPP_ERROR(get_logger(), "Using dt computed from message headers");
+    RCLCPP_INFO(get_logger(), "Using dt computed from message headers");
   } else {
-    RCLCPP_ERROR(get_logger(), "Using constant dt of %f sec", constant_dt_);
+    RCLCPP_INFO(get_logger(), "Using constant dt of %f sec", constant_dt_);
   }
 
   if (remove_gravity_vector_) {
-    RCLCPP_ERROR(get_logger(), "The gravity vector will be removed from the acceleration");
+    RCLCPP_INFO(get_logger(), "The gravity vector will be removed from the acceleration");
   } else {
-    RCLCPP_ERROR(get_logger(), "The gravity vector is kept in the IMU message.");
+    RCLCPP_INFO(get_logger(), "The gravity vector is kept in the IMU message.");
   }
 
   // TODO: Add reconfigure parameter descriptions.
@@ -418,14 +416,13 @@ void ImuFilterMadgwickRos::reconfigCallback(const rcl_interfaces::msg::Parameter
 
     if (type == ParameterType::PARAMETER_DOUBLE)
     {
+      RCLCPP_INFO(get_logger(), "Parameter %s set to %f", name.c_str(), value.double_value);
       if (name == "gain") {
         gain = value.double_value;
         filter_.setAlgorithmGain(gain);
-        RCLCPP_INFO(get_logger(), "Imu filter gain set to %f", gain);
       } else if (name == "zeta") {
         zeta = value.double_value;
         filter_.setDriftBiasGain(zeta);
-        RCLCPP_INFO(get_logger(), "Gyro drift bias set to %f", zeta);
       } else if (name == "mag_bias_x") {
         mag_bias_.x = value.double_value;
       } else if (name == "mag_bias_y") {
@@ -438,9 +435,6 @@ void ImuFilterMadgwickRos::reconfigCallback(const rcl_interfaces::msg::Parameter
       }
     }
   }
-
-  RCLCPP_INFO(get_logger(), "Magnetometer bias values: %f %f %f", mag_bias_.x, mag_bias_.y,
-              mag_bias_.z);
 }
 
 void ImuFilterMadgwickRos::checkTopicsTimerCallback()
