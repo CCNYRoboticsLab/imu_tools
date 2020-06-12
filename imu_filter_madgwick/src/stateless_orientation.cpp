@@ -58,7 +58,7 @@ bool StatelessOrientation::computeOrientation(
 
   float Hx, Hy, Hz;
   float Mx, My, Mz;
-  float normH, invH, invA;
+  float normH;
 
   // A: pointing up
   float Ax = A.x, Ay = A.y, Az = A.z;
