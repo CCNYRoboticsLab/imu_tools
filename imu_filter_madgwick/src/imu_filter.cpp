@@ -162,9 +162,9 @@ static inline void compensateMagneticDistortion(
 
 
 ImuFilter::ImuFilter() :
+    gain_ (0.0), zeta_ (0.0), world_frame_(WorldFrame::ENU),
     q0(1.0), q1(0.0), q2(0.0), q3(0.0),
-    w_bx_(0.0), w_by_(0.0), w_bz_(0.0),
-    zeta_ (0.0), gain_ (0.0), world_frame_(WorldFrame::ENU)
+    w_bx_(0.0), w_by_(0.0), w_bz_(0.0)
 {
 }
 
@@ -260,7 +260,6 @@ void ImuFilter::madgwickAHRSupdateIMU(
     float ax, float ay, float az,
     float dt)
 {
-  float recipNorm;
   float s0, s1, s2, s3;
   float qDot1, qDot2, qDot3, qDot4;
 
