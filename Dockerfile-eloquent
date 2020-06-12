@@ -1,0 +1,15 @@
+FROM ros:eloquent-ros-core
+
+RUN apt-get update && apt-get install -y \
+    build-essential clang-format python3-colcon-common-extensions python3-rosdep
+
+# Create ROS workspace
+COPY . /ws/src/imu_tools
+WORKDIR /ws
+
+# Use rosdep to install all dependencies (including ROS itself)
+RUN rosdep init && rosdep update && rosdep install --from-paths src -i -y --rosdistro eloquent
+
+RUN /bin/bash -c "source /opt/ros/eloquent/setup.bash && \
+    colcon build --parallel-workers 1 && \
+    colcon test --parallel-workers 1"
