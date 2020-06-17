@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(imu_filter_madgwick)
 
+cmake_policy(SET CMP0048 NEW)
+
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)

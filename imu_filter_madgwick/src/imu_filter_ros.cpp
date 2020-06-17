@@ -143,24 +143,24 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
       std::bind(&ImuFilterMadgwickRos::reconfigCallback, this, _1));
 
   // **** register publishers
-  imu_publisher_ = create_publisher<sensor_msgs::msg::Imu>("~/imu/data", 5);
+  imu_publisher_ = create_publisher<sensor_msgs::msg::Imu>("imu/data", 5);
   if (publish_debug_topics_) {
     rpy_filtered_debug_publisher_ =
-        create_publisher<geometry_msgs::msg::Vector3Stamped>("~/imu/rpy/filtered", 5);
+        create_publisher<geometry_msgs::msg::Vector3Stamped>("imu/rpy/filtered", 5);
 
     rpy_raw_debug_publisher_ =
-        create_publisher<geometry_msgs::msg::Vector3Stamped>("~/imu/rpy/raw", 5);
+        create_publisher<geometry_msgs::msg::Vector3Stamped>("imu/rpy/raw", 5);
   }
 
   // **** register subscribers
   // Synchronize inputs. Topic subscriptions happen on demand in the connection callback.
   const int queue_size = 5;
   rmw_qos_profile_t qos = rmw_qos_profile_sensor_data;
-  imu_subscriber_.reset(new ImuSubscriber(this, "~/imu/data_raw", qos));
+  imu_subscriber_.reset(new ImuSubscriber(this, "imu/data_raw", qos));
 
   if (use_mag_)
   {
-    mag_subscriber_.reset(new MagSubscriber(this, "~/imu/mag", qos));
+    mag_subscriber_.reset(new MagSubscriber(this, "imu/mag", qos));
 
     sync_.reset(new Synchronizer(SyncPolicy(queue_size), *imu_subscriber_, *mag_subscriber_));
     sync_->registerCallback(&ImuFilterMadgwickRos::imuMagCallback, this);
@@ -180,6 +180,8 @@ void ImuFilterMadgwickRos::imuCallback(const ImuMsg::SharedPtr imu_msg_raw) {
   const geometry_msgs::msg::Vector3 &ang_vel = imu_msg_raw->angular_velocity;
   const geometry_msgs::msg::Vector3 &lin_acc = imu_msg_raw->linear_acceleration;
 
+  rclcpp::Clock steady_clock(RCL_STEADY_TIME); // for throttle logger message
+
   rclcpp::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
@@ -188,7 +190,6 @@ void ImuFilterMadgwickRos::imuCallback(const ImuMsg::SharedPtr imu_msg_raw) {
     geometry_msgs::msg::Quaternion init_q;
     if (!StatelessOrientation::computeOrientation(world_frame_, lin_acc, init_q))
     {
-      rclcpp::Clock steady_clock(RCL_STEADY_TIME);
       RCLCPP_WARN_THROTTLE(get_logger(), steady_clock, 5.0, "The IMU seems to be in free fall, cannot determine gravity direction!");
       return;
     }
@@ -213,7 +214,6 @@ void ImuFilterMadgwickRos::imuCallback(const ImuMsg::SharedPtr imu_msg_raw) {
   {
     dt = (time - last_time_).seconds();
     if (0 == time.nanoseconds()) {
-      rclcpp::Clock steady_clock(RCL_STEADY_TIME);
       RCLCPP_WARN_STREAM_THROTTLE(get_logger(), steady_clock, 5.0, "The IMU message time stamp is zero, and the parameter constant_dt is not set!" <<
                                     " The filter will not update the orientation.");
     }
@@ -232,8 +232,8 @@ void ImuFilterMadgwickRos::imuCallback(const ImuMsg::SharedPtr imu_msg_raw) {
     publishTransform(imu_msg_raw);
 }
 
-void ImuFilterMadgwickRos::imuMagCallback(const ImuMsg::SharedPtr imu_msg_raw,
-                                          const MagMsg::SharedPtr mag_msg) {
+void ImuFilterMadgwickRos::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
+                                          MagMsg::ConstSharedPtr mag_msg) {
   std::lock_guard<std::mutex> lock(mutex_);
 
   const geometry_msgs::msg::Vector3 &ang_vel = imu_msg_raw->angular_velocity;
@@ -253,6 +253,8 @@ void ImuFilterMadgwickRos::imuMagCallback(const ImuMsg::SharedPtr imu_msg_raw,
   double pitch = 0.0;
   double yaw = 0.0;
 
+  rclcpp::Clock steady_clock(RCL_STEADY_TIME); // for throttle logger message
+
   if (!initialized_ || stateless_) 
   {
     // wait for mag message without NaN / inf
@@ -264,7 +266,6 @@ void ImuFilterMadgwickRos::imuMagCallback(const ImuMsg::SharedPtr imu_msg_raw,
     geometry_msgs::msg::Quaternion init_q;
     if (!StatelessOrientation::computeOrientation(world_frame_, lin_acc, mag_compensated, init_q))
     {
-      rclcpp::Clock steady_clock(RCL_STEADY_TIME);
       RCLCPP_WARN_THROTTLE(get_logger(), steady_clock, 5.0, "The IMU seems to be in free fall or close to magnetic north pole, cannot determine gravity direction!");
       return;
     }
@@ -289,7 +290,6 @@ void ImuFilterMadgwickRos::imuMagCallback(const ImuMsg::SharedPtr imu_msg_raw,
   {
     dt = (time - last_time_).seconds();
     if (0 == time.nanoseconds()) {
-      rclcpp::Clock steady_clock(RCL_STEADY_TIME);
       RCLCPP_WARN_STREAM_THROTTLE(get_logger(), steady_clock, 5.0, "The IMU message time stamp is zero, and the parameter constant_dt is not set!" <<
                                     " The filter will not update the orientation.");
     }
@@ -323,7 +323,7 @@ void ImuFilterMadgwickRos::imuMagCallback(const ImuMsg::SharedPtr imu_msg_raw,
   }
 }
 
-void ImuFilterMadgwickRos::publishTransform(const ImuMsg::SharedPtr imu_msg_raw) {
+void ImuFilterMadgwickRos::publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw) {
   double q0,q1,q2,q3;
   filter_.getOrientation(q0,q1,q2,q3);
   geometry_msgs::msg::TransformStamped transform;
@@ -349,7 +349,7 @@ void ImuFilterMadgwickRos::publishTransform(const ImuMsg::SharedPtr imu_msg_raw)
 
 }
 
-void ImuFilterMadgwickRos::publishFilteredMsg(const ImuMsg::SharedPtr imu_msg_raw) {
+void ImuFilterMadgwickRos::publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw) {
   double q0,q1,q2,q3;
   filter_.getOrientation(q0,q1,q2,q3);
 
@@ -441,13 +441,13 @@ void ImuFilterMadgwickRos::checkTopicsTimerCallback()
 {
   if (use_mag_)
     RCLCPP_WARN_STREAM(get_logger(), "Still waiting for data on topics "
-                                         << "~/imu/data_raw"
+                                         << "/imu/data_raw"
                                          << " and "
-                                         << "~/imu/mag"
+                                         << "/imu/mag"
                                          << "...");
   else
     RCLCPP_WARN_STREAM(get_logger(), "Still waiting for data on topic "
-                                         << "~/imu/data_raw"
+                                         << "/imu/data_raw"
                                          << "...");
 }
 

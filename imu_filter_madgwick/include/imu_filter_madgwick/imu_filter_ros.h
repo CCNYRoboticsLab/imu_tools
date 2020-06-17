@@ -39,7 +39,7 @@
 class ImuFilterMadgwickRos : public rclcpp::Node {
   typedef sensor_msgs::msg::Imu ImuMsg;
   typedef sensor_msgs::msg::MagneticField MagMsg;
-  typedef geometry_msgs::msg::Vector3Stamped MagVectorMsg;
+  typedef geometry_msgs::msg::Vector3Stamped RpyVectorMsg;
 
   typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg> SyncPolicy;
   typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
@@ -55,8 +55,8 @@ private:
   std::shared_ptr<Synchronizer> sync_;
 
   rclcpp::Publisher<MagMsg>::SharedPtr mag_republisher_;
-  rclcpp::Publisher<MagVectorMsg>::SharedPtr rpy_filtered_debug_publisher_;
-  rclcpp::Publisher<MagVectorMsg>::SharedPtr rpy_raw_debug_publisher_;
+  rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_filtered_debug_publisher_;
+  rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_raw_debug_publisher_;
   rclcpp::Publisher<ImuMsg>::SharedPtr imu_publisher_;
   tf2_ros::TransformBroadcaster tf_broadcaster_;
 
@@ -89,12 +89,12 @@ private:
   ImuFilter filter_;
 
   // **** member functions
-  void imuMagCallback(const ImuMsg::SharedPtr imu_msg_raw, const MagMsg::SharedPtr mav_msg);
+  void imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw, MagMsg::ConstSharedPtr mag_msg);
 
   void imuCallback(const ImuMsg::SharedPtr imu_msg_raw);
 
-  void publishFilteredMsg(const ImuMsg::SharedPtr imu_msg_raw);
-  void publishTransform(const ImuMsg::SharedPtr imu_msg_raw);
+  void publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw);
+  void publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw);
 
   void publishRawMsg(const rclcpp::Time &t, float roll, float pitch, float yaw);
 
