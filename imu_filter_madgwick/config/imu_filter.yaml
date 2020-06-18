@@ -1,0 +1,16 @@
+imu_filter:
+  ros__parameters:
+    stateless: false
+    use_mag: true
+    publish_tf: true
+    reverse_tf: false
+    fixed_frame: "odom"
+    constant_dt: 0.0
+    publish_debug_topics: false
+    world_frame: "enu"
+    gain: 0.1
+    zeta: 0.0
+    mag_bias_x: 0.0
+    mag_bias_y: 0.0
+    mag_bias_z: 0.0
+    orientation_stddev: 0.0

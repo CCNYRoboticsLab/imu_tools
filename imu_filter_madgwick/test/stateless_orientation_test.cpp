@@ -8,8 +8,8 @@ bool computeOrientation(
     float Mx, float My, float Mz,
     double& q0, double& q1, double& q2, double& q3) {
 
-  geometry_msgs::Vector3 A, M;
-  geometry_msgs::Quaternion orientation;
+  geometry_msgs::msg::Vector3 A, M;
+  geometry_msgs::msg::Quaternion orientation;
   A.x = Ax; A.y = Ay; A.z = Az;
   M.x = Mx; M.y = My; M.z = Mz;
 
@@ -28,8 +28,8 @@ bool computeOrientation(
     float Ax, float Ay, float Az,
     double& q0, double& q1, double& q2, double& q3) {
 
-  geometry_msgs::Vector3 A;
-  geometry_msgs::Quaternion orientation;
+  geometry_msgs::msg::Vector3 A;
+  geometry_msgs::msg::Quaternion orientation;
   A.x = Ax; A.y = Ay; A.z = Az;
 
   bool res = StatelessOrientation::computeOrientation(FRAME, A, orientation);
