@@ -184,7 +184,7 @@ void ImuFilterMadgwickRos::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw) {
   rclcpp::Time time = imu_msg_raw->header.stamp;
   imu_frame_ = imu_msg_raw->header.frame_id;
 
-  if (!initialized_ || stateless_) 
+  if (!initialized_ || stateless_)
   {
     geometry_msgs::msg::Quaternion init_q;
     if (!StatelessOrientation::computeOrientation(world_frame_, lin_acc, init_q))
@@ -195,7 +195,7 @@ void ImuFilterMadgwickRos::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw) {
     filter_.setOrientation(init_q.w, init_q.x, init_q.y, init_q.z);
   }
 
-  if (!initialized_) 
+  if (!initialized_)
   {
     RCLCPP_INFO(get_logger(), "First IMU message received.");
     check_topics_timer_->cancel();
@@ -254,7 +254,7 @@ void ImuFilterMadgwickRos::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
 
   rclcpp::Clock steady_clock(RCL_STEADY_TIME); // for throttle logger message
 
-  if (!initialized_ || stateless_) 
+  if (!initialized_ || stateless_)
   {
     // wait for mag message without NaN / inf
     if(!std::isfinite(mag_fld.x) || !std::isfinite(mag_fld.y) || !std::isfinite(mag_fld.z))
@@ -296,7 +296,7 @@ void ImuFilterMadgwickRos::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
 
   last_time_ = time;
 
-  if (!stateless_) 
+  if (!stateless_)
   {
     filter_.madgwickAHRSupdate(
       ang_vel.x, ang_vel.y, ang_vel.z,
@@ -390,7 +390,7 @@ void ImuFilterMadgwickRos::publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw
   }
 }
 
-void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time &t, 
+void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time &t,
   float roll, float pitch, float yaw)
 {
   geometry_msgs::msg::Vector3Stamped rpy;
@@ -439,15 +439,9 @@ void ImuFilterMadgwickRos::reconfigCallback(const rcl_interfaces::msg::Parameter
 void ImuFilterMadgwickRos::checkTopicsTimerCallback()
 {
   if (use_mag_)
-    RCLCPP_WARN_STREAM(get_logger(), "Still waiting for data on topics "
-                                         << "/imu/data_raw"
-                                         << " and "
-                                         << "/imu/mag"
-                                         << "...");
+    RCLCPP_WARN_STREAM(get_logger(), "Still waiting for data on topics /imu/data_raw and /imu/mag...");
   else
-    RCLCPP_WARN_STREAM(get_logger(), "Still waiting for data on topic "
-                                         << "/imu/data_raw"
-                                         << "...");
+    RCLCPP_WARN_STREAM(get_logger(), "Still waiting for data on topic /imu/data_raw...");
 }
 
 #include "rclcpp_components/register_node_macro.hpp"

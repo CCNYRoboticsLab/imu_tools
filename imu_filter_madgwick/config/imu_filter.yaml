@@ -12,8 +12,5 @@ imu_filter:
     zeta: 0.0
     mag_bias_x: 0.0
     mag_bias_y: 0.0
-    mag_bias_z: 0.0    
+    mag_bias_z: 0.0
     orientation_stddev: 0.0
-
-
-

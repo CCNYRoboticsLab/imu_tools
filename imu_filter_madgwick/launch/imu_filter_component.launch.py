@@ -12,7 +12,7 @@ def generate_launch_description():
 
     param_config = os.path.join(get_package_share_directory('imu_filter_madgwick'), 'config', 'imu_filter.yaml')
 
-    # https://github.com/ros2/rclcpp/issues/715#issuecomment-490425249    
+    # https://github.com/ros2/rclcpp/issues/715#issuecomment-490425249
     # Composable Nodes use different yaml parsing than a standalone node.
     # This code will load the parameters from the yaml (removing the namespace/nodename/ros__parameters heading) so
     # that the parameters are parsed and named properly for the composable node.

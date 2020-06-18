@@ -72,4 +72,4 @@ public:
     }
 };
 
-}  // namespace 
+}  // namespace

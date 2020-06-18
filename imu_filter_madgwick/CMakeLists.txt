@@ -1,7 +1,6 @@
-cmake_minimum_required(VERSION 3.5)
-project(imu_filter_madgwick)
-
+cmake_minimum_required(VERSION 3.5.1)
 cmake_policy(SET CMP0048 NEW)
+project(imu_filter_madgwick)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -26,10 +25,10 @@ include_directories(include)
 add_library(imu_filter_madgwick SHARED
             src/imu_filter.cpp
             src/imu_filter_ros.cpp
-            src/stateless_orientation.cpp)   
-ament_target_dependencies(imu_filter_madgwick 
-  rclcpp 
-  rclcpp_components 
+            src/stateless_orientation.cpp)
+ament_target_dependencies(imu_filter_madgwick
+  rclcpp
+  rclcpp_components
   std_msgs
   sensor_msgs
   geometry_msgs
