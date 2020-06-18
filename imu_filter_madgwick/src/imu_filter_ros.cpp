@@ -35,7 +35,7 @@ using namespace rclcpp;
 using namespace std::placeholders;
 
 ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
-    : Node("imu_filter_madgwick", options), tf_broadcaster_(this), initialized_(false) {
+    : BaseNode("imu_filter_madgwick", options), tf_broadcaster_(this), initialized_(false) {
   RCLCPP_INFO (get_logger(), "Starting ImuFilter");
 
   // **** get paramters
@@ -95,34 +95,33 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
     RCLCPP_INFO(get_logger(), "The gravity vector is kept in the IMU message.");
   }
 
-  // TODO: Add reconfigure parameter descriptions.
-  // gen.add("gain", double_t, 0, "Gain of the filter. Higher values lead to faster convergence but
-  // more noise. Lower values lead to slower convergence but smoother signal.", 0.1, 0.0, 1.0)
-  // gen.add("zeta", double_t, 0, "Gyro drift gain (approx. rad/s).", 0, -1.0, 1.0)
-  // gen.add("mag_bias_x", double_t, 0, "Magnetometer bias (hard iron correction), x component.", 0,
-  // -10.0, 10.0) gen.add("mag_bias_y", double_t, 0, "Magnetometer bias (hard iron correction), y
-  // component.", 0, -10.0, 10.0) gen.add("mag_bias_z", double_t, 0, "Magnetometer bias (hard iron
-  // correction), z component.", 0, -10.0, 10.0) gen.add("orientation_stddev", double_t, 0,"Standard
-  // deviation of the orientation estimate.", 0, 0, 1.0)
-
+  // **** define reconfigurable parameters.
   double gain;
-  declare_parameter("gain", 0.1);
-  get_parameter("gain", gain);
+  floating_point_range float_range = {0.0, 1.0, 0.01};
+  add_parameter("gain", rclcpp::ParameterValue(0.1), float_range, "Gain of the filter. Higher values lead to faster convergence but"
+                "more noise. Lower values lead to slower convergence but smoother signal.");
   double zeta;
-  declare_parameter("zeta", 0.0);
-  get_parameter("zeta", zeta);
+  float_range = {-1.0, 1.0, 0.01};
+  add_parameter("zeta", rclcpp::ParameterValue(0.0), float_range, "Gyro drift gain (approx. rad/s).");
   double mag_bias_x;
-  declare_parameter("mag_bias_x", 0.0);
-  get_parameter("mag_bias_x", mag_bias_x);
+  float_range = {-10.0, 10.0, 0.01};
+  add_parameter("mag_bias_x", rclcpp::ParameterValue(0.0), float_range, "Magnetometer bias (hard iron correction), x component.");
   double mag_bias_y;
-  declare_parameter("mag_bias_y", 0.0);
-  get_parameter("mag_bias_y", mag_bias_y);
+  add_parameter("mag_bias_y", rclcpp::ParameterValue(0.0), float_range, "Magnetometer bias (hard iron correction), y component.");
   double mag_bias_z;
-  declare_parameter("mag_bias_z", 0.0);
-  get_parameter("mag_bias_z", mag_bias_z);
+  add_parameter("mag_bias_z", rclcpp::ParameterValue(0.0), float_range, "Magnetometer bias (hard iron correction), z component.");
   double orientation_stddev;
-  declare_parameter("orientation_stddev", 0.0);
+  float_range = {0.0, 1.0, 0.001};
+  add_parameter("orientation_stddev", rclcpp::ParameterValue(0.0), float_range, "Standard deviation of the orientation estimate.");
+
+  // **** get initial values of reconfigurable parameters.
+  get_parameter("gain", gain);
+  get_parameter("zeta", zeta);
+  get_parameter("mag_bias_x", mag_bias_x);
+  get_parameter("mag_bias_y", mag_bias_y);
+  get_parameter("mag_bias_z", mag_bias_z);
   get_parameter("orientation_stddev", orientation_stddev);
+
   filter_.setAlgorithmGain(gain);
   filter_.setDriftBiasGain(zeta);
   RCLCPP_INFO(get_logger(), "Imu filter gain set to %f", gain);
@@ -174,7 +173,7 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
       std::chrono::seconds(10), std::bind(&ImuFilterMadgwickRos::checkTopicsTimerCallback, this));
 }
 
-void ImuFilterMadgwickRos::imuCallback(const ImuMsg::SharedPtr imu_msg_raw) {
+void ImuFilterMadgwickRos::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw) {
   std::lock_guard<std::mutex> lock(mutex_);
 
   const geometry_msgs::msg::Vector3 &ang_vel = imu_msg_raw->angular_velocity;

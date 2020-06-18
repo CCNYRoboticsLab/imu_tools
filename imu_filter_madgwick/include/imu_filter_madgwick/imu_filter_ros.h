@@ -35,8 +35,11 @@
 #include <sensor_msgs/msg/magnetic_field.hpp>
 
 #include "imu_filter_madgwick/imu_filter.h"
+#include "imu_filter_madgwick/base_node.hpp"
 
-class ImuFilterMadgwickRos : public rclcpp::Node {
+
+
+class ImuFilterMadgwickRos : public imu_filter::BaseNode {
   typedef sensor_msgs::msg::Imu ImuMsg;
   typedef sensor_msgs::msg::MagneticField MagMsg;
   typedef geometry_msgs::msg::Vector3Stamped RpyVectorMsg;
@@ -54,7 +57,6 @@ private:
   std::shared_ptr<MagSubscriber> mag_subscriber_;
   std::shared_ptr<Synchronizer> sync_;
 
-  rclcpp::Publisher<MagMsg>::SharedPtr mag_republisher_;
   rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_filtered_debug_publisher_;
   rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_raw_debug_publisher_;
   rclcpp::Publisher<ImuMsg>::SharedPtr imu_publisher_;
@@ -91,7 +93,7 @@ private:
   // **** member functions
   void imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw, MagMsg::ConstSharedPtr mag_msg);
 
-  void imuCallback(const ImuMsg::SharedPtr imu_msg_raw);
+  void imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw);
 
   void publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw);
   void publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw);
