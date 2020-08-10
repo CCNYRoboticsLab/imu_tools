@@ -97,21 +97,21 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
 
   // **** define reconfigurable parameters.
   double gain;
-  floating_point_range float_range = {0.0, 1.0, 0.01};
+  floating_point_range float_range = {0.0, 1.0, 0};
   add_parameter("gain", rclcpp::ParameterValue(0.1), float_range, "Gain of the filter. Higher values lead to faster convergence but"
                 "more noise. Lower values lead to slower convergence but smoother signal.");
   double zeta;
-  float_range = {-1.0, 1.0, 0.01};
+  float_range = {-1.0, 1.0, 0};
   add_parameter("zeta", rclcpp::ParameterValue(0.0), float_range, "Gyro drift gain (approx. rad/s).");
   double mag_bias_x;
-  float_range = {-10.0, 10.0, 0.01};
+  float_range = {-10.0, 10.0, 0};
   add_parameter("mag_bias_x", rclcpp::ParameterValue(0.0), float_range, "Magnetometer bias (hard iron correction), x component.");
   double mag_bias_y;
   add_parameter("mag_bias_y", rclcpp::ParameterValue(0.0), float_range, "Magnetometer bias (hard iron correction), y component.");
   double mag_bias_z;
   add_parameter("mag_bias_z", rclcpp::ParameterValue(0.0), float_range, "Magnetometer bias (hard iron correction), z component.");
   double orientation_stddev;
-  float_range = {0.0, 1.0, 0.001};
+  float_range = {0.0, 1.0, 0};
   add_parameter("orientation_stddev", rclcpp::ParameterValue(0.0), float_range, "Standard deviation of the orientation estimate.");
 
   // **** get initial values of reconfigurable parameters.
