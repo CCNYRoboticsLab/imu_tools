@@ -33,6 +33,7 @@
 #include <message_filters/synchronizer.h>
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
+#include <tf2/LinearMath/Quaternion.h>
 
 #include "imu_filter_madgwick/imu_filter.h"
 #include "imu_filter_madgwick/base_node.hpp"
@@ -81,11 +82,13 @@ private:
   bool remove_gravity_vector_;
   geometry_msgs::msg::Vector3 mag_bias_;
   double orientation_variance_;
+  double yaw_offset_total_;
 
   // **** state variables
   std::mutex mutex_;
   bool initialized_;
   rclcpp::Time last_time_;
+  tf2::Quaternion yaw_offsets_;
 
   // **** filter implementation
   ImuFilter filter_;
@@ -102,4 +105,6 @@ private:
 
   void reconfigCallback(const rcl_interfaces::msg::ParameterEvent::SharedPtr event);
   void checkTopicsTimerCallback();
+
+  void applyYawOffset(double& q0, double& q1, double& q2, double& q3);
 };
