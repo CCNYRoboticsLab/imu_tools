@@ -63,6 +63,10 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
   declare_parameter("declination", 0.0); 
   get_parameter("declination", declination);
 
+  // create yaw offset quaternion
+  yaw_offset_total_ = yaw_offset - declination;
+  yaw_offsets_.setRPY(0, 0, yaw_offset_total_);  // Create this quaternion for yaw offset (radians)
+  
   std::string world_frame;
   declare_parameter("world_frame", "enu");
   get_parameter("world_frame", world_frame);
