@@ -34,6 +34,7 @@
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <dynamic_reconfigure/server.h>
+#include <tf2/LinearMath/Quaternion.h>
 
 #include "imu_filter_madgwick/imu_filter.h"
 #include "imu_filter_madgwick/ImuFilterMadgwickConfig.h"
@@ -62,10 +63,12 @@ class ImuFilterRos
 
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
+    double yaw_offset_total_;
 
     boost::shared_ptr<ImuSubscriber> imu_subscriber_;
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
     boost::shared_ptr<Synchronizer> sync_;
+    tf2::Quaternion yaw_offsets_;
 
     ros::Publisher rpy_filtered_debug_publisher_;
     ros::Publisher rpy_raw_debug_publisher_;
@@ -111,6 +114,8 @@ class ImuFilterRos
 
     void reconfigCallback(FilterConfig& config, uint32_t level);
     void checkTopicsTimerCallback(const ros::TimerEvent&);
+
+    void applyYawOffset(double& q0, double& q1, double& q2, double& q3);
 };
 
 #endif // IMU_FILTER_IMU_MADWICK_FILTER_ROS_H
