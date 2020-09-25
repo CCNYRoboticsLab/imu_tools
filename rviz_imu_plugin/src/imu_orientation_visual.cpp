@@ -28,12 +28,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+
 #include "imu_orientation_visual.h"
 
-#include <ros/ros.h>
+#include <rclcpp/rclcpp.hpp>
 #include <cmath>
+#include <rviz_rendering/objects/shape.hpp>
 
-namespace rviz
+namespace rviz_imu_plugin
 {
 
 ImuOrientationVisual::ImuOrientationVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node):
@@ -69,7 +73,7 @@ void ImuOrientationVisual::show()
 {
   if (!orientation_box_)
   {
-    orientation_box_ = new Shape(Shape::Cube, scene_manager_, frame_node_);
+    orientation_box_ = new rviz_rendering::Shape(rviz_rendering::Shape::Cube, scene_manager_, frame_node_);
     orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
     orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
     orientation_box_->setOrientation(orientation_);
@@ -85,12 +89,12 @@ void ImuOrientationVisual::hide()
   }
 }
 
-void ImuOrientationVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
+void ImuOrientationVisual::setMessage(const sensor_msgs::msg::Imu::ConstSharedPtr msg)
 {
   if (checkQuaternionValidity(msg)) {
     if (!quat_valid_) {
-      ROS_INFO("rviz_imu_plugin got valid quaternion, "
-               "displaying true orientation");
+//      ROS_INFO("rviz_imu_plugin got valid quaternion, "
+//               "displaying true orientation");
       quat_valid_ = true;
     }
     orientation_ = Ogre::Quaternion(msg->orientation.w,
@@ -99,9 +103,9 @@ void ImuOrientationVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
                                     msg->orientation.z);
   } else {
     if (quat_valid_) {
-      ROS_WARN("rviz_imu_plugin got invalid quaternion (%lf, %lf, %lf, %lf), "
-               "will display neutral orientation instead", msg->orientation.w,
-               msg->orientation.x,msg->orientation.y,msg->orientation.z);
+//      ROS_WARN("rviz_imu_plugin got invalid quaternion (%lf, %lf, %lf, %lf), "
+//               "will display neutral orientation instead", msg->orientation.w,
+//               msg->orientation.x,msg->orientation.y,msg->orientation.z);
       quat_valid_ = false;
     }
     // if quaternion is invalid, give a unit quat to Ogre
@@ -159,7 +163,7 @@ void ImuOrientationVisual::setFrameOrientation(const Ogre::Quaternion& orientati
 }
 
 inline bool ImuOrientationVisual::checkQuaternionValidity(
-    const sensor_msgs::Imu::ConstPtr& msg) {
+    const sensor_msgs::msg::Imu::ConstSharedPtr msg) {
 
   double x = msg->orientation.x,
          y = msg->orientation.y,

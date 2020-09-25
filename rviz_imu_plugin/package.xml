@@ -1,4 +1,4 @@
-<package>
+<package format="2">
   <name>rviz_imu_plugin</name>
   <version>1.2.2</version>
   <description>
@@ -9,20 +9,24 @@
   <author email="ivan.dryanovski@gmail.com">Ivan Dryanovski</author>
   <maintainer email="martin.guenther1980@gmail.com">Martin Günther</maintainer>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>sensor_msgs</depend>
+  
   <build_depend>qtbase5-dev</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>rviz</build_depend>
+  <build_depend>rviz_ogre_vendor</build_depend>  
 
-  <run_depend>libqt5-core</run_depend>
-  <run_depend>libqt5-gui</run_depend>
-  <run_depend>libqt5-widgets</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>rviz</run_depend>
+  <exec_depend>libqt5-core</exec_depend>
+  <exec_depend>libqt5-gui</exec_depend>
+  <exec_depend>libqt5-widgets</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rviz</exec_depend>
 
   <export>
     <rosdoc config="${prefix}/rosdoc.yaml"/>
-    <rviz plugin="${prefix}/plugin_description.xml"/>
+    <rviz plugin="plugin_description.xml"/>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

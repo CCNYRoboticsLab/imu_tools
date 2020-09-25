@@ -28,9 +28,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "imu_acc_visual.h"
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
 
-namespace rviz
+#include "imu_acc_visual.h"
+#include <rviz_rendering/objects/arrow.hpp>
+
+namespace rviz_imu_plugin
 {
 
 ImuAccVisual::ImuAccVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node):
@@ -68,7 +72,7 @@ void ImuAccVisual::show()
 {
   if (!acc_vector_)
   {
-    acc_vector_ = new Arrow(scene_manager_, frame_node_);
+    acc_vector_ = new rviz_rendering::Arrow(scene_manager_, frame_node_);
     acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
     acc_vector_->setDirection(direction_);
     acc_vector_->set(
@@ -88,7 +92,7 @@ void ImuAccVisual::hide()
   }
 }
 
-void ImuAccVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
+void ImuAccVisual::setMessage(const sensor_msgs::msg::Imu::ConstSharedPtr msg)
 {
   direction_ = Ogre::Vector3(msg->linear_acceleration.x,
                              msg->linear_acceleration.y,
