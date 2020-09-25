@@ -56,6 +56,17 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
   declare_parameter("publish_debug_topics", false);
   get_parameter("publish_debug_topics", publish_debug_topics_);
 
+  double yaw_offset = 0.0;
+  declare_parameter("yaw_offset", 0.0); 
+  get_parameter("yaw_offset", yaw_offset);
+  double declination = 0.0;
+  declare_parameter("declination", 0.0); 
+  get_parameter("declination", declination);
+
+  // create yaw offset quaternion
+  yaw_offset_total_ = yaw_offset - declination;
+  yaw_offsets_.setRPY(0, 0, yaw_offset_total_);  // Create this quaternion for yaw offset (radians)
+  
   std::string world_frame;
   declare_parameter("world_frame", "enu");
   get_parameter("world_frame", world_frame);
@@ -348,10 +359,31 @@ void ImuFilterMadgwickRos::publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw) 
 
 }
 
+/**
+ * @brief Applies yaw offset quaternion (yaw offset - declination) to the orientation quaternion.
+ * Alters the quaternion if there is a yaw offset.
+ * @param q0 quaternion x component
+ * @param q1 quaternion y component
+ * @param q2 quaternion z component
+ * @param q3 quaternion w component
+ **/
+void ImuFilterMadgwickRos::applyYawOffset(double& q0, double& q1, double& q2, double& q3) {
+  if (yaw_offset_total_ != 0.0) {
+    tf2::Quaternion offset_orientation = yaw_offsets_ * tf2::Quaternion(q1, q2, q3, q0);
+    offset_orientation.normalize ();
+    q1 = offset_orientation.x();
+    q2 = offset_orientation.y();
+    q3 = offset_orientation.z();
+    q0 = offset_orientation.w();
+  }
+}
+
 void ImuFilterMadgwickRos::publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw) {
   double q0,q1,q2,q3;
   filter_.getOrientation(q0,q1,q2,q3);
-
+  // apply yaw offsets
+  applyYawOffset (q0, q1, q2, q3);
+  
   // create and publish filtered IMU message
   ImuMsg imu_msg = *imu_msg_raw;
 
