@@ -41,7 +41,9 @@ set(dependencies
 set(SRC_FILES  src/imu_display.cpp
                src/imu_orientation_visual.cpp
                src/imu_axes_visual.cpp
-               src/imu_acc_visual.cpp)
+               src/imu_acc_visual.cpp
+               src/mag_display.cpp
+               src/mag_visual.cpp)
 
 ## Build libraries
 add_library(${PROJECT_NAME} SHARED ${SRC_FILES})

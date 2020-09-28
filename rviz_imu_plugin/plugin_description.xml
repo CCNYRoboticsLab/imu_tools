@@ -10,4 +10,14 @@
     <message_type>sensor_msgs/msg/Imu</message_type>
   </class>
 
+  <class name="rviz_imu_plugin/Mag"
+         type="rviz_imu_plugin::MagDisplay"
+         base_class_type="rviz_common::Display">
+
+    <description>
+      Displays the orientation of sensor_msgs/MagneticField messages.
+    </description>
+    <message_type>sensor_msgs/msg/MagneticField</message_type>
+  </class>
+
 </library>
