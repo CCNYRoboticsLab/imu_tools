@@ -37,7 +37,7 @@
 #include <cmath>
 
 #include <rviz_rendering/objects/axes.hpp>
-
+#include <rviz_common/logging.hpp>
 namespace rviz_imu_plugin
 {
 
@@ -88,8 +88,8 @@ void ImuAxesVisual::setMessage(const sensor_msgs::msg::Imu::ConstSharedPtr msg)
 {
   if (checkQuaternionValidity(msg)) {
     if (!quat_valid_) {
-//        setStatus(rviz_common::properties::StatusProperty::Ok, "Topic", "rviz_imu_plugin got valid quaternion, "
-//               "displaying true orientation");
+      RVIZ_COMMON_LOG_INFO_STREAM("rviz_imu_plugin got valid quaternion, "
+                                    "displaying true orientation");      
       quat_valid_ = true;
     }
     orientation_ = Ogre::Quaternion(msg->orientation.w,
@@ -98,9 +98,12 @@ void ImuAxesVisual::setMessage(const sensor_msgs::msg::Imu::ConstSharedPtr msg)
                                     msg->orientation.z);
   } else {
     if (quat_valid_) {
-//      ROS_WARN("rviz_imu_plugin got invalid quaternion (%lf, %lf, %lf, %lf), "
-//               "will display neutral orientation instead", msg->orientation.w,
-//               msg->orientation.x,msg->orientation.y,msg->orientation.z);
+      RVIZ_COMMON_LOG_WARNING_STREAM("rviz_imu_plugin got invalid quaternion (" << 
+                                  msg->orientation.w << "," <<
+                                  msg->orientation.x << "," <<
+                                  msg->orientation.y << "," <<
+                                  msg->orientation.z <<
+                                  "will display neutral orientation instead");
       quat_valid_ = false;
     }
     // if quaternion is invalid, give a unit quat to Ogre

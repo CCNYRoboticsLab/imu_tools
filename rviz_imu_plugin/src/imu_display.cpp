@@ -31,7 +31,7 @@
 #include "imu_display.h"
 
 #include <rviz_common/properties/status_property.hpp>
-
+#include <rviz_common/logging.hpp>
 namespace rviz_imu_plugin
 {
 
@@ -117,6 +117,13 @@ void ImuDisplay::reset()
     acc_visual_->hide();   
 }
 
+void ImuDisplay::update(float dt, float ros_dt) {
+    updateTop();
+    updateBox();
+    updateAxes();
+    updateAcc();
+}
+
 void ImuDisplay::updateTop() {
     fixed_frame_orientation_ = fixed_frame_orientation_property_->getBool();
 }
@@ -176,8 +183,8 @@ void ImuDisplay::processMessage( const sensor_msgs::msg::Imu::ConstSharedPtr msg
                                                   msg->header.stamp,
                                                   position, orientation ))
     {
-//        ROS_ERROR("Error transforming from frame '%s' to frame '%s'",
-//                  msg->header.frame_id.c_str(), fixed_frame_.toStdString().c_str());
+        RVIZ_COMMON_LOG_ERROR_STREAM("Error transforming from frame '" << msg->header.frame_id <<
+                                     "' to frame '" << fixed_frame_.toStdString() << "'");     
         return;
     }
 
@@ -188,7 +195,7 @@ void ImuDisplay::processMessage( const sensor_msgs::msg::Imu::ConstSharedPtr msg
                                                       msg->header.stamp,
                                                       unused, orientation ))
         {
- //           ROS_ERROR("Error getting fixed frame transform");
+            RVIZ_COMMON_LOG_ERROR_STREAM("Error getting fixed frame transform");              
             return;
         }
     }

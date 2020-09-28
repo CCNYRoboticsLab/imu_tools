@@ -35,9 +35,7 @@
 #include <tf2_ros/message_filter.h>
 #include <sensor_msgs/msg/imu.hpp>
 #include <rviz_common/display.hpp>
-//#include <rviz_common/visualizer_app.hpp>
 #include <rviz_common/properties/property.hpp>
-//#include <rviz_common/frame_manager_iface.hpp>
 #include <rviz_common/message_filter_display.hpp>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
@@ -74,6 +72,8 @@ public:
     virtual void onDisable() override;
 
     virtual void reset() override;
+    
+    virtual void update(float dt, float ros_dt) override;
 
 private:
     void createProperties();

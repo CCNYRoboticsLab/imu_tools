@@ -31,9 +31,6 @@
 #define RVIZ_IMU_PLUGIN_IMU_ACC_VISUAL_H
 
 #include <sensor_msgs/msg/imu.hpp>
-//#include <OGRE/OgreVector3.h>
-//#include <OGRE/OgreSceneNode.h>
-//#include <OGRE/OgreSceneManager.h>
 #include <rviz_common/display.hpp>
 #include <QColor>
 
