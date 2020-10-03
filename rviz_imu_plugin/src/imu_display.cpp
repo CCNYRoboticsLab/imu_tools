@@ -30,9 +30,9 @@
 
 #include "imu_display.h"
 
-#include <rviz/properties/status_property.h>
-
-namespace rviz
+#include <rviz_common/properties/status_property.hpp>
+#include <rviz_common/logging.hpp>
+namespace rviz_imu_plugin
 {
 
 ImuDisplay::ImuDisplay():
@@ -44,12 +44,11 @@ ImuDisplay::ImuDisplay():
     messages_received_(0)
 {
     createProperties();
-
 }
 
 void ImuDisplay::onEnable()
 {
-    MessageFilterDisplay<sensor_msgs::Imu>::onEnable();
+    MessageFilterDisplay<sensor_msgs::msg::Imu>::onEnable();
 
     if (box_enabled_)
         box_visual_->show();
@@ -65,15 +64,19 @@ void ImuDisplay::onEnable()
         acc_visual_->show();
     else
         acc_visual_->hide();
+
+    scene_node_->setVisible(true);
 }
 
 void ImuDisplay::onDisable()
 {
-    MessageFilterDisplay<sensor_msgs::Imu>::onDisable();
+    MessageFilterDisplay<sensor_msgs::msg::Imu>::onDisable();
 
     box_visual_->hide();
     axes_visual_->hide();
     acc_visual_->hide();
+
+    scene_node_->setVisible(false);
 }
 
 void ImuDisplay::onInitialize()
@@ -94,6 +97,8 @@ void ImuDisplay::onInitialize()
     // create acceleration vector visual
     acc_visual_ = new ImuAccVisual(
                 context_->getSceneManager(), scene_node_);
+
+    scene_node_->setVisible(isEnabled());
 }
 
 ImuDisplay::~ImuDisplay()
@@ -104,11 +109,19 @@ void ImuDisplay::reset()
 {
     MFDClass::reset();
     messages_received_ = 0;
-    setStatus(rviz::StatusProperty::Warn, "Topic", "No messages received" );
+
+    setStatus(rviz_common::properties::StatusProperty::Warn, "Topic", "No messages received" );
 
     box_visual_->hide();
     axes_visual_->hide();
     acc_visual_->hide();
+}
+
+void ImuDisplay::update(float dt, float ros_dt) {
+    updateTop();
+    updateBox();
+    updateAxes();
+    updateAcc();
 }
 
 void ImuDisplay::updateTop() {
@@ -153,7 +166,7 @@ void ImuDisplay::updateAcc() {
     acc_visual_->setDerotated(acc_derotated_property_->getBool());
 }
 
-void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
+void ImuDisplay::processMessage( const sensor_msgs::msg::Imu::ConstSharedPtr msg )
 {
     if(!isEnabled())
         return;
@@ -162,7 +175,7 @@ void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
 
     std::stringstream ss;
     ss << messages_received_ << " messages received";
-    setStatus( rviz::StatusProperty::Ok, "Topic", ss.str().c_str() );
+    setStatus( rviz_common::properties::StatusProperty::Ok, "Topic", ss.str().c_str() );
 
     Ogre::Quaternion orientation;
     Ogre::Vector3 position;
@@ -170,8 +183,8 @@ void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
                                                   msg->header.stamp,
                                                   position, orientation ))
     {
-        ROS_ERROR("Error transforming from frame '%s' to frame '%s'",
-                  msg->header.frame_id.c_str(), fixed_frame_.toStdString().c_str());
+        RVIZ_COMMON_LOG_ERROR_STREAM("Error transforming from frame '" << msg->header.frame_id <<
+                                     "' to frame '" << fixed_frame_.toStdString() << "'");
         return;
     }
 
@@ -182,7 +195,7 @@ void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
                                                       msg->header.stamp,
                                                       unused, orientation ))
         {
-            ROS_ERROR("Error getting fixed frame transform");
+            RVIZ_COMMON_LOG_ERROR_STREAM("Error getting fixed frame transform");
             return;
         }
     }
@@ -213,7 +226,7 @@ void ImuDisplay::processMessage( const sensor_msgs::Imu::ConstPtr& msg )
 void ImuDisplay::createProperties()
 {
     // **** top level properties
-    fixed_frame_orientation_property_ = new rviz::BoolProperty("fixed_frame_orientation",
+    fixed_frame_orientation_property_ = new rviz_common::properties::BoolProperty("fixed_frame_orientation",
                                                    fixed_frame_orientation_,
                                                    "Use world fixed frame for display orientation instead of IMU reference frame",
                                                    this,
@@ -221,42 +234,42 @@ void ImuDisplay::createProperties()
                                                    this);
 
     // **** box properties
-    box_category_ = new rviz::Property("Box properties",
+    box_category_ = new rviz_common::properties::Property("Box properties",
                                        QVariant(),
                                        "The list of all the box properties",
                                        this
                                        );
-    box_enabled_property_ = new rviz::BoolProperty("Enable box",
+    box_enabled_property_ = new rviz_common::properties::BoolProperty("Enable box",
                                                    box_enabled_,
                                                    "Enable the box display",
                                                    box_category_,
                                                    SLOT(updateBox()),
                                                    this);
-    box_scale_x_property_ = new rviz::FloatProperty("x_scale",
+    box_scale_x_property_ = new rviz_common::properties::FloatProperty("x_scale",
                                                     1.0,
                                                     "Box length (x), in meters.",
                                                     box_category_,
                                                     SLOT(updateBox()),
                                                     this);
-    box_scale_y_property_ = new rviz::FloatProperty("y_scale",
+    box_scale_y_property_ = new rviz_common::properties::FloatProperty("y_scale",
                                                     1.0,
                                                     "Box length (y), in meters.",
                                                     box_category_,
                                                     SLOT(updateBox()),
                                                     this);
-    box_scale_z_property_ = new rviz::FloatProperty("z_scale",
+    box_scale_z_property_ = new rviz_common::properties::FloatProperty("z_scale",
                                                     1.0,
                                                     "Box length (z), in meters.",
                                                     box_category_,
                                                     SLOT(updateBox()),
                                                     this);
-    box_color_property_  = new rviz::ColorProperty("Box color",
+    box_color_property_  = new rviz_common::properties::ColorProperty("Box color",
                                                    Qt::red,
                                                    "Color to draw IMU box",
                                                    box_category_,
                                                    SLOT(updateBox()),
                                                    this);
-    box_alpha_property_ = new rviz::FloatProperty("Box alpha",
+    box_alpha_property_ = new rviz_common::properties::FloatProperty("Box alpha",
                                                   1.0,
                                                   "0 is fully transparent, 1.0 is fully opaque.",
                                                   box_category_,
@@ -264,18 +277,18 @@ void ImuDisplay::createProperties()
                                                   this);
 
     // **** axes properties
-    axes_category_ = new rviz::Property("Axes properties",
+    axes_category_ = new rviz_common::properties::Property("Axes properties",
                                        QVariant(),
                                        "The list of all the axes properties",
                                        this
                                        );
-    axes_enabled_property_ = new rviz::BoolProperty("Enable axes",
+    axes_enabled_property_ = new rviz_common::properties::BoolProperty("Enable axes",
                                                    axes_enabled_,
                                                    "Enable the axes display",
                                                    axes_category_,
                                                    SLOT(updateAxes()),
                                                    this);
-    axes_scale_property_ = new rviz::FloatProperty("Axes scale",
+    axes_scale_property_ = new rviz_common::properties::FloatProperty("Axes scale",
                                                    true,
                                                    "Axes size, in meters",
                                                    axes_category_,
@@ -283,37 +296,37 @@ void ImuDisplay::createProperties()
                                                    this);
 
     // **** acceleration vector properties
-    acc_category_ = new rviz::Property("Acceleration properties",
+    acc_category_ = new rviz_common::properties::Property("Acceleration properties",
                                        QVariant(),
                                        "The list of all the acceleration properties",
                                        this
                                        );
-    acc_enabled_property_ = new rviz::BoolProperty("Enable acceleration",
+    acc_enabled_property_ = new rviz_common::properties::BoolProperty("Enable acceleration",
                                                    acc_enabled_,
                                                    "Enable the acceleration display",
                                                    acc_category_,
                                                    SLOT(updateAcc()),
                                                    this);
 
-    acc_derotated_property_ = new rviz::BoolProperty("Derotate acceleration",
+    acc_derotated_property_ = new rviz_common::properties::BoolProperty("Derotate acceleration",
                                                      true,
                                                      "If selected, the acceleration is derotated by the IMU orientation. Otherwise, the raw sensor reading is displayed.",
                                                      acc_category_,
                                                      SLOT(updateAcc()),
                                                      this);
-    acc_scale_property_ = new rviz::FloatProperty("Acc. vector scale",
+    acc_scale_property_ = new rviz_common::properties::FloatProperty("Acc. vector scale",
                                                   true,
                                                   "Acceleration vector size, in meters",
                                                   acc_category_,
                                                   SLOT(updateAcc()),
                                                   this);
-    acc_color_property_ =  new rviz::ColorProperty("Acc. vector color",
+    acc_color_property_ =  new rviz_common::properties::ColorProperty("Acc. vector color",
                                                    Qt::red,
                                                    "Color to draw acceleration vector.",
                                                    acc_category_,
                                                    SLOT(updateAcc()),
                                                    this);
-    acc_alpha_property_ = new rviz::FloatProperty("Acc. vector alpha",
+    acc_alpha_property_ = new rviz_common::properties::FloatProperty("Acc. vector alpha",
                                                  1.0,
                                                  "0 is fully transparent, 1.0 is fully opaque.",
                                                  acc_category_,
@@ -325,7 +338,7 @@ void ImuDisplay::createProperties()
 
 // Tell pluginlib about this class.  It is important to do this in
 // global scope, outside our package's namespace.
-#include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS(rviz::ImuDisplay, rviz::Display)
+#include <pluginlib/class_list_macros.hpp>
+PLUGINLIB_EXPORT_CLASS(rviz_imu_plugin::ImuDisplay, rviz_common::Display)
 
 
