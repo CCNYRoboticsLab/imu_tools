@@ -56,6 +56,10 @@ install(DIRECTORY
   launch config
   DESTINATION share/${PROJECT_NAME})
 
+install(DIRECTORY
+  include
+  DESTINATION include)
+
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   add_subdirectory(test)
@@ -63,5 +67,10 @@ endif()
 
 ament_export_include_directories(include)
 ament_export_libraries(imu_filter_madgwick)
+
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION include/${PROJECT_NAME}
+)
 
 ament_package()

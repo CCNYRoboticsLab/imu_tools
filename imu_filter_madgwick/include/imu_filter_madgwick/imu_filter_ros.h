@@ -52,7 +52,8 @@ class ImuFilterMadgwickRos : public imu_filter::BaseNode {
 
 public:
   explicit ImuFilterMadgwickRos(const rclcpp::NodeOptions &options);
-
+  void imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw);
+  
 private:
   std::shared_ptr<ImuSubscriber> imu_subscriber_;
   std::shared_ptr<MagSubscriber> mag_subscriber_;
@@ -96,7 +97,7 @@ private:
   // **** member functions
   void imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw, MagMsg::ConstSharedPtr mag_msg);
 
-  void imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw);
+  
 
   void publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw);
   void publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw);
