@@ -56,9 +56,6 @@ install(DIRECTORY
   launch config
   DESTINATION share/${PROJECT_NAME})
 
-install(DIRECTORY
-  include
-  DESTINATION include)
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
