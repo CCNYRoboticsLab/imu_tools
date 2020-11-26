@@ -11,17 +11,5 @@
     args="load imu_filter_madgwick/ImuFilterNodelet imu_manager" 
     output="screen">
 
-    # supported data rates: 4 8 16 24 32 40 ... 1000 (in ms)
-    <param name="use_magnetic_field_msg" value="true"/>
-
-    <param name="fixed_frame" value="map"/>
-    <param name="publish_tf" value="false"/>
-
-    <remap from="/imu/data_raw" to="/piksi/imu"/>
-    <remap from="/imu/mag" to="/piksi/mag"/>
-
   </node>
-  
-
-
 </launch>
