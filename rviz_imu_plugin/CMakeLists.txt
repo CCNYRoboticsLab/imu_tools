@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.5.1)
 cmake_policy(SET CMP0048 NEW)
 project(rviz_imu_plugin)
 
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
 find_package(ament_cmake REQUIRED COMPONENTS rviz)
 find_package(message_filters REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Widgets Test)
