@@ -1,4 +1,6 @@
-<package format="2">
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>rviz_imu_plugin</name>
   <version>1.2.2</version>
   <description>
@@ -11,18 +13,22 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>sensor_msgs</depend>
-
   <build_depend>qtbase5-dev</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>rviz</build_depend>
-  <build_depend>rviz_ogre_vendor</build_depend>
+
+  <depend>message_filters</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rviz_common</depend>
+  <depend>rviz_ogre_vendor</depend>
+  <depend>rviz_rendering</depend>
+  <depend>sensor_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
 
   <exec_depend>libqt5-core</exec_depend>
   <exec_depend>libqt5-gui</exec_depend>
+  <exec_depend>libqt5-opengl</exec_depend>
   <exec_depend>libqt5-widgets</exec_depend>
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>rviz</exec_depend>
 
   <export>
     <rosdoc config="${prefix}/rosdoc.yaml"/>

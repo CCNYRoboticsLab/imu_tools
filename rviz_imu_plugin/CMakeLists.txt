@@ -3,14 +3,14 @@ cmake_policy(SET CMP0048 NEW)
 project(rviz_imu_plugin)
 
 find_package(ament_cmake REQUIRED COMPONENTS rviz)
-find_package(rviz_common REQUIRED)
-find_package(rviz_rendering REQUIRED)
-find_package(rviz_ogre_vendor REQUIRED)
+find_package(message_filters REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Widgets Test)
+find_package(rviz_common REQUIRED)
+find_package(rviz_ogre_vendor REQUIRED)
+find_package(rviz_rendering REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
-find_package(message_filters REQUIRED)
 
 
 ## This setting causes Qt's "MOC" generation to happen automatically.
@@ -25,15 +25,14 @@ add_definitions(-DQT_NO_KEYWORDS)
 include_directories(include)
 
 set(dependencies
-    ament_cmake
-    rviz_common
-    rviz_rendering
-    rviz_ogre_vendor
+    message_filters
     Qt5
+    rviz_common
+    rviz_ogre_vendor
+    rviz_rendering
     sensor_msgs
     tf2
     tf2_ros
-    message_filters
 )
 
 ## Here we specify the list of source files.
@@ -69,8 +68,6 @@ ament_export_libraries(${PROJECT_NAME})
 ament_export_dependencies(
     Qt5
     rviz_common
-    rviz_rendering
-    rviz_ogre_vendor
     sensor_msgs
     tf2
     tf2_ros
