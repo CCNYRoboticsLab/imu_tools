@@ -46,7 +46,14 @@ install(TARGETS
   imu_filter_madgwick
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin)
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
 
 install(TARGETS
   imu_filter_madgwick_node
