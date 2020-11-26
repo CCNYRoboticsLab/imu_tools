@@ -37,8 +37,6 @@
 #include <rviz_common/display.hpp>
 #include <rviz_common/properties/property.hpp>
 #include <rviz_common/message_filter_display.hpp>
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreSceneManager.h>
 #include <tf2_ros/transform_listener.h>
 
 #include <rviz_common/properties/bool_property.hpp>
