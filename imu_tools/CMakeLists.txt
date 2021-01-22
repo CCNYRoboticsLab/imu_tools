@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.5.1)
-cmake_policy(SET CMP0048 NEW)
 project(imu_tools)
 find_package(catkin REQUIRED)
 catkin_metapackage()
