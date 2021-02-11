@@ -42,7 +42,6 @@ namespace imu_tools {
 ComplementaryFilterROS::ComplementaryFilterROS():
   Node("ComplementaryFilterROS"),
   initialized_filter_(false),
-  imu_subscriber_(this, "/imu/data_raw"),
   tf_broadcaster_(this)
 {
   RCLCPP_INFO(this->get_logger(), "Starting ComplementaryFilterROS");
@@ -52,39 +51,32 @@ ComplementaryFilterROS::ComplementaryFilterROS():
 
   // Register publishers:
   // TODO: Check why ros::names::resolve is need here
-  // imu_publisher_ = nh_.advertise<sensor_msgs::Imu>(ros::names::resolve("imu") + "/data", queue_size);
-  imu_publisher_ = this->create_publisher<sensor_msgs::msg::Imu>("imu/data", queue_size);
+  imu_publisher_ = this->create_publisher<ImuMsg>("imu/data", queue_size);
 
   if (publish_debug_topics_)
   {
-  //    rpy_publisher_ = nh_.advertise<geometry_msgs::Vector3Stamped>(
-  //                ros::names::resolve("imu") + "/rpy/filtered", queue_size);
       rpy_publisher_ = this->create_publisher<geometry_msgs::msg::Vector3Stamped>("imu/rpy/filtered", queue_size);
 
       if (filter_.getDoBiasEstimation())
       {
-      //  state_publisher_ = nh_.advertise<std_msgs::Bool>(
-      //              ros::names::resolve("imu") + "/steady_state", queue_size);
           state_publisher_ = this->create_publisher<std_msgs::msg::Bool>("/imu/steady_state", queue_size);
       }
   }
 
   // Register IMU raw data subscriber.
-  imu_subscriber_.unsubscribe();
-  imu_subscriber_.subscribe(this, "/imu/data_raw");
+  imu_subscriber_.reset(new ImuSubscriber(this, "/imu/data_raw"));
 
   // Register magnetic data subscriber.
   if (use_mag_)
   {
-    // mag_subscriber_.reset(new MagSubscriber(nh_, ros::names::resolve("imu") + "/mag", queue_size));
-    mag_subscriber_.subscribe(this, "/imu/mag");
+    mag_subscriber_.reset(new MagSubscriber(this, "/imu/mag"));
 
-    sync_ = new Synchronizer(SyncPolicy(queue_size), imu_subscriber_, mag_subscriber_);
+    sync_.reset(new Synchronizer(SyncPolicy(queue_size), *imu_subscriber_, *mag_subscriber_));
     sync_->registerCallback(&ComplementaryFilterROS::imuMagCallback, this);
   }
   else
   {
-    imu_subscriber_.registerCallback(&ComplementaryFilterROS::imuCallback, this);
+    imu_subscriber_->registerCallback(&ComplementaryFilterROS::imuCallback, this);
   }
 }
 
@@ -142,7 +134,7 @@ void ComplementaryFilterROS::initializeParams()
   }
 }
 
-void ComplementaryFilterROS::imuCallback(const ImuMsg::SharedPtr& imu_msg_raw)
+void ComplementaryFilterROS::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw)
 {
   const geometry_msgs::msg::Vector3& a = imu_msg_raw->linear_acceleration;
   const geometry_msgs::msg::Vector3& w = imu_msg_raw->angular_velocity;
@@ -172,8 +164,8 @@ void ComplementaryFilterROS::imuCallback(const ImuMsg::SharedPtr& imu_msg_raw)
   publish(imu_msg_raw);
 }
 
-void ComplementaryFilterROS::imuMagCallback(const ImuMsg::SharedPtr& imu_msg_raw,
-                                            const MagMsg::SharedPtr& mag_msg)
+void ComplementaryFilterROS::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
+                                            MagMsg::ConstSharedPtr mag_msg)
 {
   const geometry_msgs::msg::Vector3& a = imu_msg_raw->linear_acceleration;
   const geometry_msgs::msg::Vector3& w = imu_msg_raw->angular_velocity;
@@ -215,7 +207,7 @@ tf2::Quaternion ComplementaryFilterROS::hamiltonToTFQuaternion(
 }
 
 void ComplementaryFilterROS::publish(
-    const ImuMsg::SharedPtr& imu_msg_raw)
+    ImuMsg::ConstSharedPtr imu_msg_raw)
 {
   // Get the orientation:
   double q0, q1, q2, q3;

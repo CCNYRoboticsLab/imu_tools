@@ -60,19 +60,19 @@ class ComplementaryFilterROS : public rclcpp::Node
     // Convenience typedefs
     typedef sensor_msgs::msg::Imu ImuMsg;
     typedef sensor_msgs::msg::MagneticField MagMsg;
-    typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg> MySyncPolicy;
+    typedef geometry_msgs::msg::Vector3Stamped RpyVectorMsg;
     typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg> SyncPolicy;
     typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;    
     typedef message_filters::Subscriber<ImuMsg> ImuSubscriber;
     typedef message_filters::Subscriber<MagMsg> MagSubscriber;
 
     // ROS-related variables.
-    Synchronizer* sync_;
-    ImuSubscriber imu_subscriber_;
-    MagSubscriber mag_subscriber_;
+    std::shared_ptr<ImuSubscriber> imu_subscriber_;
+    std::shared_ptr<MagSubscriber> mag_subscriber_;
+    std::shared_ptr<Synchronizer> sync_;
 
     rclcpp::Publisher<ImuMsg>::SharedPtr imu_publisher_;
-    rclcpp::Publisher<geometry_msgs::msg::Vector3Stamped>::SharedPtr rpy_publisher_;
+    rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_publisher_;
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr state_publisher_;
     tf2_ros::TransformBroadcaster tf_broadcaster_;
          
@@ -91,10 +91,10 @@ class ComplementaryFilterROS : public rclcpp::Node
     bool initialized_filter_;
 
     void initializeParams();
-    void imuCallback(const ImuMsg::SharedPtr& imu_msg_raw);
-    void imuMagCallback(const ImuMsg::SharedPtr& imu_msg_raw,
-                        const MagMsg::SharedPtr& mav_msg);
-    void publish(const sensor_msgs::msg::Imu::SharedPtr& imu_msg_raw);
+    void imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw);
+    void imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
+                        MagMsg::ConstSharedPtr mav_msg);
+    void publish(ImuMsg::ConstSharedPtr imu_msg_raw);
 
     tf2::Quaternion hamiltonToTFQuaternion(
         double q0, double q1, double q2, double q3) const;
