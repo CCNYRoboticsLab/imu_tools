@@ -33,10 +33,9 @@
 
 int main (int argc, char **argv)
 {
-  ros::init (argc, argv, "ComplementaryFilterROS");
-  ros::NodeHandle nh;
-  ros::NodeHandle nh_private("~");
-  imu_tools::ComplementaryFilterROS filter(nh, nh_private);
-  ros::spin();
+  rclcpp::init(argc, argv);
+  auto filter = std::make_shared<imu_tools::ComplementaryFilterROS>();
+  rclcpp::spin(filter);
+  rclcpp::shutdown();
   return 0;
 }

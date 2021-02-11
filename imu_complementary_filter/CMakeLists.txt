@@ -8,7 +8,7 @@ find_package(message_filters REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
-find_package(cmake_modules REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 
 include_directories(
@@ -23,15 +23,15 @@ add_library(complementary_filter
   include/imu_complementary_filter/complementary_filter.h
   include/imu_complementary_filter/complementary_filter_ros.h
 )
-target_link_libraries(complementary_filter ${Boost_LIBRARIES} sensor_msgs)
+#target_link_libraries(complementary_filter rclcpp ${Boost_LIBRARIES} sensor_msgs)
 
 
 # create complementary_filter_node executable
 add_executable(complementary_filter_node
   src/complementary_filter_node.cpp)
 target_link_libraries(complementary_filter_node complementary_filter)
-ament_target_dependencies(complementary_filter sensor_msgs)
-ament_target_dependencies(complementary_filter_node sensor_msgs)
+ament_target_dependencies(complementary_filter rclcpp message_filters sensor_msgs std_msgs tf2 tf2_ros)
+#ament_target_dependencies(complementary_filter_node)
 
 install(TARGETS
         complementary_filter
