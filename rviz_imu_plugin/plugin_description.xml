@@ -1,13 +1,23 @@
-<library path="lib/librviz_imu_plugin">
+<library path="rviz_imu_plugin">
 
   <class name="rviz_imu_plugin/Imu"
-         type="rviz::ImuDisplay"
-         base_class_type="rviz::Display">
+         type="rviz_imu_plugin::ImuDisplay"
+         base_class_type="rviz_common::Display">
 
     <description>
       Displays the orientation and acceleration components of sensor_msgs/Imu messages.
     </description>
+    <message_type>sensor_msgs/msg/Imu</message_type>
+  </class>
 
+  <class name="rviz_imu_plugin/Mag"
+         type="rviz_imu_plugin::MagDisplay"
+         base_class_type="rviz_common::Display">
+
+    <description>
+      Displays the orientation of sensor_msgs/MagneticField messages.
+    </description>
+    <message_type>sensor_msgs/msg/MagneticField</message_type>
   </class>
 
 </library>

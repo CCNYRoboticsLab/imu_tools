@@ -1,4 +1,4 @@
-<package>
+<package format="3">
   <name> imu_tools </name>
   <version>1.2.2</version>
   <description>
@@ -9,13 +9,13 @@
 
   <url>http://ros.org/wiki/imu_tools</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <run_depend>imu_complementary_filter</run_depend>
-  <run_depend>imu_filter_madgwick</run_depend>
-  <run_depend>rviz_imu_plugin</run_depend>
+  <!-- <exec_depend>imu_complementary_filter</exec_depend> -->
+  <exec_depend>imu_filter_madgwick</exec_depend>
+  <exec_depend>rviz_imu_plugin</exec_depend>
 
   <export>
-    <metapackage/>
+    <build_type>ament_cmake</build_type>
   </export>
 </package>

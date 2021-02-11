@@ -5,11 +5,10 @@ services:
 
 env:
   matrix:
-    - CI_ROS_DISTRO="melodic"
-    - CI_ROS_DISTRO="noetic"
+    - CI_ROS_DISTRO="eloquent"
 
 install:
   - docker build -t imu_tools_$CI_ROS_DISTRO -f Dockerfile-$CI_ROS_DISTRO .
 
 script:
-  - docker run imu_tools_$CI_ROS_DISTRO /bin/bash -c "source devel/setup.bash && catkin run_tests && catkin_test_results"
+  - docker run imu_tools_$CI_ROS_DISTRO /bin/bash -c "source install/setup.bash && colcon test && colcon test-result"

@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.5)
+
+cmake_minimum_required(VERSION 3.5.1)
 project(imu_complementary_filter)
 
 find_package(Boost REQUIRED COMPONENTS thread)

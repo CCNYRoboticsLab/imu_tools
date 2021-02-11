@@ -52,9 +52,9 @@ static inline T normalizeVector(T& vx, T& vy, T& vz) {
 
 bool StatelessOrientation::computeOrientation(
   WorldFrame::WorldFrame frame,
-  geometry_msgs::Vector3 A,
-  geometry_msgs::Vector3 E,
-  geometry_msgs::Quaternion& orientation) {
+  geometry_msgs::msg::Vector3 A,
+  geometry_msgs::msg::Vector3 E,
+  geometry_msgs::msg::Quaternion& orientation) {
 
   float Hx, Hy, Hz;
   float Mx, My, Mz;
@@ -147,14 +147,14 @@ bool StatelessOrientation::computeOrientation(
 
 bool StatelessOrientation::computeOrientation(
   WorldFrame::WorldFrame frame,
-  geometry_msgs::Vector3 A,
-  geometry_msgs::Quaternion& orientation) {
+  geometry_msgs::msg::Vector3 A,
+  geometry_msgs::msg::Quaternion& orientation) {
 
   // This implementation could be optimized regarding speed.
 
   // magnetic Field E must not be parallel to A,
   // choose an arbitrary orthogonal vector
-  geometry_msgs::Vector3 E;
+  geometry_msgs::msg::Vector3 E;
   if (fabs(A.x) > 0.1 || fabs(A.y) > 0.1) {
       E.x = A.y;
       E.y = A.x;
