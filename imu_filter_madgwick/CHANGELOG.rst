@@ -2,6 +2,16 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix "non standard content" warning in imu_tools metapackage
+  Fixes `#135 <https://github.com/ccny-ros-pkg/imu_tools/issues/135>`_.
+* Add example launch file for imu_filter_madgwick (`#132 <https://github.com/ccny-ros-pkg/imu_tools/issues/132>`_)
+* Update maintainers in package.xml
+* Fix warnings: reordering and unused vars
+* Set cmake_policy CMP0048 to fix warning
+* Contributors: Martin Günther, pietrocolombo
+
 1.2.2 (2020-05-25)
 ------------------
 * Drop the signals component of Boost (`#103 <https://github.com/ccny-ros-pkg/imu_tools/issues/103>`_)
