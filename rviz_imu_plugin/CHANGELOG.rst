@@ -2,8 +2,8 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.3 (2021-04-09)
+------------------
 * Fix "non standard content" warning in imu_tools metapackage
   Fixes `#135 <https://github.com/ccny-ros-pkg/imu_tools/issues/135>`_.
 * Update maintainers in package.xml

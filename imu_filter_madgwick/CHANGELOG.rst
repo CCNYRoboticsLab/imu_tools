@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.3 (2021-04-09)
+------------------
 * Fix "non standard content" warning in imu_tools metapackage
   Fixes `#135 <https://github.com/ccny-ros-pkg/imu_tools/issues/135>`_.
 * Add example launch file for imu_filter_madgwick (`#132 <https://github.com/ccny-ros-pkg/imu_tools/issues/132>`_)

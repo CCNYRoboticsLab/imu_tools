@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.3 (2021-04-09)
+------------------
 * Fix "non standard content" warning in imu_tools metapackage
   Fixes `#135 <https://github.com/ccny-ros-pkg/imu_tools/issues/135>`_.
 * Set cmake_policy CMP0048 to fix warning
