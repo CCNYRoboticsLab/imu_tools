@@ -1,0 +1,5 @@
+The imu_filter_madgwick package is licensed under the GNU General Public Licence v3 or later.
+See LICENSE.gplv3 for the text of the license.
+
+The rest of the code in this repository is licensed under the 3-clause BSD license.
+See LICENSE.bsd for the text of the license.
