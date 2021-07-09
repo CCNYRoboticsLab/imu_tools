@@ -326,7 +326,7 @@ void ImuFilterRos::publishTransform(const ImuMsg::ConstPtr& imu_msg_raw)
  * @param q2 quaternion z component
  * @param q3 quaternion w component
  **/
-void ImuFilterMadgwickRos::applyYawOffset(double& q0, double& q1, double& q2, double& q3) {
+void ImuFilterRos::applyYawOffset(double& q0, double& q1, double& q2, double& q3) {
   if (yaw_offset_total_ != 0.0) {
     tf2::Quaternion offset_orientation = yaw_offsets_ * tf2::Quaternion(q1, q2, q3, q0);
     offset_orientation.normalize ();
