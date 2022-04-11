@@ -1,0 +1,40 @@
+name: Build and run ROS tests
+on: [push, pull_request]
+jobs:
+  build:
+    strategy:
+      matrix:
+        rosdistro: [foxy, galactic]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    container:
+      image: ros:${{ matrix.rosdistro }}-ros-core
+    steps:
+    - name: Install apt dependencies
+      run: |
+        apt-get update
+        apt-get install -y build-essential clang-format file git python3-pip python3-colcon-common-extensions python3-rosdep
+    - name: Install pip dependencies
+      run: pip install pre-commit
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        path: src/phidgets_drivers
+    - name: Use rosdep to install remaining dependencies
+      run: |
+        rosdep init
+        rosdep update
+        rosdep install --from-paths src -i -y --rosdistro ${{ matrix.rosdistro }}
+    - name: Build
+      run: |
+        . /opt/ros/${{ matrix.rosdistro }}/setup.sh
+        colcon build --parallel-workers 1
+    - name: Run tests
+      run: |
+        . install/setup.sh
+        colcon test --parallel-workers 1
+        colcon test-result
+    - name: Run pre-commit hooks
+      run: |
+        cd src/phidgets_drivers
+        pre-commit run -a
