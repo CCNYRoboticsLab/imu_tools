@@ -7,11 +7,11 @@ Overview
 IMU-related filters and visualizers. The stack contains:
 
  * `imu_filter_madgwick`: a filter which fuses angular velocities,
-accelerations, and (optionally) magnetic readings from a generic IMU 
+accelerations, and (optionally) magnetic readings from a generic IMU
 device into an orientation. Based on the work of [1].
 
  * `imu_complementary_filter`: a filter which fuses angular velocities,
-accelerations, and (optionally) magnetic readings from a generic IMU 
+accelerations, and (optionally) magnetic readings from a generic IMU
 device into an orientation quaternion using a novel approach based on a complementary fusion. Based on the work of [2].
 
  * `rviz_imu_plugin` a plugin for rviz which displays `sensor_msgs::Imu`
@@ -53,7 +53,7 @@ License
 -----------------------------------
 
  * `imu_filter_madgwick`: currently licensed as GPL, following the original implementation
- 
+
  * `imu_complementary_filter`: BSD
 
  * `rviz_imu_plugin`: BSD

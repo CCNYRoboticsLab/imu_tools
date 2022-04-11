@@ -2,15 +2,15 @@
 <launch>
   #### Nodelet manager ######################################################
 
-  <node pkg="nodelet" type="nodelet" name="imu_manager" 
+  <node pkg="nodelet" type="nodelet" name="imu_manager"
     args="manager" output="screen" />
 
   #### IMU Driver ###########################################################
 
-  <node pkg="nodelet" type="nodelet" name="ImuFilterNodelet" 
-    args="load imu_filter_madgwick/ImuFilterNodelet imu_manager" 
+  <node pkg="nodelet" type="nodelet" name="ImuFilterNodelet"
+    args="load imu_filter_madgwick/ImuFilterNodelet imu_manager"
     output="screen">
-    
+
     <param name="publish_tf" value="false"/>
 
   </node>

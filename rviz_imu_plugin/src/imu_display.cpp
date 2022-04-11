@@ -327,5 +327,3 @@ void ImuDisplay::createProperties()
 // global scope, outside our package's namespace.
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(rviz::ImuDisplay, rviz::Display)
-
-

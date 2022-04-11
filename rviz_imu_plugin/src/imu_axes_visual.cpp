@@ -106,10 +106,10 @@ void ImuAxesVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
     orientation_axes_->setOrientation(orientation_);
 }
 
-void ImuAxesVisual::setScale(float scale) 
-{ 
-  scale_ = scale; 
-  if (orientation_axes_) 
+void ImuAxesVisual::setScale(float scale)
+{
+  scale_ = scale;
+  if (orientation_axes_)
    orientation_axes_->setScale(Ogre::Vector3(scale_, scale_, scale_));
 }
 
@@ -141,4 +141,3 @@ inline bool ImuAxesVisual::checkQuaternionValidity(
 
 
 } // end namespace rviz
-

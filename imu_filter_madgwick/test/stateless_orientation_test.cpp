@@ -113,5 +113,3 @@ TEST(StatelessOrientationTest, Check_NoMag){
     0.0, 0.0, 0.0,
     q0, q1, q2, q3));
 }
-
-

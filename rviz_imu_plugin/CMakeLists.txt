@@ -26,7 +26,7 @@ endif()
 add_definitions(-DQT_NO_KEYWORDS)
 
 catkin_package(
-  DEPENDS 
+  DEPENDS
   CATKIN_DEPENDS rviz
   INCLUDE_DIRS
   LIBRARIES

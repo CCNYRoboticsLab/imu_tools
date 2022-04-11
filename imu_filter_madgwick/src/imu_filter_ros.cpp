@@ -62,7 +62,7 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private):
   // create yaw offset quaternion
   yaw_offset_total_ = yaw_offset - declination;
   yaw_offsets_.setRPY(0, 0, yaw_offset_total_);  // Create this quaternion for yaw offset (radians)
-  
+
   std::string world_frame;
   if (!nh_private_.getParam ("world_frame", world_frame))
     world_frame = "enu";
@@ -343,7 +343,7 @@ void ImuFilterRos::publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw)
   filter_.getOrientation(q0,q1,q2,q3);
   // apply yaw offsets
   applyYawOffset (q0, q1, q2, q3);
-  
+
   // create and publish filtered IMU message
   boost::shared_ptr<ImuMsg> imu_msg =
     boost::make_shared<ImuMsg>(*imu_msg_raw);

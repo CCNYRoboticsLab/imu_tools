@@ -49,8 +49,8 @@ namespace imu_tools {
 class ComplementaryFilterROS
 {
   public:
-    ComplementaryFilterROS(const ros::NodeHandle& nh, 
-                           const ros::NodeHandle& nh_private);    
+    ComplementaryFilterROS(const ros::NodeHandle& nh,
+                           const ros::NodeHandle& nh_private);
     virtual ~ComplementaryFilterROS();
 
   private:
@@ -58,18 +58,18 @@ class ComplementaryFilterROS
     // Convenience typedefs
     typedef sensor_msgs::Imu ImuMsg;
     typedef sensor_msgs::MagneticField MagMsg;
-    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Imu, 
+    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Imu,
         MagMsg> MySyncPolicy;
-    typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg> 
+    typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg>
         SyncPolicy;
-    typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;    
-    typedef message_filters::Subscriber<ImuMsg> ImuSubscriber; 
+    typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
+    typedef message_filters::Subscriber<ImuMsg> ImuSubscriber;
     typedef message_filters::Subscriber<MagMsg> MagSubscriber;
 
     // ROS-related variables.
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
-    
+
     boost::shared_ptr<Synchronizer> sync_;
     boost::shared_ptr<ImuSubscriber> imu_subscriber_;
     boost::shared_ptr<MagSubscriber> mag_subscriber_;
@@ -78,7 +78,7 @@ class ComplementaryFilterROS
     ros::Publisher rpy_publisher_;
     ros::Publisher state_publisher_;
     tf::TransformBroadcaster tf_broadcaster_;
-         
+
     // Parameters:
     bool use_mag_;
     bool publish_tf_;

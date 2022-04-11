@@ -112,24 +112,24 @@ void ImuOrientationVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
     orientation_box_->setOrientation(orientation_);
 }
 
-void ImuOrientationVisual::setScaleX(float x) 
-{ 
-  scale_x_ = x; 
-  if (orientation_box_) 
+void ImuOrientationVisual::setScaleX(float x)
+{
+  scale_x_ = x;
+  if (orientation_box_)
    orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
 }
 
-void ImuOrientationVisual::setScaleY(float y) 
-{ 
-  scale_y_ = y; 
-  if (orientation_box_) 
+void ImuOrientationVisual::setScaleY(float y)
+{
+  scale_y_ = y;
+  if (orientation_box_)
     orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
 }
 
-void ImuOrientationVisual::setScaleZ(float z) 
-{ 
-  scale_z_ = z; 
-  if (orientation_box_) 
+void ImuOrientationVisual::setScaleZ(float z)
+{
+  scale_z_ = z;
+  if (orientation_box_)
     orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
 
 }
@@ -137,14 +137,14 @@ void ImuOrientationVisual::setScaleZ(float z)
 void ImuOrientationVisual::setColor(const QColor& color)
 {
   color_ = color;
-  if (orientation_box_) 
+  if (orientation_box_)
     orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
 }
 
-void ImuOrientationVisual::setAlpha(float alpha) 
-{ 
-  alpha_ = alpha; 
-  if (orientation_box_) 
+void ImuOrientationVisual::setAlpha(float alpha)
+{
+  alpha_ = alpha;
+  if (orientation_box_)
     orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
 }
 
@@ -176,4 +176,3 @@ inline bool ImuOrientationVisual::checkQuaternionValidity(
 
 
 } // end namespace rviz
-

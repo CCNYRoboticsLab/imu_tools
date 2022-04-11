@@ -168,4 +168,3 @@ private:
 } // end namespace rviz
 
 #endif // IMU_DISPLAY_H
-

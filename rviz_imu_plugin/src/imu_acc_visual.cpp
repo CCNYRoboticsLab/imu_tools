@@ -72,9 +72,9 @@ void ImuAccVisual::show()
     acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
     acc_vector_->setDirection(direction_);
     acc_vector_->set(
-      arrow_length_ * scale_, 
-      arrow_radius_ * scale_, 
-      head_length_  * scale_, 
+      arrow_length_ * scale_,
+      arrow_radius_ * scale_,
+      head_length_  * scale_,
       head_radius_  * scale_);
   }
 }
@@ -96,7 +96,7 @@ void ImuAccVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
 
 
   // Rotate the acceleration vector by the IMU orientation. This makes
-  // sense since the visualization of the IMU is also rotated by the 
+  // sense since the visualization of the IMU is also rotated by the
   // orientation. In this way, both appear in the inertial frame.
   if (derotated_)
   {
@@ -117,23 +117,23 @@ void ImuAccVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
   {
     acc_vector_->setDirection(direction_);
     acc_vector_->set(
-      arrow_length_ * scale_, 
-      arrow_radius_ * scale_, 
-      head_length_  * scale_, 
+      arrow_length_ * scale_,
+      arrow_radius_ * scale_,
+      head_length_  * scale_,
       head_radius_  * scale_);
   }
 }
 
-void ImuAccVisual::setScale(float scale) 
-{ 
-  scale_ = scale; 
+void ImuAccVisual::setScale(float scale)
+{
+  scale_ = scale;
   if (acc_vector_)
   {
     acc_vector_->setDirection(direction_);
     acc_vector_->set(
-      arrow_length_ * scale_, 
-      arrow_radius_ * scale_, 
-      head_length_  * scale_, 
+      arrow_length_ * scale_,
+      arrow_radius_ * scale_,
+      head_length_  * scale_,
       head_radius_  * scale_);
   }
 }
@@ -141,21 +141,21 @@ void ImuAccVisual::setScale(float scale)
 void ImuAccVisual::setColor(const QColor& color)
 {
   color_ = color;
-  if (acc_vector_) 
+  if (acc_vector_)
     acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
 }
 
-void ImuAccVisual::setAlpha(float alpha) 
-{ 
-  alpha_ = alpha; 
-  if (acc_vector_) 
+void ImuAccVisual::setAlpha(float alpha)
+{
+  alpha_ = alpha;
+  if (acc_vector_)
     acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(),alpha_);
 }
 
-void ImuAccVisual::setDerotated(bool derotated) 
-{ 
-  derotated_ = derotated; 
-  if (acc_vector_) 
+void ImuAccVisual::setDerotated(bool derotated)
+{
+  derotated_ = derotated;
+  if (acc_vector_)
     acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(),alpha_);
 }
 
@@ -170,4 +170,3 @@ void ImuAccVisual::setFrameOrientation(const Ogre::Quaternion& orientation)
 }
 
 } // end namespace rviz
-
