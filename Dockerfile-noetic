@@ -2,14 +2,15 @@ FROM ros:noetic-ros-core
 
 RUN apt-get update \
     && apt-get install -y build-essential file clang-format python3-catkin-tools python3-rosdep \
-    && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
+    && rm -rf /var/lib/apt/lists/*
 
 # Create ROS workspace
 COPY . /ws/src/imu_tools
 WORKDIR /ws
 
 # Use rosdep to install all dependencies (including ROS itself)
-RUN rosdep init && rosdep update && rosdep install --from-paths src -i -y --rosdistro noetic
+RUN rosdep init && rosdep update && apt-get update -qq && rosdep install --from-paths src -i -y --rosdistro noetic \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && \
     catkin init && \
