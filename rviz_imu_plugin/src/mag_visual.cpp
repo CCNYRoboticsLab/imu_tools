@@ -34,121 +34,121 @@
 #include "mag_visual.h"
 #include <rviz_rendering/objects/arrow.hpp>
 
-namespace rviz_imu_plugin
-{
+namespace rviz_imu_plugin {
 
-MagVisual::MagVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node):
-  heading_vector_(NULL),
-  arrow_length_(2.0),
-  arrow_radius_(0.10),
-  head_length_(0.20),
-  head_radius_(0.10),
-  scale_(0.05),
-  alpha_(1.0),
-  color_(1.0, 1.0, 0.0),
-  is_2d_(true)
+MagVisual::MagVisual(Ogre::SceneManager* scene_manager,
+                     Ogre::SceneNode* parent_node)
+    : heading_vector_(NULL),
+      arrow_length_(2.0),
+      arrow_radius_(0.10),
+      head_length_(0.20),
+      head_radius_(0.10),
+      scale_(0.05),
+      alpha_(1.0),
+      color_(1.0, 1.0, 0.0),
+      is_2d_(true)
 {
-  scene_manager_ = scene_manager;
+    scene_manager_ = scene_manager;
 
-  // Ogre::SceneNode s form a tree, with each node storing the
-  // transform (position and orientation) of itself relative to its
-  // parent.  Ogre does the math of combining those transforms when it
-  // is time to render.
-  //
-  // Here we create a node to store the pose of the Imu's header frame
-  // relative to the RViz fixed frame.
-  frame_node_ = parent_node->createChildSceneNode();
+    // Ogre::SceneNode s form a tree, with each node storing the
+    // transform (position and orientation) of itself relative to its
+    // parent.  Ogre does the math of combining those transforms when it
+    // is time to render.
+    //
+    // Here we create a node to store the pose of the Imu's header frame
+    // relative to the RViz fixed frame.
+    frame_node_ = parent_node->createChildSceneNode();
 }
 
 MagVisual::~MagVisual()
 {
-  hide();
+    hide();
 
-  // Destroy the frame node since we don't need it anymore.
-  scene_manager_->destroySceneNode(frame_node_);
+    // Destroy the frame node since we don't need it anymore.
+    scene_manager_->destroySceneNode(frame_node_);
 }
 
 void MagVisual::show()
 {
-  if (!heading_vector_)
-  {
-    heading_vector_ = new rviz_rendering::Arrow(scene_manager_, frame_node_);
-    heading_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
-    heading_vector_->setDirection(direction_);
-    heading_vector_->set(
-      arrow_length_ * scale_,
-      arrow_radius_ * scale_,
-      head_length_  * scale_,
-      head_radius_  * scale_);
-  }
+    if (!heading_vector_)
+    {
+        heading_vector_ =
+            new rviz_rendering::Arrow(scene_manager_, frame_node_);
+        heading_vector_->setColor(color_.redF(), color_.greenF(),
+                                  color_.blueF(), alpha_);
+        heading_vector_->setDirection(direction_);
+        heading_vector_->set(arrow_length_ * scale_, arrow_radius_ * scale_,
+                             head_length_ * scale_, head_radius_ * scale_);
+    }
 }
 
 void MagVisual::hide()
 {
-  if (heading_vector_)
-  {
-    delete heading_vector_;
-    heading_vector_ = NULL;
-  }
+    if (heading_vector_)
+    {
+        delete heading_vector_;
+        heading_vector_ = NULL;
+    }
 }
 
-void MagVisual::setMessage(const sensor_msgs::msg::MagneticField::ConstSharedPtr msg)
+void MagVisual::setMessage(
+    const sensor_msgs::msg::MagneticField::ConstSharedPtr msg)
 {
-  if (is_2d_) {
-    direction_ = Ogre::Vector3(msg->magnetic_field.x, msg->magnetic_field.y, 0.0);//msg->magnetic_field.z);
-  } else {
-    direction_ = Ogre::Vector3(msg->magnetic_field.x, msg->magnetic_field.y, msg->magnetic_field.z);
-  }
-  direction_.normalise();
-  direction_ *= arrow_length_;
+    if (is_2d_)
+    {
+        direction_ = Ogre::Vector3(msg->magnetic_field.x, msg->magnetic_field.y,
+                                   0.0);  // msg->magnetic_field.z);
+    } else
+    {
+        direction_ = Ogre::Vector3(msg->magnetic_field.x, msg->magnetic_field.y,
+                                   msg->magnetic_field.z);
+    }
+    direction_.normalise();
+    direction_ *= arrow_length_;
 
-  if (heading_vector_)
-  {
-    heading_vector_->setDirection(direction_);
-    heading_vector_->set(
-      arrow_length_ * scale_,
-      arrow_radius_ * scale_,
-      head_length_  * scale_,
-      head_radius_  * scale_);
-  }
+    if (heading_vector_)
+    {
+        heading_vector_->setDirection(direction_);
+        heading_vector_->set(arrow_length_ * scale_, arrow_radius_ * scale_,
+                             head_length_ * scale_, head_radius_ * scale_);
+    }
 }
 
 void MagVisual::setScale(float scale)
 {
-  scale_ = scale;
-  if (heading_vector_)
-  {
-    heading_vector_->setDirection(direction_);
-    heading_vector_->set(
-      arrow_length_ * scale_,
-      arrow_radius_ * scale_,
-      head_length_  * scale_,
-      head_radius_  * scale_);
-  }
+    scale_ = scale;
+    if (heading_vector_)
+    {
+        heading_vector_->setDirection(direction_);
+        heading_vector_->set(arrow_length_ * scale_, arrow_radius_ * scale_,
+                             head_length_ * scale_, head_radius_ * scale_);
+    }
 }
 
 void MagVisual::setColor(const QColor& color)
 {
-  color_ = color;
-  if (heading_vector_)
-    heading_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
+    color_ = color;
+    if (heading_vector_)
+        heading_vector_->setColor(color_.redF(), color_.greenF(),
+                                  color_.blueF(), alpha_);
 }
 
 void MagVisual::setAlpha(float alpha)
 {
-  alpha_ = alpha;
-  if (heading_vector_)
-    heading_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(),alpha_);
+    alpha_ = alpha;
+    if (heading_vector_)
+        heading_vector_->setColor(color_.redF(), color_.greenF(),
+                                  color_.blueF(), alpha_);
 }
 
 void MagVisual::setFramePosition(const Ogre::Vector3& position)
 {
-  frame_node_->setPosition(position);
+    frame_node_->setPosition(position);
 }
 
 void MagVisual::setFrameOrientation(const Ogre::Quaternion& orientation)
 {
-  frame_node_->setOrientation(orientation);
+    frame_node_->setOrientation(orientation);
 }
 
-} // end namespace rviz
+}  // namespace rviz_imu_plugin

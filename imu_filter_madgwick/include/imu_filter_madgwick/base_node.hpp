@@ -1,13 +1,16 @@
 #pragma once
 
-
 #include <rclcpp/rclcpp.hpp>
 
 namespace imu_filter {
 
-class BaseNode : public rclcpp::Node {
-public:
-    explicit BaseNode(std::string name, const rclcpp::NodeOptions &options) : Node(name, options) {}
+class BaseNode : public rclcpp::Node
+{
+  public:
+    explicit BaseNode(std::string name, const rclcpp::NodeOptions &options)
+        : Node(name, options)
+    {
+    }
 
     typedef struct {
         double from_value;
@@ -21,10 +24,14 @@ public:
         int step;
     } integer_range;
 
-    // Declare a parameter that has no integer or floating point range constraints
-    void add_parameter(const std::string &name, const rclcpp::ParameterValue &default_value,
-                       const std::string &description = "", const std::string &additional_constraints = "",
-                       bool read_only = false) {
+    // Declare a parameter that has no integer or floating point range
+    // constraints
+    void add_parameter(const std::string &name,
+                       const rclcpp::ParameterValue &default_value,
+                       const std::string &description = "",
+                       const std::string &additional_constraints = "",
+                       bool read_only = false)
+    {
         auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
 
         descriptor.name = name;
@@ -36,9 +43,13 @@ public:
     }
 
     // Declare a parameter that has a floating point range constraint
-    void add_parameter(const std::string &name, const rclcpp::ParameterValue &default_value,
-                       const floating_point_range fp_range, const std::string &description = "",
-                       const std::string &additional_constraints = "", bool read_only = false) {
+    void add_parameter(const std::string &name,
+                       const rclcpp::ParameterValue &default_value,
+                       const floating_point_range fp_range,
+                       const std::string &description = "",
+                       const std::string &additional_constraints = "",
+                       bool read_only = false)
+    {
         auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
 
         descriptor.name = name;
@@ -54,9 +65,13 @@ public:
     }
 
     // Declare a parameter that has an integer range constraint
-    void add_parameter(const std::string &name, const rclcpp::ParameterValue &default_value,
-                       const integer_range int_range, const std::string &description = "",
-                       const std::string &additional_constraints = "", bool read_only = false) {
+    void add_parameter(const std::string &name,
+                       const rclcpp::ParameterValue &default_value,
+                       const integer_range int_range,
+                       const std::string &description = "",
+                       const std::string &additional_constraints = "",
+                       bool read_only = false)
+    {
         auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
 
         descriptor.name = name;
@@ -72,4 +87,4 @@ public:
     }
 };
 
-}  // namespace
+}  // namespace imu_filter

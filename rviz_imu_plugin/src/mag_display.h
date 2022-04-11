@@ -47,20 +47,17 @@
 
 #include "mag_visual.h"
 
-
-namespace Ogre
-{
+namespace Ogre {
 class SceneNode;
 }
 
-namespace rviz_imu_plugin
-{
+namespace rviz_imu_plugin {
 
-class MagDisplay: public rviz_common::MessageFilterDisplay<sensor_msgs::msg::MagneticField>
+class MagDisplay
+    : public rviz_common::MessageFilterDisplay<sensor_msgs::msg::MagneticField>
 {
     Q_OBJECT
-public:
-
+  public:
     MagDisplay();
     virtual ~MagDisplay() override;
 
@@ -72,28 +69,39 @@ public:
 
     virtual void update(float dt, float ros_dt) override;
 
-private:
+  private:
     void createProperties();
 
     void setTopic(const std::string& topic);
-    const std::string& getTopic() { return topic_; }
+    const std::string& getTopic()
+    {
+        return topic_;
+    }
 
     void setMagScale(float scale);
     void setMagColor(const QColor& color);
     void setMagAlpha(float alpha);
 
-    float getMagScale()     { return mag_visual_->getScale(); }
-    float getMagAlpha()     { return mag_visual_->getAlpha(); }
-    const QColor& getMagColor() { return mag_visual_->getColor(); }
+    float getMagScale()
+    {
+        return mag_visual_->getScale();
+    }
+    float getMagAlpha()
+    {
+        return mag_visual_->getAlpha();
+    }
+    const QColor& getMagColor()
+    {
+        return mag_visual_->getColor();
+    }
 
-protected Q_SLOTS:
+  protected Q_SLOTS:
 
     void updateMag();
 
-private:
-
+  private:
     // Property objects for user-editable properties.
-    rviz_common::properties::BoolProperty*  mag_2d_property_;
+    rviz_common::properties::BoolProperty* mag_2d_property_;
     rviz_common::properties::FloatProperty* mag_scale_property_;
     rviz_common::properties::ColorProperty* mag_color_property_;
     rviz_common::properties::FloatProperty* mag_alpha_property_;
@@ -111,10 +119,10 @@ private:
     int messages_received_;
 
     // Function to handle an incoming ROS message.
-    void processMessage( const sensor_msgs::msg::MagneticField::ConstSharedPtr msg);
-
+    void processMessage(
+        const sensor_msgs::msg::MagneticField::ConstSharedPtr msg);
 };
 
-} // end namespace rviz
+}  // namespace rviz_imu_plugin
 
-#endif // IMU_DISPLAY_H
+#endif  // IMU_DISPLAY_H

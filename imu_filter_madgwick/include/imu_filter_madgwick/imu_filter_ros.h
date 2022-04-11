@@ -38,73 +38,77 @@
 #include "imu_filter_madgwick/imu_filter.h"
 #include "imu_filter_madgwick/base_node.hpp"
 
+class ImuFilterMadgwickRos : public imu_filter::BaseNode
+{
+    typedef sensor_msgs::msg::Imu ImuMsg;
+    typedef sensor_msgs::msg::MagneticField MagMsg;
+    typedef geometry_msgs::msg::Vector3Stamped RpyVectorMsg;
 
+    typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg>
+        SyncPolicy;
+    typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
+    typedef message_filters::Subscriber<ImuMsg> ImuSubscriber;
+    typedef message_filters::Subscriber<MagMsg> MagSubscriber;
 
-class ImuFilterMadgwickRos : public imu_filter::BaseNode {
-  typedef sensor_msgs::msg::Imu ImuMsg;
-  typedef sensor_msgs::msg::MagneticField MagMsg;
-  typedef geometry_msgs::msg::Vector3Stamped RpyVectorMsg;
+  public:
+    explicit ImuFilterMadgwickRos(const rclcpp::NodeOptions& options);
 
-  typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg> SyncPolicy;
-  typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
-  typedef message_filters::Subscriber<ImuMsg> ImuSubscriber;
-  typedef message_filters::Subscriber<MagMsg> MagSubscriber;
+    // Callbacks are public so they can be called when used as a library
+    void imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw);
+    void imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
+                        MagMsg::ConstSharedPtr mag_msg);
 
-public:
-  explicit ImuFilterMadgwickRos(const rclcpp::NodeOptions &options);
+  private:
+    std::shared_ptr<ImuSubscriber> imu_subscriber_;
+    std::shared_ptr<MagSubscriber> mag_subscriber_;
+    std::shared_ptr<Synchronizer> sync_;
 
-  // Callbacks are public so they can be called when used as a library
-  void imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw);
-  void imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw, MagMsg::ConstSharedPtr mag_msg);
+    rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_filtered_debug_publisher_;
+    rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_raw_debug_publisher_;
+    rclcpp::Publisher<ImuMsg>::SharedPtr imu_publisher_;
+    tf2_ros::TransformBroadcaster tf_broadcaster_;
 
-private:
-  std::shared_ptr<ImuSubscriber> imu_subscriber_;
-  std::shared_ptr<MagSubscriber> mag_subscriber_;
-  std::shared_ptr<Synchronizer> sync_;
+    rclcpp::TimerBase::SharedPtr check_topics_timer_;
 
-  rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_filtered_debug_publisher_;
-  rclcpp::Publisher<RpyVectorMsg>::SharedPtr rpy_raw_debug_publisher_;
-  rclcpp::Publisher<ImuMsg>::SharedPtr imu_publisher_;
-  tf2_ros::TransformBroadcaster tf_broadcaster_;
+    // Subscription for parameter change
+    rclcpp::AsyncParametersClient::SharedPtr parameters_client_;
+    rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr
+        parameter_event_sub_;
 
-  rclcpp::TimerBase::SharedPtr check_topics_timer_;
+    // **** paramaters
+    WorldFrame::WorldFrame world_frame_;
+    bool use_mag_;
+    bool stateless_;
+    bool publish_tf_;
+    bool reverse_tf_;
+    std::string fixed_frame_;
+    std::string imu_frame_;
+    double constant_dt_;
+    bool publish_debug_topics_;
+    bool remove_gravity_vector_;
+    geometry_msgs::msg::Vector3 mag_bias_;
+    double orientation_variance_;
+    double yaw_offset_total_;
 
-  // Subscription for parameter change
-  rclcpp::AsyncParametersClient::SharedPtr parameters_client_;
-  rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr parameter_event_sub_;
+    // **** state variables
+    std::mutex mutex_;
+    bool initialized_;
+    rclcpp::Time last_time_;
+    tf2::Quaternion yaw_offsets_;
 
-  // **** paramaters
-  WorldFrame::WorldFrame world_frame_;
-  bool use_mag_;
-  bool stateless_;
-  bool publish_tf_;
-  bool reverse_tf_;
-  std::string fixed_frame_;
-  std::string imu_frame_;
-  double constant_dt_;
-  bool publish_debug_topics_;
-  bool remove_gravity_vector_;
-  geometry_msgs::msg::Vector3 mag_bias_;
-  double orientation_variance_;
-  double yaw_offset_total_;
+    // **** filter implementation
+    ImuFilter filter_;
 
-  // **** state variables
-  std::mutex mutex_;
-  bool initialized_;
-  rclcpp::Time last_time_;
-  tf2::Quaternion yaw_offsets_;
+    // **** member functions
+    void publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw);
+    void publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw);
 
-  // **** filter implementation
-  ImuFilter filter_;
+    void publishRawMsg(const rclcpp::Time& t, float roll, float pitch,
+                       float yaw);
 
-  // **** member functions
-  void publishFilteredMsg(ImuMsg::ConstSharedPtr imu_msg_raw);
-  void publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw);
+    void reconfigCallback(
+        const rcl_interfaces::msg::ParameterEvent::SharedPtr event);
+    void checkTopicsTimerCallback();
 
-  void publishRawMsg(const rclcpp::Time &t, float roll, float pitch, float yaw);
-
-  void reconfigCallback(const rcl_interfaces::msg::ParameterEvent::SharedPtr event);
-  void checkTopicsTimerCallback();
-
-  void applyYawOffset(double& q0, double& q1, double& q2, double& q3);
+    void applyYawOffset(double& q0, double& q1, double& q2, double& q3);
 };

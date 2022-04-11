@@ -34,20 +34,19 @@
 #include <rviz_common/display.hpp>
 #include <QColor>
 
-namespace rviz_rendering
-{
-    class Arrow;
+namespace rviz_rendering {
+class Arrow;
 }
 
-namespace rviz_imu_plugin
-{
+namespace rviz_imu_plugin {
 
 class ImuAccVisual
 {
   public:
     // Constructor.  Creates the visual stuff and puts it into the
     // scene, but in an unconfigured state.
-    ImuAccVisual(Ogre::SceneManager * scene_manager, Ogre::SceneNode * parent_node);
+    ImuAccVisual(Ogre::SceneManager* scene_manager,
+                 Ogre::SceneNode* parent_node);
 
     // Destructor.  Removes the visual stuff from the scene.
     virtual ~ImuAccVisual();
@@ -66,27 +65,38 @@ class ImuAccVisual
     // Set the color and alpha of the visual, which are user-editable
 
     void setScale(float scale);
-    void setColor(const QColor &color);
+    void setColor(const QColor& color);
     void setAlpha(float alpha);
     void setDerotated(bool derotated);
 
-    float getScale() { return scale_; }
-    const QColor& getColor() { return color_; }
-    float getAlpha() { return alpha_; }
-    bool  getDerotated() { return derotated_; }
+    float getScale()
+    {
+        return scale_;
+    }
+    const QColor& getColor()
+    {
+        return color_;
+    }
+    float getAlpha()
+    {
+        return alpha_;
+    }
+    bool getDerotated()
+    {
+        return derotated_;
+    }
 
     void show();
     void hide();
 
   private:
-
     void create();
 
-    rviz_rendering::Arrow * acc_vector_;
+    rviz_rendering::Arrow* acc_vector_;
 
-    Ogre::Vector3 direction_; // computed from IMU message
+    Ogre::Vector3 direction_;  // computed from IMU message
 
-    float arrow_length_; // computed from IMU message
+    float arrow_length_;  // computed from IMU message
     float arrow_radius_;
     float head_length_;
     float head_radius_;
@@ -96,16 +106,16 @@ class ImuAccVisual
     QColor color_;
 
     bool derotated_;
- 
+
     // A SceneNode whose pose is set to match the coordinate frame of
     // the Imu message header.
-    Ogre::SceneNode * frame_node_;
+    Ogre::SceneNode* frame_node_;
 
     // The SceneManager, kept here only so the destructor can ask it to
     // destroy the ``frame_node_``.
-    Ogre::SceneManager * scene_manager_;
+    Ogre::SceneManager* scene_manager_;
 };
 
-} // end namespace rviz
+}  // namespace rviz_imu_plugin
 
-#endif // RVIZ_IMU_PLUGIN_IMU_ORIENTATATION_VISUAL_H
+#endif  // RVIZ_IMU_PLUGIN_IMU_ORIENTATATION_VISUAL_H
