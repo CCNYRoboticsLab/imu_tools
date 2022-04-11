@@ -106,20 +106,23 @@ static inline bool quat_eq_ex_z(T q0, T q1, T q2, T q3, T qr0, T qr1, T qr2,
 #define QUAT_MZ_90 0.707107, 0.0, 0.0, -0.707107
 #define QUAT_X_180 0.0, 1.0, 0.0, 0.0
 #define QUAT_XMYMZ_120 0.5, 0.5, -0.5, -0.5
-#define QUAT_WEST_NORTH_DOWN_RSD_NWU \
-    0.01, 0.86, 0.50,                \
-        0.012 /* axis: (0.864401, 0.502559, 0.0120614) | angle: 178.848deg */
-#define QUAT_WEST_NORTH_DOWN_RSD_ENU \
-    0.0, -0.25, -0.97, -0.02 /* Axis: (-0.2, -0.96, 0.02), Angle: 180deg */
-#define QUAT_WEST_NORTH_DOWN_RSD_NED \
-    0.86, -0.01, 0.01, -0.50 /* Axis: -Z, Angle: 60deg */
-#define QUAT_NE_NW_UP_RSD_NWU                                             \
-    0.91, 0.03, -0.02, -0.41 /* axis: (0.0300376, -0.020025, -0.410513) | \
-                                angle: 48.6734deg */
-#define QUAT_NE_NW_UP_RSD_ENU                       \
-    0.93, 0.03, 0.0, 0.35 /* Axis: Z,  Angle: 41deg \
-                           */
-#define QUAT_NE_NW_UP_RSD_NED \
-    0.021, -0.91, -0.41, 0.02 /* Axis: (0.9, 0.4, 0.0), Angle: 180deg */
+
+#define QUAT_WEST_NORTH_DOWN_RSD_NWU 0.01, 0.86, 0.50, 0.012
+/* axis: (0.864401, 0.502559, 0.0120614) | angle: 178.848deg */
+
+#define QUAT_WEST_NORTH_DOWN_RSD_ENU 0.0, -0.25, -0.97, -0.02
+/* Axis: (-0.2, -0.96, 0.02), Angle: 180deg */
+
+#define QUAT_WEST_NORTH_DOWN_RSD_NED 0.86, -0.01, 0.01, -0.50
+/* Axis: -Z, Angle: 60deg */
+
+#define QUAT_NE_NW_UP_RSD_NWU 0.91, 0.03, -0.02, -0.41
+/* axis: (0.0300376, -0.020025, -0.410513) | angle: 48.6734deg */
+
+#define QUAT_NE_NW_UP_RSD_ENU 0.93, 0.03, 0.0, 0.35
+/* Axis: Z,  Angle: 41deg */
+
+#define QUAT_NE_NW_UP_RSD_NED 0.021, -0.91, -0.41, 0.02
+/* Axis: (0.9, 0.4, 0.0), Angle: 180deg */
 
 #endif /* TEST_TEST_HELPERS_H_ */
