@@ -1,0 +1,43 @@
+name: Build and run ROS tests
+on: [push, pull_request]
+jobs:
+  build:
+    strategy:
+      matrix:
+        rosdistro: [noetic]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    container:
+      image: ros:${{ matrix.rosdistro }}-ros-core
+    steps:
+    - name: Install apt dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential clang-format-10 file git python3-catkin-lint python3-catkin-tools python3-pip python3-rosdep
+    - name: Install pip dependencies
+      run: pip install pre-commit
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        path: src/imu_tools
+    - name: Use rosdep to install remaining dependencies
+      run: |
+        sudo rosdep init
+        rosdep update
+        rosdep install --from-paths src -i -y --rosdistro noetic
+    - name: Build
+      run: |
+        . /opt/ros/${{ matrix.rosdistro }}/setup.sh
+        catkin init
+        catkin config -j 1 -p 1
+        catkin build --limit-status-rate 0.1 --no-notify
+        catkin build --limit-status-rate 0.1 --no-notify --make-args tests
+    - name: Run tests
+      run: |
+        . devel/setup.sh
+        catkin run_tests
+        catkin_test_results
+    - name: Run pre-commit hooks
+      run: |
+        cd src/imu_tools
+        pre-commit run -a
