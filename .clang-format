@@ -1,0 +1,13 @@
+---
+BasedOnStyle: Google
+Language: Cpp
+AccessModifierOffset: -2
+AllowShortFunctionsOnASingleLine: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterControlStatement: true
+  AfterClass: true
+  AfterFunction: true
+  SplitEmptyFunction: true
+IndentWidth: 4
+SortIncludes: false
