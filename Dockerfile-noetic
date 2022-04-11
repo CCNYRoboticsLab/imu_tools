@@ -1,21 +1,8 @@
 FROM ros:noetic-ros-core
 
 RUN apt-get update \
-    && apt-get install -y build-essential file clang-format python3-rosdep \
+    && apt-get install -y build-essential file clang-format python3-catkin-tools python3-rosdep \
     && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
-
-# workaround for https://github.com/catkin/catkin_tools/issues/594:
-# apt-get install python3-catkin-tools doesn't work because python3-trollius doesn't exist on Ubuntu Focal
-
-ENV PATH="/root/.local/bin:${PATH}"
-
-RUN apt-get update \
-    && apt-get install -y git python3-pip \
-    && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
-
-RUN pip3 install --user git+https://github.com/catkin/catkin_tools.git
-
-# end workaround
 
 # Create ROS workspace
 COPY . /ws/src/imu_tools
