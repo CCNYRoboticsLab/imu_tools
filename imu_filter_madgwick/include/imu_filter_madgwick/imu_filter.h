@@ -32,21 +32,20 @@
 class ImuFilter
 {
   public:
-
     ImuFilter();
     virtual ~ImuFilter();
 
   private:
     // **** paramaters
-    double gain_;    // algorithm gain
-    double zeta_;    // gyro drift bias gain
-    WorldFrame::WorldFrame world_frame_;    // NWU, ENU, NED
+    double gain_;                         // algorithm gain
+    double zeta_;                         // gyro drift bias gain
+    WorldFrame::WorldFrame world_frame_;  // NWU, ENU, NED
 
     // **** state variables
-    double q0, q1, q2, q3;  // quaternion
-    float w_bx_, w_by_, w_bz_; //
+    double q0, q1, q2, q3;      // quaternion
+    float w_bx_, w_by_, w_bz_;  //
 
-public:
+  public:
     void setAlgorithmGain(double gain)
     {
         gain_ = gain;
@@ -91,17 +90,13 @@ public:
         w_bz_ = 0;
     }
 
-    void madgwickAHRSupdate(float gx, float gy, float gz,
-                            float ax, float ay, float az,
-                            float mx, float my, float mz,
-                            float dt);
+    void madgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay,
+                            float az, float mx, float my, float mz, float dt);
 
-    void madgwickAHRSupdateIMU(float gx, float gy, float gz,
-                               float ax, float ay, float az,
-                               float dt);
+    void madgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay,
+                               float az, float dt);
 
-    void getGravity(float& rx, float& ry, float& rz,
-                    float gravity = 9.80665);
+    void getGravity(float& rx, float& ry, float& rz, float gravity = 9.80665);
 };
 
-#endif // IMU_FILTER_IMU_MADWICK_FILTER_H
+#endif  // IMU_FILTER_IMU_MADWICK_FILTER_H

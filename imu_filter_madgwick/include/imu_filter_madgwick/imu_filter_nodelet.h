@@ -38,4 +38,4 @@ class ImuFilterNodelet : public nodelet::Nodelet
     boost::shared_ptr<ImuFilterRos> filter_;
 };
 
-#endif // IMU_FILTER_MADGWICK_IMU_FILTER_NODELET_H
+#endif  // IMU_FILTER_MADGWICK_IMU_FILTER_NODELET_H

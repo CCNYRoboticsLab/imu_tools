@@ -31,18 +31,15 @@
 
 class StatelessOrientation
 {
-public:
-  static bool computeOrientation(
-    WorldFrame::WorldFrame frame,
-    geometry_msgs::Vector3 acceleration,
-    geometry_msgs::Vector3 magneticField,
-    geometry_msgs::Quaternion& orientation);
+  public:
+    static bool computeOrientation(WorldFrame::WorldFrame frame,
+                                   geometry_msgs::Vector3 acceleration,
+                                   geometry_msgs::Vector3 magneticField,
+                                   geometry_msgs::Quaternion& orientation);
 
-  static bool computeOrientation(
-    WorldFrame::WorldFrame frame,
-    geometry_msgs::Vector3 acceleration,
-    geometry_msgs::Quaternion& orientation);
-
+    static bool computeOrientation(WorldFrame::WorldFrame frame,
+                                   geometry_msgs::Vector3 acceleration,
+                                   geometry_msgs::Quaternion& orientation);
 };
 
-#endif // IMU_FILTER_MADWICK_STATELESS_ORIENTATION_H
+#endif  // IMU_FILTER_MADWICK_STATELESS_ORIENTATION_H
