@@ -51,7 +51,7 @@ class MagVisual
     virtual ~MagVisual();
 
     // Configure the visual to show the data in the message.
-    void setMessage(const sensor_msgs::msg::MagneticField::ConstSharedPtr msg);
+    void setMessage(sensor_msgs::msg::MagneticField::ConstSharedPtr msg);
 
     // Set the pose of the coordinate frame the message refers to.
     // These could be done inside setMessage(), but that would require
@@ -92,8 +92,6 @@ class MagVisual
     void hide();
 
   private:
-    void create();
-
     rviz_rendering::Arrow* heading_vector_;
 
     Ogre::Vector3 direction_;  // computed from IMU message

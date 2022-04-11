@@ -39,7 +39,7 @@ ImuDisplay::ImuDisplay()
       box_enabled_(false),
       axes_enabled_(true),
       acc_enabled_(false),
-      scene_node_(NULL),
+      scene_node_(nullptr),
       messages_received_(0)
 {
     createProperties();
@@ -98,9 +98,7 @@ void ImuDisplay::onInitialize()
     scene_node_->setVisible(isEnabled());
 }
 
-ImuDisplay::~ImuDisplay()
-{
-}
+ImuDisplay::~ImuDisplay() = default;
 
 void ImuDisplay::reset()
 {
@@ -115,7 +113,7 @@ void ImuDisplay::reset()
     acc_visual_->hide();
 }
 
-void ImuDisplay::update(float dt, float ros_dt)
+void ImuDisplay::update(float /* dt */, float /* ros_dt */)
 {
     updateTop();
     updateBox();

@@ -151,7 +151,7 @@ static inline void compensateMagneticDistortion(float q0, float q1, float q2,
     // Reference direction of Earth's magnetic field (See EQ 46)
     rotateAndScaleVector(q0, -q1, -q2, -q3, mx, my, mz, hx, hy, hz);
 
-    _2bxy = 4.0f * sqrt(hx * hx + hy * hy);
+    _2bxy = 4.0f * std::sqrt(hx * hx + hy * hy);
     _2bz = 4.0f * hz;
 }
 
@@ -169,9 +169,7 @@ ImuFilter::ImuFilter()
 {
 }
 
-ImuFilter::~ImuFilter()
-{
-}
+ImuFilter::~ImuFilter() = default;
 
 void ImuFilter::madgwickAHRSupdate(float gx, float gy, float gz, float ax,
                                    float ay, float az, float mx, float my,
@@ -298,12 +296,8 @@ void ImuFilter::madgwickAHRSupdateIMU(float gx, float gy, float gz, float ax,
                                        az, s0, s1, s2, s3);
                 break;
             case WorldFrame::NWU:
-                // Gravity: [0, 0, 1]
-                addGradientDescentStep(q0, q1, q2, q3, 0.0, 0.0, 2.0, ax, ay,
-                                       az, s0, s1, s2, s3);
-                break;
-            default:
             case WorldFrame::ENU:
+            default:
                 // Gravity: [0, 0, 1]
                 addGradientDescentStep(q0, q1, q2, q3, 0.0, 0.0, 2.0, ax, ay,
                                        az, s0, s1, s2, s3);
@@ -340,12 +334,8 @@ void ImuFilter::getGravity(float& rx, float& ry, float& rz, float gravity)
                                  ry, rz);
             break;
         case WorldFrame::NWU:
-            // Gravity: [0, 0, 1]
-            rotateAndScaleVector(q0, q1, q2, q3, 0.0, 0.0, 2.0 * gravity, rx,
-                                 ry, rz);
-            break;
-        default:
         case WorldFrame::ENU:
+        default:
             // Gravity: [0, 0, 1]
             rotateAndScaleVector(q0, q1, q2, q3, 0.0, 0.0, 2.0 * gravity, rx,
                                  ry, rz);

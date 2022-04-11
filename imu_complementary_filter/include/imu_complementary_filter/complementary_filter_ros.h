@@ -55,7 +55,7 @@ class ComplementaryFilterROS : public rclcpp::Node
 {
   public:
     ComplementaryFilterROS();
-    virtual ~ComplementaryFilterROS();
+    ~ComplementaryFilterROS() override;
 
   private:
     // Convenience typedefs
@@ -79,13 +79,13 @@ class ComplementaryFilterROS : public rclcpp::Node
     tf2_ros::TransformBroadcaster tf_broadcaster_;
 
     // Parameters:
-    bool use_mag_;
-    bool publish_tf_;
-    bool reverse_tf_;
-    double constant_dt_;
-    bool publish_debug_topics_;
+    bool use_mag_{};
+    bool publish_tf_{};
+    bool reverse_tf_{};
+    double constant_dt_{};
+    bool publish_debug_topics_{};
     std::string fixed_frame_;
-    double orientation_variance_;
+    double orientation_variance_{};
 
     // State variables:
     ComplementaryFilter filter_;

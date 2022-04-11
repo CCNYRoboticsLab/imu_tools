@@ -67,9 +67,7 @@ ComplementaryFilter::ComplementaryFilter()
 {
 }
 
-ComplementaryFilter::~ComplementaryFilter()
-{
-}
+ComplementaryFilter::~ComplementaryFilter() = default;
 
 void ComplementaryFilter::setDoBiasEstimation(bool do_bias_estimation)
 {

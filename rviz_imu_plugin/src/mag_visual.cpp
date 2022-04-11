@@ -38,7 +38,7 @@ namespace rviz_imu_plugin {
 
 MagVisual::MagVisual(Ogre::SceneManager* scene_manager,
                      Ogre::SceneNode* parent_node)
-    : heading_vector_(NULL),
+    : heading_vector_(nullptr),
       arrow_length_(2.0),
       arrow_radius_(0.10),
       head_length_(0.20),
@@ -87,7 +87,7 @@ void MagVisual::hide()
     if (heading_vector_)
     {
         delete heading_vector_;
-        heading_vector_ = NULL;
+        heading_vector_ = nullptr;
     }
 }
 

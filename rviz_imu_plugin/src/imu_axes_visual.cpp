@@ -42,7 +42,7 @@ namespace rviz_imu_plugin {
 
 ImuAxesVisual::ImuAxesVisual(Ogre::SceneManager* scene_manager,
                              Ogre::SceneNode* parent_node)
-    : orientation_axes_(NULL), scale_(0.15), quat_valid_(true)
+    : scale_(0.15), quat_valid_(true), orientation_axes_(nullptr)
 {
     scene_manager_ = scene_manager;
 
@@ -80,7 +80,7 @@ void ImuAxesVisual::hide()
     if (orientation_axes_)
     {
         delete orientation_axes_;
-        orientation_axes_ = NULL;
+        orientation_axes_ = nullptr;
     }
 }
 

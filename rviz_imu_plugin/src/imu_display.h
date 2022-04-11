@@ -61,40 +61,23 @@ class ImuDisplay
     Q_OBJECT
   public:
     ImuDisplay();
-    virtual ~ImuDisplay() override;
+    ~ImuDisplay() override;
 
-    virtual void onInitialize() override;
-    virtual void onEnable() override;
-    virtual void onDisable() override;
+    void onInitialize() override;
+    void onEnable() override;
+    void onDisable() override;
 
-    virtual void reset() override;
+    void reset() override;
 
-    virtual void update(float dt, float ros_dt) override;
+    void update(float dt, float ros_dt) override;
 
   private:
     void createProperties();
 
-    void setTopic(const std::string& topic);
     const std::string& getTopic()
     {
         return topic_;
     }
-
-    void setBoxEnabled(bool enabled);
-    void setBoxScaleX(float x);
-    void setBoxScaleY(float y);
-    void setBoxScaleZ(float z);
-    void setBoxColor(const QColor& color);
-    void setBoxAlpha(float alpha);
-
-    void setAxesEnabled(bool enabled);
-    void setAxesScale(float scale);
-
-    void setAccEnabled(bool enabled);
-    void setAccDerotated(bool derotated);
-    void setAccScale(float scale);
-    void setAccColor(const QColor& color);
-    void setAccAlpha(float alpha);
 
     bool getBoxEnabled()
     {
@@ -160,33 +143,33 @@ class ImuDisplay
 
   private:
     // Property objects for user-editable properties.
-    rviz_common::properties::BoolProperty* fixed_frame_orientation_property_;
+    rviz_common::properties::BoolProperty* fixed_frame_orientation_property_{};
 
-    rviz_common::properties::Property* box_category_;
-    rviz_common::properties::Property* axes_category_;
-    rviz_common::properties::Property* acc_category_;
+    rviz_common::properties::Property* box_category_{};
+    rviz_common::properties::Property* axes_category_{};
+    rviz_common::properties::Property* acc_category_{};
 
     //    rviz::RosTopicProperty* topic_property_;
-    rviz_common::properties::BoolProperty* box_enabled_property_;
-    rviz_common::properties::FloatProperty* box_scale_x_property_;
-    rviz_common::properties::FloatProperty* box_scale_y_property_;
-    rviz_common::properties::FloatProperty* box_scale_z_property_;
-    rviz_common::properties::ColorProperty* box_color_property_;
-    rviz_common::properties::FloatProperty* box_alpha_property_;
+    rviz_common::properties::BoolProperty* box_enabled_property_{};
+    rviz_common::properties::FloatProperty* box_scale_x_property_{};
+    rviz_common::properties::FloatProperty* box_scale_y_property_{};
+    rviz_common::properties::FloatProperty* box_scale_z_property_{};
+    rviz_common::properties::ColorProperty* box_color_property_{};
+    rviz_common::properties::FloatProperty* box_alpha_property_{};
 
-    rviz_common::properties::BoolProperty* axes_enabled_property_;
-    rviz_common::properties::FloatProperty* axes_scale_property_;
+    rviz_common::properties::BoolProperty* axes_enabled_property_{};
+    rviz_common::properties::FloatProperty* axes_scale_property_{};
 
-    rviz_common::properties::BoolProperty* acc_enabled_property_;
-    rviz_common::properties::BoolProperty* acc_derotated_property_;
-    rviz_common::properties::FloatProperty* acc_scale_property_;
-    rviz_common::properties::ColorProperty* acc_color_property_;
-    rviz_common::properties::FloatProperty* acc_alpha_property_;
+    rviz_common::properties::BoolProperty* acc_enabled_property_{};
+    rviz_common::properties::BoolProperty* acc_derotated_property_{};
+    rviz_common::properties::FloatProperty* acc_scale_property_{};
+    rviz_common::properties::ColorProperty* acc_color_property_{};
+    rviz_common::properties::FloatProperty* acc_alpha_property_{};
 
     // Differetn types of visuals
-    ImuOrientationVisual* box_visual_;
-    ImuAxesVisual* axes_visual_;
-    ImuAccVisual* acc_visual_;
+    ImuOrientationVisual* box_visual_{};
+    ImuAxesVisual* axes_visual_{};
+    ImuAccVisual* acc_visual_{};
 
     // User-editable property variables.
     std::string topic_;
@@ -201,9 +184,9 @@ class ImuDisplay
     int messages_received_;
 
     // Function to handle an incoming ROS message.
-    void processMessage(const sensor_msgs::msg::Imu::ConstSharedPtr msg);
+    void processMessage(sensor_msgs::msg::Imu::ConstSharedPtr msg) override;
 };
 
 }  // namespace rviz_imu_plugin
 
-#endif  // IMU_DISPLAY_H
+#endif  // RVIZ_IMU_PLUGIN_IMU_DISPLAY_H

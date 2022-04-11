@@ -59,28 +59,23 @@ class MagDisplay
     Q_OBJECT
   public:
     MagDisplay();
-    virtual ~MagDisplay() override;
+    ~MagDisplay() override;
 
-    virtual void onInitialize() override;
-    virtual void onEnable() override;
-    virtual void onDisable() override;
+    void onInitialize() override;
+    void onEnable() override;
+    void onDisable() override;
 
-    virtual void reset() override;
+    void reset() override;
 
-    virtual void update(float dt, float ros_dt) override;
+    void update(float dt, float ros_dt) override;
 
   private:
     void createProperties();
 
-    void setTopic(const std::string& topic);
     const std::string& getTopic()
     {
         return topic_;
     }
-
-    void setMagScale(float scale);
-    void setMagColor(const QColor& color);
-    void setMagAlpha(float alpha);
 
     float getMagScale()
     {
@@ -101,16 +96,16 @@ class MagDisplay
 
   private:
     // Property objects for user-editable properties.
-    rviz_common::properties::BoolProperty* mag_2d_property_;
-    rviz_common::properties::FloatProperty* mag_scale_property_;
-    rviz_common::properties::ColorProperty* mag_color_property_;
-    rviz_common::properties::FloatProperty* mag_alpha_property_;
+    rviz_common::properties::BoolProperty* mag_2d_property_{};
+    rviz_common::properties::FloatProperty* mag_scale_property_{};
+    rviz_common::properties::ColorProperty* mag_color_property_{};
+    rviz_common::properties::FloatProperty* mag_alpha_property_{};
 
-    MagVisual* mag_visual_;
+    MagVisual* mag_visual_{};
 
     // User-editable property variables.
     std::string topic_;
-    bool mag_enabled_;
+    bool mag_enabled_{};
     bool twod_visual_;
 
     // A node in the Ogre scene tree to be the parent of all our visuals.
@@ -120,9 +115,9 @@ class MagDisplay
 
     // Function to handle an incoming ROS message.
     void processMessage(
-        const sensor_msgs::msg::MagneticField::ConstSharedPtr msg);
+        sensor_msgs::msg::MagneticField::ConstSharedPtr msg) override;
 };
 
 }  // namespace rviz_imu_plugin
 
-#endif  // IMU_DISPLAY_H
+#endif  // RVIZ_IMU_PLUGIN_MAG_DISPLAY_H

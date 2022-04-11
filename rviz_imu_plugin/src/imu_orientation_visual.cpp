@@ -42,13 +42,13 @@ namespace rviz_imu_plugin {
 
 ImuOrientationVisual::ImuOrientationVisual(Ogre::SceneManager* scene_manager,
                                            Ogre::SceneNode* parent_node)
-    : orientation_box_(NULL),
-      scale_x_(0.07),
+    : scale_x_(0.07),
       scale_y_(0.10),
       scale_z_(0.03),
+      color_(0.5, 0.5, 0.5),
       alpha_(1.0),
       quat_valid_(true),
-      color_(0.5, 0.5, 0.5)
+      orientation_box_(nullptr)
 {
     scene_manager_ = scene_manager;
 
@@ -88,7 +88,7 @@ void ImuOrientationVisual::hide()
     if (orientation_box_)
     {
         delete orientation_box_;
-        orientation_box_ = NULL;
+        orientation_box_ = nullptr;
     }
 }
 

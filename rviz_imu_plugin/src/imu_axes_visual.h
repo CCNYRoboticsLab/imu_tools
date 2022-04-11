@@ -40,8 +40,6 @@ class Axes;
 
 namespace rviz_imu_plugin {
 
-class Axes;
-
 class ImuAxesVisual
 {
   public:
@@ -77,7 +75,6 @@ class ImuAxesVisual
     void hide();
 
   private:
-    void create();
     inline bool checkQuaternionValidity(
         const sensor_msgs::msg::Imu::ConstSharedPtr msg);
 

@@ -77,15 +77,15 @@ class ImuFilterMadgwickRos : public imu_filter::BaseNode
 
     // **** paramaters
     WorldFrame::WorldFrame world_frame_;
-    bool use_mag_;
-    bool stateless_;
-    bool publish_tf_;
-    bool reverse_tf_;
+    bool use_mag_{};
+    bool stateless_{};
+    bool publish_tf_{};
+    bool reverse_tf_{};
     std::string fixed_frame_;
     std::string imu_frame_;
     double constant_dt_;
-    bool publish_debug_topics_;
-    bool remove_gravity_vector_;
+    bool publish_debug_topics_{};
+    bool remove_gravity_vector_{};
     geometry_msgs::msg::Vector3 mag_bias_;
     double orientation_variance_;
     double yaw_offset_total_;
@@ -106,8 +106,7 @@ class ImuFilterMadgwickRos : public imu_filter::BaseNode
     void publishRawMsg(const rclcpp::Time& t, float roll, float pitch,
                        float yaw);
 
-    void reconfigCallback(
-        const rcl_interfaces::msg::ParameterEvent::SharedPtr event);
+    void reconfigCallback(rcl_interfaces::msg::ParameterEvent::SharedPtr event);
     void checkTopicsTimerCallback();
 
     void applyYawOffset(double& q0, double& q1, double& q2, double& q3);

@@ -43,8 +43,8 @@ namespace imu_tools {
 
 ComplementaryFilterROS::ComplementaryFilterROS()
     : Node("ComplementaryFilterROS"),
-      initialized_filter_(false),
-      tf_broadcaster_(this)
+      tf_broadcaster_(this),
+      initialized_filter_(false)
 {
     RCLCPP_INFO(this->get_logger(), "Starting ComplementaryFilterROS");
     initializeParams();
@@ -151,9 +151,9 @@ void ComplementaryFilterROS::initializeParams()
 
 void ComplementaryFilterROS::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw)
 {
-    const geometry_msgs::msg::Vector3& a = imu_msg_raw->linear_acceleration;
-    const geometry_msgs::msg::Vector3& w = imu_msg_raw->angular_velocity;
-    const rclcpp::Time& time = imu_msg_raw->header.stamp;
+    const geometry_msgs::msg::Vector3 &a = imu_msg_raw->linear_acceleration;
+    const geometry_msgs::msg::Vector3 &w = imu_msg_raw->angular_velocity;
+    const rclcpp::Time &time = imu_msg_raw->header.stamp;
 
     // Initialize.
     if (!initialized_filter_)
@@ -182,10 +182,10 @@ void ComplementaryFilterROS::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw)
 void ComplementaryFilterROS::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
                                             MagMsg::ConstSharedPtr mag_msg)
 {
-    const geometry_msgs::msg::Vector3& a = imu_msg_raw->linear_acceleration;
-    const geometry_msgs::msg::Vector3& w = imu_msg_raw->angular_velocity;
-    const geometry_msgs::msg::Vector3& m = mag_msg->magnetic_field;
-    const rclcpp::Time& time = imu_msg_raw->header.stamp;
+    const geometry_msgs::msg::Vector3 &a = imu_msg_raw->linear_acceleration;
+    const geometry_msgs::msg::Vector3 &w = imu_msg_raw->angular_velocity;
+    const geometry_msgs::msg::Vector3 &m = mag_msg->magnetic_field;
+    const rclcpp::Time &time = imu_msg_raw->header.stamp;
 
     // Initialize.
     if (!initialized_filter_)

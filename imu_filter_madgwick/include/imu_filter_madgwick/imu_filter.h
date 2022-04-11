@@ -99,4 +99,4 @@ class ImuFilter
     void getGravity(float& rx, float& ry, float& rz, float gravity = 9.80665);
 };
 
-#endif  // IMU_FILTER_IMU_MADWICK_FILTER_H
+#endif  // IMU_FILTER_MADWICK_IMU_FILTER_H

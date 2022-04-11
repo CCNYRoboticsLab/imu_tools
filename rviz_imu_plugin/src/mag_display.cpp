@@ -36,7 +36,7 @@
 namespace rviz_imu_plugin {
 
 MagDisplay::MagDisplay()
-    : twod_visual_(true), scene_node_(NULL), messages_received_(0)
+    : twod_visual_(true), scene_node_(nullptr), messages_received_(0)
 {
     createProperties();
 }
@@ -72,9 +72,7 @@ void MagDisplay::onInitialize()
     scene_node_->setVisible(isEnabled());
 }
 
-MagDisplay::~MagDisplay()
-{
-}
+MagDisplay::~MagDisplay() = default;
 
 void MagDisplay::reset()
 {
@@ -87,7 +85,7 @@ void MagDisplay::reset()
     mag_visual_->hide();
 }
 
-void MagDisplay::update(float dt, float ros_dt)
+void MagDisplay::update(float /* dt */, float /* ros_dt */)
 {
     updateMag();
 }
