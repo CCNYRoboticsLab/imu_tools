@@ -1,8 +1,11 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8)
 project(imu_complementary_filter)
 
-find_package(Boost REQUIRED COMPONENTS thread)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
+find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -13,7 +16,6 @@ find_package(tf2_ros REQUIRED)
 
 include_directories(
   include
-  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -23,7 +25,7 @@ add_library(complementary_filter
   include/imu_complementary_filter/complementary_filter.h
   include/imu_complementary_filter/complementary_filter_ros.h
 )
-#target_link_libraries(complementary_filter rclcpp ${Boost_LIBRARIES} sensor_msgs)
+#target_link_libraries(complementary_filter rclcpp sensor_msgs)
 
 
 # create complementary_filter_node executable
