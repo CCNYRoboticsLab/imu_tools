@@ -4,6 +4,18 @@ RUN apt-get update \
     && apt-get install -y build-essential file clang-format python3-catkin-tools python3-rosdep \
     && rm -rf /var/lib/apt/lists/*
 
+# Install pre-commit hooks to /root/.cache/pre-commit/
+RUN apt-get update -qq \
+    && apt-get install -y -qq --no-install-recommends git python3-pip clang-format-10 python3-catkin-lint \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip3 install pre-commit
+RUN mkdir -p /tmp/pre-commit
+COPY .pre-commit-config.yaml /tmp/pre-commit/
+RUN cd /tmp/pre-commit \
+    && git init \
+    && pre-commit install-hooks \
+    && rm -rf /tmp/pre-commit
+
 # Create ROS workspace
 COPY . /ws/src/imu_tools
 WORKDIR /ws
