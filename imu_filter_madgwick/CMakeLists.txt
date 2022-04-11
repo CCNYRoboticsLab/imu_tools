@@ -1,18 +1,37 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(imu_filter_madgwick)
 
-find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs geometry_msgs tf2 tf2_geometry_msgs tf2_ros nodelet pluginlib message_filters dynamic_reconfigure)
+find_package(catkin REQUIRED COMPONENTS
+  dynamic_reconfigure
+  geometry_msgs
+  message_filters
+  nodelet
+  pluginlib
+  roscpp
+  sensor_msgs
+  tf2
+  tf2_geometry_msgs
+  tf2_ros
+)
 
 find_package(Boost REQUIRED COMPONENTS system thread)
 
 # Generate dynamic parameters
 generate_dynamic_reconfigure_options(cfg/ImuFilterMadgwick.cfg)
 
-
 catkin_package(
   DEPENDS Boost
-  CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs tf2_ros tf2_geometry_msgs nodelet pluginlib message_filters dynamic_reconfigure
-  INCLUDE_DIRS
+  CATKIN_DEPENDS
+    dynamic_reconfigure
+    geometry_msgs
+    message_filters
+    nodelet
+    pluginlib
+    roscpp
+    sensor_msgs
+    tf2_geometry_msgs
+    tf2_ros
+  INCLUDE_DIRS include
   LIBRARIES imu_filter imu_filter_nodelet
 )
 
