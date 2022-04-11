@@ -8,6 +8,7 @@ from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 from ament_index_python.packages import get_package_share_directory
 
+
 def generate_launch_description():
 
     param_config = os.path.join(get_package_share_directory('imu_filter_madgwick'), 'config', 'imu_filter.yaml')
@@ -29,12 +30,10 @@ def generate_launch_description():
                 package='imu_filter_madgwick',
                 node_plugin='ImuFilterMadgwickRos',
                 node_name='imu_filter',
-                parameters=[params]
+                parameters=[params],
             )
         ],
-        output='screen'
+        output='screen',
     )
 
-    return launch.LaunchDescription([
-        container
-    ])
+    return launch.LaunchDescription([container])
