@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.0.0 (2022-04-12)
+------------------
 * Initial release into ROS2 foxy, galactic and rolling
 * Fix gcc warnings + clang-tidy suggestions
 * Fix CMakeLists
