@@ -2,6 +2,11 @@
 Changelog for package imu_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Initial release into ROS2 foxy, galactic and rolling
+* Contributors: Martin Günther, tgreier
+
 1.2.2 (2020-05-25)
 ------------------
 

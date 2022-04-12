@@ -2,6 +2,20 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Initial release into ROS2 foxy, galactic and rolling
+* Fix gcc warnings + clang-tidy suggestions
+* Fix CMakeLists
+* Reformat python code using black
+* Manually reformat licenses + defines
+* Reformat everything using clang-format
+* Fix trailing whitespace
+* Add launch directory to CMakeLists.txt (`#146 <https://github.com/CCNYRoboticsLab/imu_tools/issues/146>`_)
+* Port imu_complementary_filter to ROS2 (`#138 <https://github.com/CCNYRoboticsLab/imu_tools/issues/138>`_)
+* Madgwick for eloquent (`#110 <https://github.com/CCNYRoboticsLab/imu_tools/issues/110>`_)
+* Contributors: Guido Sanchez, Martin Günther, Maximilian Schik, tgreier
+
 1.2.2 (2020-05-25)
 ------------------
 * fix install path & boost linkage issues

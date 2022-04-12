@@ -2,6 +2,31 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Initial release into ROS2 foxy, galactic and rolling
+* Fix gcc warnings + clang-tidy suggestions
+* Fix CMakeLists
+* Reformat python code using black
+* Manually reformat licenses + defines
+* Reformat everything using clang-format
+* Add license files
+  The "COPYING" file incorrectly had the text of the LGPL, but the
+  original Madgwick filter [1], [2] is GPL licensed. The source code
+  headers correctly have the GPLv3 license text.
+  [1]: https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/
+  [2]: https://github.com/xioTechnologies/Fusion
+* Change to allow the usage of imu_filter_madgwick as a library (`#129 <https://github.com/CCNYRoboticsLab/imu_tools/issues/129>`_)
+* imu_filter_madgwick: Install headers
+* Remove double configuration steps. (`#122 <https://github.com/CCNYRoboticsLab/imu_tools/issues/122>`_)
+  Fixes `#118 <https://github.com/CCNYRoboticsLab/imu_tools/issues/118>`_.
+* Add declination and yaw offset. (`#121 <https://github.com/CCNYRoboticsLab/imu_tools/issues/121>`_)
+  Fixes `#120 <https://github.com/CCNYRoboticsLab/imu_tools/issues/120>`_.
+* Madgwick for eloquent (`#110 <https://github.com/CCNYRoboticsLab/imu_tools/issues/110>`_)
+* Update maintainers in package.xml
+* Fix warnings: reordering and unused vars
+* Contributors: Martin Günther, boiscljo, tgreier
+
 1.2.2 (2020-05-25)
 ------------------
 * Drop the signals component of Boost (`#103 <https://github.com/ccny-ros-pkg/imu_tools/issues/103>`_)
