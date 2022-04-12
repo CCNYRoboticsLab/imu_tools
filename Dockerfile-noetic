@@ -1,28 +1,28 @@
 FROM ros:noetic-ros-core
 
 RUN apt-get update \
-    && apt-get install -y build-essential file clang-format python3-rosdep \
-    && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
+    && apt-get install -y build-essential file clang-format python3-catkin-tools python3-rosdep \
+    && rm -rf /var/lib/apt/lists/*
 
-# workaround for https://github.com/catkin/catkin_tools/issues/594:
-# apt-get install python3-catkin-tools doesn't work because python3-trollius doesn't exist on Ubuntu Focal
-
-ENV PATH="/root/.local/bin:${PATH}"
-
-RUN apt-get update \
-    && apt-get install -y git python3-pip \
-    && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
-
-RUN pip3 install --user git+https://github.com/catkin/catkin_tools.git
-
-# end workaround
+# Install pre-commit hooks to /root/.cache/pre-commit/
+RUN apt-get update -qq \
+    && apt-get install -y -qq --no-install-recommends git python3-pip clang-format-10 python3-catkin-lint \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip3 install pre-commit
+RUN mkdir -p /tmp/pre-commit
+COPY .pre-commit-config.yaml /tmp/pre-commit/
+RUN cd /tmp/pre-commit \
+    && git init \
+    && pre-commit install-hooks \
+    && rm -rf /tmp/pre-commit
 
 # Create ROS workspace
 COPY . /ws/src/imu_tools
 WORKDIR /ws
 
 # Use rosdep to install all dependencies (including ROS itself)
-RUN rosdep init && rosdep update && rosdep install --from-paths src -i -y --rosdistro noetic
+RUN rosdep init && rosdep update && apt-get update -qq && rosdep install --from-paths src -i -y --rosdistro noetic \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && \
     catkin init && \

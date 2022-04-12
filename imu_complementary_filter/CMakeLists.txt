@@ -5,6 +5,7 @@ find_package(Boost REQUIRED COMPONENTS thread)
 
 find_package(catkin REQUIRED COMPONENTS
   cmake_modules
+  geometry_msgs
   message_filters
   roscpp
   sensor_msgs
@@ -15,7 +16,13 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES complementary_filter
-  CATKIN_DEPENDS message_filters roscpp sensor_msgs std_msgs tf
+  CATKIN_DEPENDS
+    geometry_msgs
+    message_filters
+    roscpp
+    sensor_msgs
+    std_msgs
+    tf
 )
 
 include_directories(
@@ -26,10 +33,10 @@ include_directories(
 
 ## Declare a cpp library
 add_library(complementary_filter
-  src/complementary_filter.cpp
-  src/complementary_filter_ros.cpp
   include/imu_complementary_filter/complementary_filter.h
   include/imu_complementary_filter/complementary_filter_ros.h
+  src/complementary_filter.cpp
+  src/complementary_filter_ros.cpp
 )
 target_link_libraries(complementary_filter ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 

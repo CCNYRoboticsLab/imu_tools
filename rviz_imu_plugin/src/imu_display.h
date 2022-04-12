@@ -53,19 +53,16 @@
 #include "imu_orientation_visual.h"
 #include "imu_acc_visual.h"
 
-namespace Ogre
-{
+namespace Ogre {
 class SceneNode;
 }
 
-namespace rviz
-{
+namespace rviz {
 
-class ImuDisplay: public rviz::MessageFilterDisplay<sensor_msgs::Imu>
+class ImuDisplay : public rviz::MessageFilterDisplay<sensor_msgs::Imu>
 {
     Q_OBJECT
-public:
-
+  public:
     ImuDisplay();
     virtual ~ImuDisplay();
 
@@ -76,7 +73,10 @@ public:
     virtual void createProperties();
 
     void setTopic(const std::string& topic);
-    const std::string& getTopic() { return topic_; }
+    const std::string& getTopic()
+    {
+        return topic_;
+    }
 
     void setBoxEnabled(bool enabled);
     void setBoxScaleX(float x);
@@ -94,59 +94,97 @@ public:
     void setAccColor(const Color& color);
     void setAccAlpha(float alpha);
 
-    bool  getBoxEnabled() { return box_enabled_; }
-    float getBoxScaleX()  { return box_visual_->getScaleX(); }
-    float getBoxScaleY()  { return box_visual_->getScaleY(); }
-    float getBoxScaleZ()  { return box_visual_->getScaleZ(); }
-    float getBoxAlpha()   { return box_visual_->getAlpha(); }
-    const QColor& getBoxColor() { return box_visual_->getColor(); }
+    bool getBoxEnabled()
+    {
+        return box_enabled_;
+    }
+    float getBoxScaleX()
+    {
+        return box_visual_->getScaleX();
+    }
+    float getBoxScaleY()
+    {
+        return box_visual_->getScaleY();
+    }
+    float getBoxScaleZ()
+    {
+        return box_visual_->getScaleZ();
+    }
+    float getBoxAlpha()
+    {
+        return box_visual_->getAlpha();
+    }
+    const QColor& getBoxColor()
+    {
+        return box_visual_->getColor();
+    }
 
-    bool  getAxesEnabled() { return axes_enabled_; }
-    float getAxesScale()   { return axes_visual_->getScale(); }
+    bool getAxesEnabled()
+    {
+        return axes_enabled_;
+    }
+    float getAxesScale()
+    {
+        return axes_visual_->getScale();
+    }
 
-    bool  getAccEnabled()   { return acc_enabled_; }
-    float getAccDerotated() { return acc_visual_->getDerotated(); }
-    float getAccScale()     { return acc_visual_->getScale(); }
-    float getAccAlpha()     { return acc_visual_->getAlpha(); }
-    const QColor& getAccColor() { return acc_visual_->getColor(); }
+    bool getAccEnabled()
+    {
+        return acc_enabled_;
+    }
+    float getAccDerotated()
+    {
+        return acc_visual_->getDerotated();
+    }
+    float getAccScale()
+    {
+        return acc_visual_->getScale();
+    }
+    float getAccAlpha()
+    {
+        return acc_visual_->getAlpha();
+    }
+    const QColor& getAccColor()
+    {
+        return acc_visual_->getColor();
+    }
 
-protected Q_SLOTS:
+  protected Q_SLOTS:
 
     void updateTop();
     void updateBox();
     void updateAxes();
     void updateAcc();
 
-private:
-
+  private:
     // Property objects for user-editable properties.
-    rviz::BoolProperty*  fixed_frame_orientation_property_;
+    rviz::BoolProperty* fixed_frame_orientation_property_;
 
     rviz::Property* box_category_;
     rviz::Property* axes_category_;
     rviz::Property* acc_category_;
 
-//    rviz::RosTopicProperty* topic_property_;
-    rviz::BoolProperty*  box_enabled_property_;
+    //    rviz::RosTopicProperty* topic_property_;
+    rviz::BoolProperty* box_enabled_property_;
     rviz::FloatProperty* box_scale_x_property_;
     rviz::FloatProperty* box_scale_y_property_;
     rviz::FloatProperty* box_scale_z_property_;
     rviz::ColorProperty* box_color_property_;
     rviz::FloatProperty* box_alpha_property_;
 
-    rviz::BoolProperty*  axes_enabled_property_;
+    rviz::BoolProperty* axes_enabled_property_;
     rviz::FloatProperty* axes_scale_property_;
 
-    rviz::BoolProperty*  acc_enabled_property_;
-    rviz::BoolProperty*  acc_derotated_property_;
+    rviz::BoolProperty* acc_enabled_property_;
+    rviz::BoolProperty* acc_derotated_property_;
     rviz::FloatProperty* acc_scale_property_;
     rviz::ColorProperty* acc_color_property_;
     rviz::FloatProperty* acc_alpha_property_;
 
     // Differetn types of visuals
-    ImuOrientationVisual * box_visual_;
-    ImuAxesVisual        * axes_visual_;
-    ImuAccVisual         * acc_visual_;
+    ImuOrientationVisual* box_visual_;
+    ImuAxesVisual* axes_visual_;
+    ImuAccVisual* acc_visual_;
 
     // User-editable property variables.
     std::string topic_;
@@ -161,11 +199,9 @@ private:
     int messages_received_;
 
     // Function to handle an incoming ROS message.
-    void processMessage( const sensor_msgs::Imu::ConstPtr& msg);
-
+    void processMessage(const sensor_msgs::Imu::ConstPtr& msg);
 };
 
-} // end namespace rviz
+}  // end namespace rviz
 
-#endif // IMU_DISPLAY_H
-
+#endif  // IMU_DISPLAY_H

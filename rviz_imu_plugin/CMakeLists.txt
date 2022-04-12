@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(rviz_imu_plugin)
 
-find_package(catkin REQUIRED COMPONENTS rviz)
+find_package(catkin REQUIRED COMPONENTS roscpp rviz)
 
 ## This setting causes Qt's "MOC" generation to happen automatically.
 set(CMAKE_AUTOMOC ON)
@@ -26,23 +26,23 @@ endif()
 add_definitions(-DQT_NO_KEYWORDS)
 
 catkin_package(
-  DEPENDS 
-  CATKIN_DEPENDS rviz
+  DEPENDS
+  CATKIN_DEPENDS roscpp rviz
   INCLUDE_DIRS
   LIBRARIES
 )
 
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Here we specify the list of source files.
 ## The generated MOC files are included automatically as headers.
-set(SRC_FILES  src/imu_display.cpp
-               src/imu_orientation_visual.cpp
-               src/imu_axes_visual.cpp
-               src/imu_acc_visual.cpp)
+set(SRC_FILES src/imu_acc_visual.cpp
+              src/imu_axes_visual.cpp
+              src/imu_display.cpp
+              src/imu_orientation_visual.cpp
+)
 
 ## Build libraries
 add_library(${PROJECT_NAME} ${SRC_FILES})

@@ -33,112 +33,112 @@
 #include <ros/ros.h>
 #include <cmath>
 
-namespace rviz
-{
+namespace rviz {
 
-ImuAxesVisual::ImuAxesVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node):
-  orientation_axes_(NULL),
-  scale_(0.15), quat_valid_(true)
+ImuAxesVisual::ImuAxesVisual(Ogre::SceneManager* scene_manager,
+                             Ogre::SceneNode* parent_node)
+    : orientation_axes_(NULL), scale_(0.15), quat_valid_(true)
 {
-  scene_manager_ = scene_manager;
+    scene_manager_ = scene_manager;
 
-  // Ogre::SceneNode s form a tree, with each node storing the
-  // transform (position and orientation) of itself relative to its
-  // parent.  Ogre does the math of combining those transforms when it
-  // is time to render.
-  //
-  // Here we create a node to store the pose of the Imu's header frame
-  // relative to the RViz fixed frame.
-  frame_node_ = parent_node->createChildSceneNode();
+    // Ogre::SceneNode s form a tree, with each node storing the
+    // transform (position and orientation) of itself relative to its
+    // parent.  Ogre does the math of combining those transforms when it
+    // is time to render.
+    //
+    // Here we create a node to store the pose of the Imu's header frame
+    // relative to the RViz fixed frame.
+    frame_node_ = parent_node->createChildSceneNode();
 }
 
 ImuAxesVisual::~ImuAxesVisual()
 {
-  hide();
+    hide();
 
-  // Destroy the frame node since we don't need it anymore.
-  scene_manager_->destroySceneNode(frame_node_);
+    // Destroy the frame node since we don't need it anymore.
+    scene_manager_->destroySceneNode(frame_node_);
 }
 
 void ImuAxesVisual::show()
 {
-  if (!orientation_axes_)
-  {
-    orientation_axes_ = new Axes(scene_manager_, frame_node_);
-    orientation_axes_->setScale(Ogre::Vector3(scale_, scale_, scale_));
-    orientation_axes_->setOrientation(orientation_);
-  }
+    if (!orientation_axes_)
+    {
+        orientation_axes_ = new Axes(scene_manager_, frame_node_);
+        orientation_axes_->setScale(Ogre::Vector3(scale_, scale_, scale_));
+        orientation_axes_->setOrientation(orientation_);
+    }
 }
 
 void ImuAxesVisual::hide()
 {
-  if (orientation_axes_)
-  {
-    delete orientation_axes_;
-    orientation_axes_ = NULL;
-  }
+    if (orientation_axes_)
+    {
+        delete orientation_axes_;
+        orientation_axes_ = NULL;
+    }
 }
 
 void ImuAxesVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
 {
-  if (checkQuaternionValidity(msg)) {
-    if (!quat_valid_) {
-      ROS_INFO("rviz_imu_plugin got valid quaternion, "
-               "displaying true orientation");
-      quat_valid_ = true;
+    if (checkQuaternionValidity(msg))
+    {
+        if (!quat_valid_)
+        {
+            ROS_INFO(
+                "rviz_imu_plugin got valid quaternion, "
+                "displaying true orientation");
+            quat_valid_ = true;
+        }
+        orientation_ = Ogre::Quaternion(msg->orientation.w, msg->orientation.x,
+                                        msg->orientation.y, msg->orientation.z);
+    } else
+    {
+        if (quat_valid_)
+        {
+            ROS_WARN(
+                "rviz_imu_plugin got invalid quaternion (%lf, %lf, %lf, %lf), "
+                "will display neutral orientation instead",
+                msg->orientation.w, msg->orientation.x, msg->orientation.y,
+                msg->orientation.z);
+            quat_valid_ = false;
+        }
+        // if quaternion is invalid, give a unit quat to Ogre
+        orientation_ = Ogre::Quaternion();
     }
-    orientation_ = Ogre::Quaternion(msg->orientation.w,
-                                    msg->orientation.x,
-                                    msg->orientation.y,
-                                    msg->orientation.z);
-  } else {
-    if (quat_valid_) {
-      ROS_WARN("rviz_imu_plugin got invalid quaternion (%lf, %lf, %lf, %lf), "
-               "will display neutral orientation instead", msg->orientation.w,
-               msg->orientation.x,msg->orientation.y,msg->orientation.z);
-      quat_valid_ = false;
-    }
-    // if quaternion is invalid, give a unit quat to Ogre
-    orientation_ = Ogre::Quaternion();
-  }
 
-  if (orientation_axes_)
-    orientation_axes_->setOrientation(orientation_);
+    if (orientation_axes_) orientation_axes_->setOrientation(orientation_);
 }
 
-void ImuAxesVisual::setScale(float scale) 
-{ 
-  scale_ = scale; 
-  if (orientation_axes_) 
-   orientation_axes_->setScale(Ogre::Vector3(scale_, scale_, scale_));
+void ImuAxesVisual::setScale(float scale)
+{
+    scale_ = scale;
+    if (orientation_axes_)
+        orientation_axes_->setScale(Ogre::Vector3(scale_, scale_, scale_));
 }
 
 void ImuAxesVisual::setFramePosition(const Ogre::Vector3& position)
 {
-  frame_node_->setPosition(position);
+    frame_node_->setPosition(position);
 }
 
 void ImuAxesVisual::setFrameOrientation(const Ogre::Quaternion& orientation)
 {
-  frame_node_->setOrientation(orientation);
+    frame_node_->setOrientation(orientation);
 }
 
 inline bool ImuAxesVisual::checkQuaternionValidity(
-    const sensor_msgs::Imu::ConstPtr& msg) {
-
-  double x = msg->orientation.x,
-         y = msg->orientation.y,
-         z = msg->orientation.z,
-         w = msg->orientation.w;
-  // OGRE can handle unnormalized quaternions, but quat's length extremely small;
-  // this may indicate that invalid (0, 0, 0, 0) quat is passed, this will lead ogre
-  // to crash unexpectly
-  if ( std::sqrt( x*x + y*y + z*z + w*w ) < 0.0001 ) {
-    return false;
-  }
-  return true;
+    const sensor_msgs::Imu::ConstPtr& msg)
+{
+    double x = msg->orientation.x, y = msg->orientation.y,
+           z = msg->orientation.z, w = msg->orientation.w;
+    // OGRE can handle unnormalized quaternions, but quat's length extremely
+    // small; this may indicate that invalid (0, 0, 0, 0) quat is passed, this
+    // will lead ogre to crash unexpectly
+    if (std::sqrt(x * x + y * y + z * z + w * w) < 0.0001)
+    {
+        return false;
+    }
+    return true;
 }
 
-
-} // end namespace rviz
-
+}  // end namespace rviz

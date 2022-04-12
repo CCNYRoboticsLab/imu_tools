@@ -36,8 +36,7 @@
 #include <OGRE/OgreSceneManager.h>
 #include <rviz/ogre_helpers/axes.h>
 
-namespace rviz
-{
+namespace rviz {
 
 class Axes;
 
@@ -46,7 +45,8 @@ class ImuAxesVisual
   public:
     // Constructor.  Creates the visual stuff and puts it into the
     // scene, but in an unconfigured state.
-    ImuAxesVisual(Ogre::SceneManager * scene_manager, Ogre::SceneNode * parent_node);
+    ImuAxesVisual(Ogre::SceneManager* scene_manager,
+                  Ogre::SceneNode* parent_node);
 
     // Destructor.  Removes the visual stuff from the scene.
     virtual ~ImuAxesVisual();
@@ -66,33 +66,34 @@ class ImuAxesVisual
 
     void setScale(float scale);
 
-    float getScale() { return scale_; }
+    float getScale()
+    {
+        return scale_;
+    }
 
     void show();
     void hide();
 
   private:
-
     void create();
-    inline bool checkQuaternionValidity(
-        const sensor_msgs::Imu::ConstPtr& msg);
+    inline bool checkQuaternionValidity(const sensor_msgs::Imu::ConstPtr& msg);
 
     Ogre::Quaternion orientation_;
 
     float scale_;
     bool quat_valid_;
 
-    Axes * orientation_axes_;
-  
+    Axes* orientation_axes_;
+
     // A SceneNode whose pose is set to match the coordinate frame of
     // the Imu message header.
-    Ogre::SceneNode * frame_node_;
+    Ogre::SceneNode* frame_node_;
 
     // The SceneManager, kept here only so the destructor can ask it to
     // destroy the ``frame_node_``.
-    Ogre::SceneManager * scene_manager_;
+    Ogre::SceneManager* scene_manager_;
 };
 
-} // end namespace rviz
+}  // end namespace rviz
 
-#endif //  RVIZ_IMU_PLUGIN_IMU_AXES_VISUAL_H
+#endif  //  RVIZ_IMU_PLUGIN_IMU_AXES_VISUAL_H

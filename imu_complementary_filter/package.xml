@@ -6,18 +6,21 @@
 
   <maintainer email="robertogl.valenti@gmail.com">Roberto G. Valenti</maintainer>
   <license>BSD</license>
- 
+
   <url>http://www.mdpi.com/1424-8220/15/8/19302</url>
   <author email="robertogl.valenti@gmail.com">Roberto G. Valenti</author>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>cmake_modules</build_depend>
+  <build_depend>geometry_msgs</build_depend>
   <build_depend>message_filters</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
+  <run_depend>geometry_msgs</run_depend>
   <run_depend>message_filters</run_depend>
+  <run_depend>nodelet</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>

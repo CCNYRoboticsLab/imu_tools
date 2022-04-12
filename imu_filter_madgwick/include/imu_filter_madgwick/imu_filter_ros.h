@@ -41,24 +41,23 @@
 
 class ImuFilterRos
 {
-  typedef sensor_msgs::Imu              ImuMsg;
-  typedef sensor_msgs::MagneticField    MagMsg;
+    typedef sensor_msgs::Imu ImuMsg;
+    typedef sensor_msgs::MagneticField MagMsg;
 
-  typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg> SyncPolicy;
-  typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
-  typedef message_filters::Subscriber<ImuMsg> ImuSubscriber;
-  typedef message_filters::Subscriber<MagMsg> MagSubscriber;
+    typedef message_filters::sync_policies::ApproximateTime<ImuMsg, MagMsg>
+        SyncPolicy;
+    typedef message_filters::Synchronizer<SyncPolicy> Synchronizer;
+    typedef message_filters::Subscriber<ImuMsg> ImuSubscriber;
+    typedef message_filters::Subscriber<MagMsg> MagSubscriber;
 
-  typedef imu_filter_madgwick::ImuFilterMadgwickConfig   FilterConfig;
-  typedef dynamic_reconfigure::Server<FilterConfig>   FilterConfigServer;
+    typedef imu_filter_madgwick::ImuFilterMadgwickConfig FilterConfig;
+    typedef dynamic_reconfigure::Server<FilterConfig> FilterConfigServer;
 
   public:
-
     ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private);
     virtual ~ImuFilterRos();
 
   private:
-
     // **** ROS-related
 
     ros::NodeHandle nh_;
@@ -109,8 +108,7 @@ class ImuFilterRos
     void publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw);
     void publishTransform(const ImuMsg::ConstPtr& imu_msg_raw);
 
-    void publishRawMsg(const ros::Time& t,
-                       float roll, float pitch, float yaw);
+    void publishRawMsg(const ros::Time& t, float roll, float pitch, float yaw);
 
     void reconfigCallback(FilterConfig& config, uint32_t level);
     void checkTopicsTimerCallback(const ros::TimerEvent&);
@@ -118,4 +116,4 @@ class ImuFilterRos
     void applyYawOffset(double& q0, double& q1, double& q2, double& q3);
 };
 
-#endif // IMU_FILTER_IMU_MADWICK_FILTER_ROS_H
+#endif  // IMU_FILTER_IMU_MADWICK_FILTER_ROS_H

@@ -33,147 +33,151 @@
 #include <ros/ros.h>
 #include <cmath>
 
-namespace rviz
-{
+namespace rviz {
 
-ImuOrientationVisual::ImuOrientationVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node):
-  orientation_box_(NULL),
-  scale_x_(0.07),
-  scale_y_(0.10),
-  scale_z_(0.03),
-  alpha_(1.0),
-  quat_valid_(true),
-  color_(0.5, 0.5, 0.5)
+ImuOrientationVisual::ImuOrientationVisual(Ogre::SceneManager* scene_manager,
+                                           Ogre::SceneNode* parent_node)
+    : orientation_box_(NULL),
+      scale_x_(0.07),
+      scale_y_(0.10),
+      scale_z_(0.03),
+      alpha_(1.0),
+      quat_valid_(true),
+      color_(0.5, 0.5, 0.5)
 {
-  scene_manager_ = scene_manager;
+    scene_manager_ = scene_manager;
 
-  // Ogre::SceneNode s form a tree, with each node storing the
-  // transform (position and orientation) of itself relative to its
-  // parent.  Ogre does the math of combining those transforms when it
-  // is time to render.
-  //
-  // Here we create a node to store the pose of the Imu's header frame
-  // relative to the RViz fixed frame.
-  frame_node_ = parent_node->createChildSceneNode();
+    // Ogre::SceneNode s form a tree, with each node storing the
+    // transform (position and orientation) of itself relative to its
+    // parent.  Ogre does the math of combining those transforms when it
+    // is time to render.
+    //
+    // Here we create a node to store the pose of the Imu's header frame
+    // relative to the RViz fixed frame.
+    frame_node_ = parent_node->createChildSceneNode();
 }
 
 ImuOrientationVisual::~ImuOrientationVisual()
 {
-  hide();
+    hide();
 
-  // Destroy the frame node since we don't need it anymore.
-  scene_manager_->destroySceneNode(frame_node_);
+    // Destroy the frame node since we don't need it anymore.
+    scene_manager_->destroySceneNode(frame_node_);
 }
 
 void ImuOrientationVisual::show()
 {
-  if (!orientation_box_)
-  {
-    orientation_box_ = new Shape(Shape::Cube, scene_manager_, frame_node_);
-    orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
-    orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
-    orientation_box_->setOrientation(orientation_);
-  }
+    if (!orientation_box_)
+    {
+        orientation_box_ = new Shape(Shape::Cube, scene_manager_, frame_node_);
+        orientation_box_->setColor(color_.redF(), color_.greenF(),
+                                   color_.blueF(), alpha_);
+        orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
+        orientation_box_->setOrientation(orientation_);
+    }
 }
 
 void ImuOrientationVisual::hide()
 {
-  if (orientation_box_)
-  {
-    delete orientation_box_;
-    orientation_box_ = NULL;
-  }
+    if (orientation_box_)
+    {
+        delete orientation_box_;
+        orientation_box_ = NULL;
+    }
 }
 
 void ImuOrientationVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
 {
-  if (checkQuaternionValidity(msg)) {
-    if (!quat_valid_) {
-      ROS_INFO("rviz_imu_plugin got valid quaternion, "
-               "displaying true orientation");
-      quat_valid_ = true;
+    if (checkQuaternionValidity(msg))
+    {
+        if (!quat_valid_)
+        {
+            ROS_INFO(
+                "rviz_imu_plugin got valid quaternion, "
+                "displaying true orientation");
+            quat_valid_ = true;
+        }
+        orientation_ = Ogre::Quaternion(msg->orientation.w, msg->orientation.x,
+                                        msg->orientation.y, msg->orientation.z);
+    } else
+    {
+        if (quat_valid_)
+        {
+            ROS_WARN(
+                "rviz_imu_plugin got invalid quaternion (%lf, %lf, %lf, %lf), "
+                "will display neutral orientation instead",
+                msg->orientation.w, msg->orientation.x, msg->orientation.y,
+                msg->orientation.z);
+            quat_valid_ = false;
+        }
+        // if quaternion is invalid, give a unit quat to Ogre
+        orientation_ = Ogre::Quaternion();
     }
-    orientation_ = Ogre::Quaternion(msg->orientation.w,
-                                    msg->orientation.x,
-                                    msg->orientation.y,
-                                    msg->orientation.z);
-  } else {
-    if (quat_valid_) {
-      ROS_WARN("rviz_imu_plugin got invalid quaternion (%lf, %lf, %lf, %lf), "
-               "will display neutral orientation instead", msg->orientation.w,
-               msg->orientation.x,msg->orientation.y,msg->orientation.z);
-      quat_valid_ = false;
-    }
-    // if quaternion is invalid, give a unit quat to Ogre
-    orientation_ = Ogre::Quaternion();
-  }
 
-  if (orientation_box_)
-    orientation_box_->setOrientation(orientation_);
+    if (orientation_box_) orientation_box_->setOrientation(orientation_);
 }
 
-void ImuOrientationVisual::setScaleX(float x) 
-{ 
-  scale_x_ = x; 
-  if (orientation_box_) 
-   orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
+void ImuOrientationVisual::setScaleX(float x)
+{
+    scale_x_ = x;
+    if (orientation_box_)
+        orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
 }
 
-void ImuOrientationVisual::setScaleY(float y) 
-{ 
-  scale_y_ = y; 
-  if (orientation_box_) 
-    orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
+void ImuOrientationVisual::setScaleY(float y)
+{
+    scale_y_ = y;
+    if (orientation_box_)
+        orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
 }
 
-void ImuOrientationVisual::setScaleZ(float z) 
-{ 
-  scale_z_ = z; 
-  if (orientation_box_) 
-    orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
-
+void ImuOrientationVisual::setScaleZ(float z)
+{
+    scale_z_ = z;
+    if (orientation_box_)
+        orientation_box_->setScale(Ogre::Vector3(scale_x_, scale_y_, scale_z_));
 }
 
 void ImuOrientationVisual::setColor(const QColor& color)
 {
-  color_ = color;
-  if (orientation_box_) 
-    orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
+    color_ = color;
+    if (orientation_box_)
+        orientation_box_->setColor(color_.redF(), color_.greenF(),
+                                   color_.blueF(), alpha_);
 }
 
-void ImuOrientationVisual::setAlpha(float alpha) 
-{ 
-  alpha_ = alpha; 
-  if (orientation_box_) 
-    orientation_box_->setColor(color_.redF(), color_.greenF(), color_.blueF(), alpha_);
+void ImuOrientationVisual::setAlpha(float alpha)
+{
+    alpha_ = alpha;
+    if (orientation_box_)
+        orientation_box_->setColor(color_.redF(), color_.greenF(),
+                                   color_.blueF(), alpha_);
 }
 
 void ImuOrientationVisual::setFramePosition(const Ogre::Vector3& position)
 {
-  frame_node_->setPosition(position);
+    frame_node_->setPosition(position);
 }
 
-void ImuOrientationVisual::setFrameOrientation(const Ogre::Quaternion& orientation)
+void ImuOrientationVisual::setFrameOrientation(
+    const Ogre::Quaternion& orientation)
 {
-  frame_node_->setOrientation(orientation);
+    frame_node_->setOrientation(orientation);
 }
 
 inline bool ImuOrientationVisual::checkQuaternionValidity(
-    const sensor_msgs::Imu::ConstPtr& msg) {
-
-  double x = msg->orientation.x,
-         y = msg->orientation.y,
-         z = msg->orientation.z,
-         w = msg->orientation.w;
-  // OGRE can handle unnormalized quaternions, but quat's length extremely small;
-  // this may indicate that invalid (0, 0, 0, 0) quat is passed, this will lead ogre
-  // to crash unexpectly
-  if ( std::sqrt( x*x + y*y + z*z + w*w ) < 0.0001 ) {
-    return false;
-  }
-  return true;
+    const sensor_msgs::Imu::ConstPtr& msg)
+{
+    double x = msg->orientation.x, y = msg->orientation.y,
+           z = msg->orientation.z, w = msg->orientation.w;
+    // OGRE can handle unnormalized quaternions, but quat's length extremely
+    // small; this may indicate that invalid (0, 0, 0, 0) quat is passed, this
+    // will lead ogre to crash unexpectly
+    if (std::sqrt(x * x + y * y + z * z + w * w) < 0.0001)
+    {
+        return false;
+    }
+    return true;
 }
 
-
-} // end namespace rviz
-
+}  // end namespace rviz
