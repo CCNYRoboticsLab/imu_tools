@@ -2,6 +2,22 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reformat everything using clang-format
+* Fix package dependencies
+* Fix trailing whitespace
+* Fix typo
+* Add declination and yaw offset. (`#121 <https://github.com/CCNYRoboticsLab/imu_tools/issues/121>`_)
+  Fixes `#120 <https://github.com/CCNYRoboticsLab/imu_tools/issues/120>`_.
+* Add license files
+  The "COPYING" file incorrectly had the text of the LGPL, but the
+  original Madgwick filter [1], [2] is GPL licensed. The source code
+  headers correctly have the GPLv3 license text.
+  [1]: https://x-io.co.uk/open-source-imu-and-ahrs-algorithms/
+  [2]: https://github.com/xioTechnologies/Fusion
+* Contributors: Martin Günther, tgreier
+
 1.2.3 (2021-04-09)
 ------------------
 * Fix "non standard content" warning in imu_tools metapackage

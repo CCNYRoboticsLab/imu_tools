@@ -2,6 +2,13 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reformat everything using clang-format
+* Fix package dependencies
+* Fix trailing whitespace
+* Contributors: Martin Günther
+
 1.2.3 (2021-04-09)
 ------------------
 * Fix "non standard content" warning in imu_tools metapackage

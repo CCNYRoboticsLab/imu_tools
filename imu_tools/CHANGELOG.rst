@@ -2,6 +2,9 @@
 Changelog for package imu_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.2.3 (2021-04-09)
 ------------------
 * Fix "non standard content" warning in imu_tools metapackage
