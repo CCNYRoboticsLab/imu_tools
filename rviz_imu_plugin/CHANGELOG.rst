@@ -2,8 +2,8 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.4 (2022-04-12)
+------------------
 * Reformat everything using clang-format
 * Fix package dependencies
 * Fix trailing whitespace
