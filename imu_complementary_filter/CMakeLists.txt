@@ -6,8 +6,9 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(message_filters REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
@@ -32,7 +33,7 @@ add_library(complementary_filter
 add_executable(complementary_filter_node
   src/complementary_filter_node.cpp)
 target_link_libraries(complementary_filter_node complementary_filter)
-ament_target_dependencies(complementary_filter rclcpp message_filters sensor_msgs std_msgs tf2 tf2_ros)
+ament_target_dependencies(complementary_filter geometry_msgs rclcpp message_filters sensor_msgs std_msgs tf2 tf2_ros)
 #ament_target_dependencies(complementary_filter_node)
 
 install(TARGETS
@@ -56,5 +57,5 @@ install(DIRECTORY launch
 )
 
 ament_export_include_directories(include)
-ament_export_dependencies(sensor_msgs)
+ament_export_dependencies(geometry_msgs message_filters sensor_msgs std_msgs tf2 tf2_ros)
 ament_package()
