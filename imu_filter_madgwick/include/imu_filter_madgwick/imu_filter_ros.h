@@ -37,6 +37,7 @@
 
 #include "imu_filter_madgwick/imu_filter.h"
 #include "imu_filter_madgwick/base_node.hpp"
+#include "imu_filter_madgwick/visibility_control.h"
 
 class ImuFilterMadgwickRos : public imu_filter::BaseNode
 {
@@ -51,6 +52,7 @@ class ImuFilterMadgwickRos : public imu_filter::BaseNode
     typedef message_filters::Subscriber<MagMsg> MagSubscriber;
 
   public:
+    IMU_FILTER_MADGWICK_CPP_PUBLIC
     explicit ImuFilterMadgwickRos(const rclcpp::NodeOptions& options);
 
     // Callbacks are public so they can be called when used as a library

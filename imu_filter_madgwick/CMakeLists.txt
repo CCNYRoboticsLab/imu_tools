@@ -35,6 +35,8 @@ ament_target_dependencies(imu_filter_madgwick
   tf2_ros
 )
 rclcpp_components_register_nodes(imu_filter_madgwick "ImuFilterMadgwickRos")
+target_compile_definitions(imu_filter_madgwick
+  PRIVATE "IMU_FILTER_MADGWICK_CPP_BUILDING_DLL")
 
 add_executable(imu_filter_madgwick_node src/imu_filter_node.cpp)
 target_link_libraries(imu_filter_madgwick_node imu_filter_madgwick)
