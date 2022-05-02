@@ -2,6 +2,13 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Switch to non-deprecated hpp header
+  The .h header became deprecated after galactic.
+* Add missing test dependency
+* Contributors: Martin Günther
+
 2.0.0 (2022-04-12)
 ------------------
 * Initial release into ROS2 foxy, galactic and rolling
