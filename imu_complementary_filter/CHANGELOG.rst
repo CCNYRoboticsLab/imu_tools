@@ -2,6 +2,11 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* complementary: Add missing dependency on geometry_msgs
+* Contributors: Martin Günther
+
 2.0.0 (2022-04-12)
 ------------------
 * Initial release into ROS2 foxy, galactic and rolling
