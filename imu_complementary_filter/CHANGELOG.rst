@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.0 (2022-05-02)
+------------------
 * complementary: Add missing dependency on geometry_msgs
 * Contributors: Martin Günther
 
