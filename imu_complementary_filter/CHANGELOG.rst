@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.1.1 (2022-05-24)
+------------------
 * Add missing build dependency to package.xml. (`#161 <https://github.com/CCNYRoboticsLab/imu_tools/issues/161>`_)
 * Contributors: Martin Günther, Steven! Ragnarök
 
