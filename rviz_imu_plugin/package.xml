@@ -9,7 +9,7 @@
   <license>BSD</license>
   <url>http://ros.org/wiki/rviz_imu_plugin</url>
   <author email="ivan.dryanovski@gmail.com">Ivan Dryanovski</author>
-  <maintainer email="martin.guenther1980@gmail.com">Martin Günther</maintainer>
+  <maintainer email="martin.guenther@dfki.de">Martin Günther</maintainer>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
