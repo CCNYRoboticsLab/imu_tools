@@ -21,15 +21,15 @@ def generate_launch_description():
         params = yaml.safe_load(f)['imu_filter']['ros__parameters']
 
     container = ComposableNodeContainer(
-        node_name='imu_filter_container',
-        node_namespace='',
+        name='imu_filter_container',
+        namespace='',
         package='rclcpp_components',
-        node_executable='component_container',
+        executable='component_container',
         composable_node_descriptions=[
             ComposableNode(
                 package='imu_filter_madgwick',
-                node_plugin='ImuFilterMadgwickRos',
-                node_name='imu_filter',
+                plugin='ImuFilterMadgwickRos',
+                name='imu_filter',
                 parameters=[params],
             )
         ],
