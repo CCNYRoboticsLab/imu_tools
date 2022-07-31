@@ -25,6 +25,12 @@ void filterStationary(float Ax, float Ay, float Az, float Mx, float My,
     }
 
     filter.getOrientation(q0, q1, q2, q3);
+
+    // test resetting the filter
+    filter.reset();
+    double rq0, rq1, rq2, rq3;
+    filter.getOrientation(rq0, rq1, rq2, rq3);
+    ASSERT_QUAT_EQUAL(rq0, rq1, rq2, rq3, 1.0, 0.0, 0.0, 0.0);
 }
 
 template <WorldFrame::WorldFrame FRAME>
@@ -48,6 +54,12 @@ void filterStationary(float Ax, float Ay, float Az, double& q0, double& q1,
     }
 
     filter.getOrientation(q0, q1, q2, q3);
+
+    // test resetting the filter
+    filter.reset();
+    double rq0, rq1, rq2, rq3;
+    filter.getOrientation(rq0, rq1, rq2, rq3);
+    ASSERT_QUAT_EQUAL(rq0, rq1, rq2, rq3, 1.0, 0.0, 0.0, 0.0);
 }
 
 #define TEST_STATIONARY_ENU(in_am, exp_result)                                \

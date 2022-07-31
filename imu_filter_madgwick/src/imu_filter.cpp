@@ -352,3 +352,8 @@ void ImuFilter::getGravity(float& rx, float& ry, float& rz, float gravity)
             break;
     }
 }
+
+void ImuFilter::reset()
+{
+    setOrientation(1, 0, 0, 0);
+}

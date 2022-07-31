@@ -45,6 +45,8 @@ ComplementaryFilterROS::ComplementaryFilterROS(
     ROS_INFO("Starting ComplementaryFilterROS");
     initializeParams();
 
+    last_ros_time_ = ros::Time::now();
+
     int queue_size = 5;
 
     // Register publishers:
@@ -117,6 +119,11 @@ void ComplementaryFilterROS::initializeParams()
     if (!nh_private_.getParam("orientation_stddev", orientation_stddev))
         orientation_stddev = 0.0;
 
+    double time_jump_threshold{0.0};
+    nh_private_.param("time_jump_threshold", time_jump_threshold,
+                      time_jump_threshold);
+    time_jump_threshold_ = ros::Duration(time_jump_threshold);
+
     orientation_variance_ = orientation_stddev * orientation_stddev;
 
     filter_.setDoBiasEstimation(do_bias_estimation);
@@ -148,6 +155,8 @@ void ComplementaryFilterROS::initializeParams()
 
 void ComplementaryFilterROS::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 {
+    checkTimeJump();
+
     const geometry_msgs::Vector3& a = imu_msg_raw->linear_acceleration;
     const geometry_msgs::Vector3& w = imu_msg_raw->angular_velocity;
     const ros::Time& time = imu_msg_raw->header.stamp;
@@ -179,6 +188,8 @@ void ComplementaryFilterROS::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 void ComplementaryFilterROS::imuMagCallback(const ImuMsg::ConstPtr& imu_msg_raw,
                                             const MagMsg::ConstPtr& mag_msg)
 {
+    checkTimeJump();
+
     const geometry_msgs::Vector3& a = imu_msg_raw->linear_acceleration;
     const geometry_msgs::Vector3& w = imu_msg_raw->angular_velocity;
     const geometry_msgs::Vector3& m = mag_msg->magnetic_field;
@@ -293,6 +304,34 @@ void ComplementaryFilterROS::publish(
                 imu_msg_raw->header.frame_id));
         }
     }
+}
+
+void ComplementaryFilterROS::checkTimeJump()
+{
+    const auto now = ros::Time::now();
+    if (last_ros_time_.isZero() || last_ros_time_ <= now + time_jump_threshold_)
+    {
+        last_ros_time_ = now;
+        return;
+    }
+
+    ROS_WARN("Detected jump back in time of %.1f s. Resetting IMU filter.",
+             (last_ros_time_ - now).toSec());
+
+    if (time_jump_threshold_.isZero() && ros::Time::isSystemTime())
+        ROS_INFO(
+            "To ignore short time jumps back, use ~time_jump_threshold "
+            "parameter of the filter.");
+
+    reset();
+}
+
+void ComplementaryFilterROS::reset()
+{
+    filter_.reset();
+    time_prev_ = {};
+    last_ros_time_ = ros::Time::now();
+    initialized_filter_ = false;
 }
 
 }  // namespace imu_tools

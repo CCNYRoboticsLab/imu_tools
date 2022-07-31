@@ -87,6 +87,9 @@ class ComplementaryFilter
     void update(double ax, double ay, double az, double wx, double wy,
                 double wz, double mx, double my, double mz, double dt);
 
+    // Reset the filter to the initial state.
+    void reset();
+
   private:
     static const double kGravity;
     static const double gamma_;

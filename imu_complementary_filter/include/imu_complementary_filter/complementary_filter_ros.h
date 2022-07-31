@@ -55,6 +55,9 @@ class ComplementaryFilterROS
                            const ros::NodeHandle& nh_private);
     virtual ~ComplementaryFilterROS();
 
+    // Reset the filter to the initial state.
+    void reset();
+
   private:
     // Convenience typedefs
     typedef sensor_msgs::Imu ImuMsg;
@@ -89,10 +92,12 @@ class ComplementaryFilterROS
     bool publish_debug_topics_;
     std::string fixed_frame_;
     double orientation_variance_;
+    ros::Duration time_jump_threshold_;
 
     // State variables:
     ComplementaryFilter filter_;
     ros::Time time_prev_;
+    ros::Time last_ros_time_;
     bool initialized_filter_;
 
     void initializeParams();
@@ -103,6 +108,8 @@ class ComplementaryFilterROS
 
     tf::Quaternion hamiltonToTFQuaternion(double q0, double q1, double q2,
                                           double q3) const;
+    // Check whether ROS time has jumped back. If so, reset the filter.
+    void checkTimeJump();
 };
 
 }  // namespace imu_tools
