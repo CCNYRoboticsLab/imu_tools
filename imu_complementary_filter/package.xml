@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>imu_complementary_filter</name>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
   <description>Filter which fuses angular velocities, accelerations, and (optionally) magnetic readings from a generic IMU device into a quaternion to represent the orientation of the device wrt the global frame. Based on the algorithm by Roberto G. Valenti etal. described in the paper "Keeping a Good Attitude: A Quaternion-Based Orientation Filter for IMUs and MARGs" available at http://www.mdpi.com/1424-8220/15/8/19302 .</description>
 
   <maintainer email="robertogl.valenti@gmail.com">Roberto G. Valenti</maintainer>

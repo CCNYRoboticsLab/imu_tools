@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.5 (2022-08-19)
+------------------
 * Added ability to reset IMU filters when ROS time jumps back. (`#165 <https://github.com/CCNYRoboticsLab/imu_tools/issues/165>`_)
 * Contributors: Martin Pecka
 
