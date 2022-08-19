@@ -456,6 +456,16 @@ double ComplementaryFilter::getAdaptiveGain(double alpha, double ax, double ay,
     return factor * alpha;
 }
 
+void ComplementaryFilter::reset()
+{
+    initialized_ = false;
+    steady_state_ = false;
+    q0_ = 1.0;
+    q1_ = q2_ = q3_ = 0.0;
+    wx_bias_ = wy_bias_ = wz_bias_ = 0.0;
+    wx_prev_ = wy_prev_ = wz_prev_ = 0.0;
+}
+
 void normalizeVector(double& x, double& y, double& z)
 {
     double norm = sqrt(x * x + y * y + z * z);

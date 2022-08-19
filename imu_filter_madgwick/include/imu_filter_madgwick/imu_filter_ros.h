@@ -57,6 +57,9 @@ class ImuFilterRos
     ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private);
     virtual ~ImuFilterRos();
 
+    //! \brief Reset the filter to the initial state.
+    void reset();
+
   private:
     // **** ROS-related
 
@@ -90,11 +93,13 @@ class ImuFilterRos
     bool remove_gravity_vector_;
     geometry_msgs::Vector3 mag_bias_;
     double orientation_variance_;
+    ros::Duration time_jump_threshold_;
 
     // **** state variables
     boost::mutex mutex_;
     bool initialized_;
     ros::Time last_time_;
+    ros::Time last_ros_time_;
 
     // **** filter implementation
     ImuFilter filter_;
@@ -114,6 +119,8 @@ class ImuFilterRos
     void checkTopicsTimerCallback(const ros::TimerEvent&);
 
     void applyYawOffset(double& q0, double& q1, double& q2, double& q3);
+    //! \brief Check whether ROS time has jumped back. If so, reset the filter.
+    void checkTimeJump();
 };
 
 #endif  // IMU_FILTER_IMU_MADWICK_FILTER_ROS_H

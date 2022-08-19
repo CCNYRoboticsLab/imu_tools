@@ -45,6 +45,10 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private)
         remove_gravity_vector_ = false;
     if (!nh_private_.getParam("publish_debug_topics", publish_debug_topics_))
         publish_debug_topics_ = false;
+    double time_jump_threshold{0.0};
+    nh_private_.param("time_jump_threshold", time_jump_threshold,
+                      time_jump_threshold);
+    time_jump_threshold_ = ros::Duration(time_jump_threshold);
 
     double yaw_offset = 0.0;
     if (!nh_private_.getParam("yaw_offset", yaw_offset)) yaw_offset = 0.0;
@@ -96,6 +100,8 @@ ImuFilterRos::ImuFilterRos(ros::NodeHandle nh, ros::NodeHandle nh_private)
         ROS_INFO("The gravity vector will be removed from the acceleration");
     else
         ROS_INFO("The gravity vector is kept in the IMU message.");
+
+    last_ros_time_ = ros::Time::now();
 
     // **** register dynamic reconfigure
     config_server_.reset(new FilterConfigServer(nh_private_));
@@ -153,6 +159,8 @@ ImuFilterRos::~ImuFilterRos()
 
 void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 {
+    checkTimeJump();
+
     boost::mutex::scoped_lock lock(mutex_);
 
     const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
@@ -213,6 +221,8 @@ void ImuFilterRos::imuCallback(const ImuMsg::ConstPtr& imu_msg_raw)
 void ImuFilterRos::imuMagCallback(const ImuMsg::ConstPtr& imu_msg_raw,
                                   const MagMsg::ConstPtr& mag_msg)
 {
+    checkTimeJump();
+
     boost::mutex::scoped_lock lock(mutex_);
 
     const geometry_msgs::Vector3& ang_vel = imu_msg_raw->angular_velocity;
@@ -442,4 +452,33 @@ void ImuFilterRos::checkTopicsTimerCallback(const ros::TimerEvent&)
         ROS_WARN_STREAM("Still waiting for data on topic "
                         << ros::names::resolve("imu") << "/data_raw"
                         << "...");
+}
+
+void ImuFilterRos::reset()
+{
+    boost::mutex::scoped_lock lock(mutex_);
+    filter_.reset();
+    initialized_ = false;
+    last_time_ = {};
+    last_ros_time_ = ros::Time::now();
+}
+
+void ImuFilterRos::checkTimeJump()
+{
+    const auto now = ros::Time::now();
+    if (last_ros_time_.isZero() || last_ros_time_ <= now + time_jump_threshold_)
+    {
+        last_ros_time_ = now;
+        return;
+    }
+
+    ROS_WARN("Detected jump back in time of %.1f s. Resetting IMU filter.",
+             (last_ros_time_ - now).toSec());
+
+    if (time_jump_threshold_.isZero() && ros::Time::isSystemTime())
+        ROS_INFO(
+            "To ignore short time jumps back, use ~time_jump_threshold "
+            "parameter of the filter.");
+
+    reset();
 }
