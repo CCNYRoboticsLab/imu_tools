@@ -28,6 +28,9 @@ add_library(complementary_filter
 )
 #target_link_libraries(complementary_filter rclcpp sensor_msgs)
 
+set_target_properties(complementary_filter PROPERTIES
+  POSITION_INDEPENDENT_CODE ON
+)
 
 # create complementary_filter_node executable
 add_executable(complementary_filter_node
@@ -38,11 +41,11 @@ ament_target_dependencies(complementary_filter geometry_msgs rclcpp message_filt
 
 install(TARGETS
         complementary_filter
-        DESTINATION lib/${PROJECT_NAME}
+        DESTINATION lib
 )
 install(TARGETS
         complementary_filter_node
-        DESTINATION lib/${PROJECT_NAME}
+        DESTINATION lib
 )
 
 ## Mark cpp header files for installation
@@ -56,6 +59,7 @@ install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
 )
 
+ament_export_libraries(complementary_filter)
 ament_export_include_directories(include)
 ament_export_dependencies(geometry_msgs message_filters sensor_msgs std_msgs tf2 tf2_ros)
 ament_package()
