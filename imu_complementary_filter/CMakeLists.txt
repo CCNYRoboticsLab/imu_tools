@@ -14,7 +14,7 @@ find_package(std_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
-add_library(complementary_filter
+add_library(complementary_filter SHARED
   src/complementary_filter.cpp
   src/complementary_filter_ros.cpp
   include/imu_complementary_filter/complementary_filter.h
