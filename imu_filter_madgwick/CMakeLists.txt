@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(imu_filter_madgwick)
 
-# Default to C++14
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
-endif()
-
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -19,18 +14,20 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
-include_directories(include)
-
 add_library(imu_filter_madgwick SHARED
             src/imu_filter.cpp
             src/imu_filter_ros.cpp
             src/stateless_orientation.cpp)
+target_compile_features(imu_filter_madgwick PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(imu_filter_madgwick PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(imu_filter_madgwick
+  geometry_msgs
   rclcpp
   rclcpp_components
-  std_msgs
   sensor_msgs
-  geometry_msgs
+  std_msgs
   tf2_geometry_msgs
   tf2_ros
 )
@@ -39,16 +36,17 @@ target_compile_definitions(imu_filter_madgwick
   PRIVATE "IMU_FILTER_MADGWICK_CPP_BUILDING_DLL")
 
 add_executable(imu_filter_madgwick_node src/imu_filter_node.cpp)
+target_include_directories(imu_filter_madgwick_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 target_link_libraries(imu_filter_madgwick_node imu_filter_madgwick)
-ament_target_dependencies(imu_filter_madgwick_node
-  rclcpp)
 
-install(TARGETS
-  imu_filter_madgwick
+install(
+  TARGETS imu_filter_madgwick
+  EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
 )
 
 install(
@@ -71,5 +69,8 @@ endif()
 
 ament_export_include_directories(include)
 ament_export_libraries(imu_filter_madgwick)
+ament_export_targets(
+  export_${PROJECT_NAME}
+)
 
 ament_package()
