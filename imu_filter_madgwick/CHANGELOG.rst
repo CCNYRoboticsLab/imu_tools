@@ -2,6 +2,11 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.1.2 (2022-07-14)
+------------------
+* Enable on Windows (`#162 <https://github.com/CCNYRoboticsLab/imu_tools/issues/162>`_)
+* Contributors: Lou Amadio
+
 2.1.1 (2022-05-24)
 ------------------
 
