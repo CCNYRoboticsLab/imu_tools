@@ -6,6 +6,18 @@ find_package(catkin REQUIRED COMPONENTS roscpp rviz)
 ## This setting causes Qt's "MOC" generation to happen automatically.
 set(CMAKE_AUTOMOC ON)
 
+if(${CMAKE_C_COMPILER_ID} STREQUAL "Clang" AND ${CMAKE_C_COMPILER_VERSION} VERSION_GREATER_EQUAL "11")
+  # newer Clang chokes on the idiomatic way to use CF_ENUM; e.g. like this:
+  #     typedef CF_ENUM(int, MyEnum) {
+  #       MY_ENUM_THING,
+  #       MY_ENUM_OTHER_THING,
+  #       # etc...
+  #     }
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-elaborated-enum-base -Wno-undef-prefix")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-elaborated-enum-base -Wno-undef-prefix")
+  SET(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -Wno-undef-prefix")
+endif()
+
 ## This plugin includes Qt widgets, so we must include Qt.
 ## We'll use the version that rviz used so they are compatible.
 if(rviz_QT_VERSION VERSION_LESS "5")
