@@ -126,8 +126,10 @@ void ComplementaryFilterROS::initializeParams()
 
     if (!nh_private_.getParam("ref_mag_north", ref_mag_north_))
         ref_mag_north_ = 5e-5;
-    if (!nh_private_.getParam("ref_mag_east", ref_mag_east_)) ref_mag_east_ = 0.0;
-    if (!nh_private_.getParam("ref_mag_down", ref_mag_down_)) ref_mag_down_ = 0.0;
+    if (!nh_private_.getParam("ref_mag_east", ref_mag_east_))
+        ref_mag_east_ = 0.0;
+    if (!nh_private_.getParam("ref_mag_down", ref_mag_down_))
+        ref_mag_down_ = 0.0;
 
     orientation_variance_ = orientation_stddev * orientation_stddev;
 
