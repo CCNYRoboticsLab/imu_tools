@@ -65,12 +65,16 @@ class ComplementaryFilter
     double getAngularVelocityBiasZ() const;
 
     // Set the orientation, as a Hamilton Quaternion, of the body frame wrt the
-    // fixed frame.
-    void setOrientation(double q0, double q1, double q2, double q3);
+    // world frame.
+    void setOrientation(double qWB_0, double qWB_1, double qWB_2, double qWB_3);
 
     // Get the orientation, as a Hamilton Quaternion, of the body frame wrt the
-    // fixed frame.
-    void getOrientation(double& q0, double& q1, double& q2, double& q3) const;
+    // world frame.
+    void getOrientation(double& qWB_0, double& qWB_1, double& qWB_2,
+                        double& qWB_3) const;
+
+    void setReferenceMagneticField(double ref_mag_north, double ref_mag_east,
+                                   double ref_mag_down);
 
     // Update from accelerometer and gyroscope data.
     // [ax, ay, az]: Normalized gravity vector.
@@ -116,7 +120,10 @@ class ComplementaryFilter
 
     // The orientation as a Hamilton quaternion (q0 is the scalar). Represents
     // the orientation of the fixed frame wrt the body frame.
-    double q0_, q1_, q2_, q3_;
+    double qBF_0_, qBF_1_, qBF_2_, qBF_3_;
+
+    // the orientation of the fixed frame wrt the world frame.
+    double qWF_0_, qWF_1_, qWF_2_, qWF_3_;
 
     // Bias in angular velocities;
     double wx_prev_, wy_prev_, wz_prev_;

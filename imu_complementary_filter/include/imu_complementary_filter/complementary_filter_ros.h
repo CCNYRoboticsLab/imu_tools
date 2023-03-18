@@ -93,6 +93,9 @@ class ComplementaryFilterROS
     std::string fixed_frame_;
     double orientation_variance_;
     ros::Duration time_jump_threshold_;
+    double ref_mag_north_;
+    double ref_mag_east_;
+    double ref_mag_down_;
 
     // State variables:
     ComplementaryFilter filter_;

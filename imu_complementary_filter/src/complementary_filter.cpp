@@ -54,10 +54,14 @@ ComplementaryFilter::ComplementaryFilter()
       do_adaptive_gain_(false),
       initialized_(false),
       steady_state_(false),
-      q0_(1),
-      q1_(0),
-      q2_(0),
-      q3_(0),
+      qBF_0_(1),
+      qBF_1_(0),
+      qBF_2_(0),
+      qBF_3_(0),
+      qWF_0_(1),
+      qWF_1_(0),
+      qWF_2_(0),
+      qWF_3_(0),
       wx_prev_(0),
       wy_prev_(0),
       wz_prev_(0),
@@ -140,11 +144,16 @@ double ComplementaryFilter::getBiasAlpha() const
     return bias_alpha_;
 }
 
-void ComplementaryFilter::setOrientation(double q0, double q1, double q2,
-                                         double q3)
+void ComplementaryFilter::setOrientation(double qWB_0, double qWB_1,
+                                         double qWB_2, double qWB_3)
 {
-    // Set the state to inverse (state is fixed wrt body).
-    invertQuaternion(q0, q1, q2, q3, q0_, q1_, q2_, q3_);
+    // the orientation of the world frame wrt the body frame.
+    double qBW_0, qBW_1, qBW_2, qBW_3;
+    invertQuaternion(qWB_0, qWB_1, qWB_2, qWB_3, qBW_0, qBW_1, qBW_2, qBW_3);
+
+    // Set the state.
+    quaternionMultiplication(qBW_0, qBW_1, qBW_2, qBW_3, qWF_0_, qWF_1_, qWF_2_,
+                             qWF_3_, qBF_0_, qBF_1_, qBF_2_, qBF_3_);
 }
 
 double ComplementaryFilter::getAngularVelocityBiasX() const
@@ -162,13 +171,24 @@ double ComplementaryFilter::getAngularVelocityBiasZ() const
     return wz_bias_;
 }
 
+void ComplementaryFilter::setReferenceMagneticField(double ref_mag_north,
+                                                    double ref_mag_east,
+                                                    double ref_mag_down)
+{
+    double yaw_angle = -atan2(ref_mag_east, ref_mag_north);
+    qWF_0_ = cos(0.5 * yaw_angle);
+    qWF_1_ = 0.0;
+    qWF_2_ = 0.0;
+    qWF_3_ = sin(0.5 * yaw_angle);
+}
+
 void ComplementaryFilter::update(double ax, double ay, double az, double wx,
                                  double wy, double wz, double dt)
 {
     if (!initialized_)
     {
         // First time - ignore prediction:
-        getMeasurement(ax, ay, az, q0_, q1_, q2_, q3_);
+        getMeasurement(ax, ay, az, qBF_0_, qBF_1_, qBF_2_, qBF_3_);
         initialized_ = true;
         return;
     }
@@ -200,9 +220,10 @@ void ComplementaryFilter::update(double ax, double ay, double az, double wx,
     scaleQuaternion(gain, dq0_acc, dq1_acc, dq2_acc, dq3_acc);
 
     quaternionMultiplication(q0_pred, q1_pred, q2_pred, q3_pred, dq0_acc,
-                             dq1_acc, dq2_acc, dq3_acc, q0_, q1_, q2_, q3_);
+                             dq1_acc, dq2_acc, dq3_acc, qBF_0_, qBF_1_, qBF_2_,
+                             qBF_3_);
 
-    normalizeQuaternion(q0_, q1_, q2_, q3_);
+    normalizeQuaternion(qBF_0_, qBF_1_, qBF_2_, qBF_3_);
 }
 
 void ComplementaryFilter::update(double ax, double ay, double az, double wx,
@@ -212,7 +233,7 @@ void ComplementaryFilter::update(double ax, double ay, double az, double wx,
     if (!initialized_)
     {
         // First time - ignore prediction:
-        getMeasurement(ax, ay, az, mx, my, mz, q0_, q1_, q2_, q3_);
+        getMeasurement(ax, ay, az, mx, my, mz, qBF_0_, qBF_1_, qBF_2_, qBF_3_);
         initialized_ = true;
         return;
     }
@@ -249,9 +270,10 @@ void ComplementaryFilter::update(double ax, double ay, double az, double wx,
     scaleQuaternion(gain_mag_, dq0_mag, dq1_mag, dq2_mag, dq3_mag);
 
     quaternionMultiplication(q0_temp, q1_temp, q2_temp, q3_temp, dq0_mag,
-                             dq1_mag, dq2_mag, dq3_mag, q0_, q1_, q2_, q3_);
+                             dq1_mag, dq2_mag, dq3_mag, qBF_0_, qBF_1_, qBF_2_,
+                             qBF_3_);
 
-    normalizeQuaternion(q0_, q1_, q2_, q3_);
+    normalizeQuaternion(qBF_0_, qBF_1_, qBF_2_, qBF_3_);
 }
 
 bool ComplementaryFilter::checkState(double ax, double ay, double az, double wx,
@@ -299,10 +321,14 @@ void ComplementaryFilter::getPrediction(double wx, double wy, double wz,
     double wy_unb = wy - wy_bias_;
     double wz_unb = wz - wz_bias_;
 
-    q0_pred = q0_ + 0.5 * dt * (wx_unb * q1_ + wy_unb * q2_ + wz_unb * q3_);
-    q1_pred = q1_ + 0.5 * dt * (-wx_unb * q0_ - wy_unb * q3_ + wz_unb * q2_);
-    q2_pred = q2_ + 0.5 * dt * (wx_unb * q3_ - wy_unb * q0_ - wz_unb * q1_);
-    q3_pred = q3_ + 0.5 * dt * (-wx_unb * q2_ + wy_unb * q1_ - wz_unb * q0_);
+    q0_pred = qBF_0_ +
+              0.5 * dt * (wx_unb * qBF_1_ + wy_unb * qBF_2_ + wz_unb * qBF_3_);
+    q1_pred = qBF_1_ +
+              0.5 * dt * (-wx_unb * qBF_0_ - wy_unb * qBF_3_ + wz_unb * qBF_2_);
+    q2_pred = qBF_2_ +
+              0.5 * dt * (wx_unb * qBF_3_ - wy_unb * qBF_0_ - wz_unb * qBF_1_);
+    q3_pred = qBF_3_ +
+              0.5 * dt * (-wx_unb * qBF_2_ + wy_unb * qBF_1_ - wz_unb * qBF_0_);
 
     normalizeQuaternion(q0_pred, q1_pred, q2_pred, q3_pred);
 }
@@ -429,11 +455,17 @@ void ComplementaryFilter::getMagCorrection(double mx, double my, double mz,
     dq3 = ly / (sqrt(2.0) * beta);
 }
 
-void ComplementaryFilter::getOrientation(double& q0, double& q1, double& q2,
-                                         double& q3) const
+void ComplementaryFilter::getOrientation(double& qWB_0, double& qWB_1,
+                                         double& qWB_2, double& qWB_3) const
 {
-    // Return the inverse of the state (state is fixed wrt body).
-    invertQuaternion(q0_, q1_, q2_, q3_, q0, q1, q2, q3);
+    // the orientation of the base frame wrt the fixed frame.
+    double qFB_0, qFB_1, qFB_2, qFB_3;
+    invertQuaternion(qBF_0_, qBF_1_, qBF_2_, qBF_3_, qFB_0, qFB_1, qFB_2,
+                     qFB_3);
+
+    // Return the orientation of body frame wrt the world frame.
+    quaternionMultiplication(qWF_0_, qWF_1_, qWF_2_, qWF_3_, qFB_0, qFB_1,
+                             qFB_2, qFB_3, qWB_0, qWB_1, qWB_2, qWB_3);
 }
 
 double ComplementaryFilter::getAdaptiveGain(double alpha, double ax, double ay,
@@ -460,8 +492,8 @@ void ComplementaryFilter::reset()
 {
     initialized_ = false;
     steady_state_ = false;
-    q0_ = 1.0;
-    q1_ = q2_ = q3_ = 0.0;
+    qBF_0_ = 1.0;
+    qBF_1_ = qBF_2_ = qBF_3_ = 0.0;
     wx_bias_ = wy_bias_ = wz_bias_ = 0.0;
     wx_prev_ = wy_prev_ = wz_prev_ = 0.0;
 }

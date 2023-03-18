@@ -124,6 +124,11 @@ void ComplementaryFilterROS::initializeParams()
                       time_jump_threshold);
     time_jump_threshold_ = ros::Duration(time_jump_threshold);
 
+    if (!nh_private_.getParam("ref_mag_north", ref_mag_north_))
+        ref_mag_north_ = 5e-5;
+    if (!nh_private_.getParam("ref_mag_east", ref_mag_east_)) ref_mag_east_ = 0.0;
+    if (!nh_private_.getParam("ref_mag_down", ref_mag_down_)) ref_mag_down_ = 0.0;
+
     orientation_variance_ = orientation_stddev * orientation_stddev;
 
     filter_.setDoBiasEstimation(do_bias_estimation);
@@ -141,6 +146,9 @@ void ComplementaryFilterROS::initializeParams()
         if (!filter_.setBiasAlpha(bias_alpha))
             ROS_WARN("Invalid bias_alpha passed to ComplementaryFilter.");
     }
+
+    filter_.setReferenceMagneticField(ref_mag_north_, ref_mag_east_,
+                                      ref_mag_down_);
 
     // check for illegal constant_dt values
     if (constant_dt_ < 0.0)
