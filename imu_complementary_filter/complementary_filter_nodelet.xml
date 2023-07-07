@@ -1,0 +1,9 @@
+<!-- Complementary Filter nodelet publisher -->
+<library path="lib/libcomplementary_filter_nodelet">
+  <class name="imu_complementary_filter/ComplementaryFilterNodelet" type="ComplementaryFilterNodelet"
+    base_class_type="nodelet::Nodelet">
+    <description>
+      Complementary Filter nodelet publisher.
+    </description>
+  </class>
+</library>
