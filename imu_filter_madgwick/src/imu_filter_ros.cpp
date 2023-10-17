@@ -445,13 +445,11 @@ void ImuFilterRos::checkTopicsTimerCallback(const ros::TimerEvent&)
 {
     if (use_mag_)
         ROS_WARN_STREAM("Still waiting for data on topics "
-                        << ros::names::resolve("imu") << "/data_raw"
-                        << " and " << ros::names::resolve("imu") << "/mag"
-                        << "...");
+                        << imu_subscriber_->getTopic() << " and "
+                        << mag_subscriber_->getTopic() << "...");
     else
         ROS_WARN_STREAM("Still waiting for data on topic "
-                        << ros::names::resolve("imu") << "/data_raw"
-                        << "...");
+                        << imu_subscriber_->getTopic() << "...");
 }
 
 void ImuFilterRos::reset()
