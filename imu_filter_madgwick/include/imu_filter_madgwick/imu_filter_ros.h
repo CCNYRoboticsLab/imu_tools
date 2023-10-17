@@ -29,7 +29,9 @@
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/MagneticField.h>
 #include <geometry_msgs/Vector3Stamped.h>
+#include <tf2_ros/buffer.h>
 #include "tf2_ros/transform_broadcaster.h"
+#include <tf2_ros/transform_listener.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
@@ -74,8 +76,11 @@ class ImuFilterRos
 
     ros::Publisher rpy_filtered_debug_publisher_;
     ros::Publisher rpy_raw_debug_publisher_;
+    ros::Publisher orientation_filtered_publisher_;
     ros::Publisher imu_publisher_;
     tf2_ros::TransformBroadcaster tf_broadcaster_;
+    tf2_ros::Buffer tf_buffer_;
+    tf2_ros::TransformListener tf_listener_;
 
     boost::shared_ptr<FilterConfigServer> config_server_;
     ros::Timer check_topics_timer_;
@@ -111,6 +116,7 @@ class ImuFilterRos
     void imuCallback(const ImuMsg::ConstPtr& imu_msg_raw);
 
     void publishFilteredMsg(const ImuMsg::ConstPtr& imu_msg_raw);
+    void publishOrientationFiltered(const ImuMsg::ConstPtr& imu_msg);
     void publishTransform(const ImuMsg::ConstPtr& imu_msg_raw);
 
     void publishRawMsg(const ros::Time& t, float roll, float pitch, float yaw);
