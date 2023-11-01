@@ -432,7 +432,8 @@ void ImuFilterRos::publishOrientationFiltered(const ImuMsg::ConstPtr& imu_msg)
     try
     {
         transform = tf_buffer_.lookupTransform(
-            fixed_frame_, imu_msg->header.frame_id, imu_msg->header.stamp);
+            fixed_frame_, imu_msg->header.frame_id, imu_msg->header.stamp,
+            ros::Duration(0.1));
     } catch (tf2::TransformException& ex)
     {
         ROS_WARN("%s", ex.what());
