@@ -41,22 +41,24 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
 {
     RCLCPP_INFO(get_logger(), "Starting ImuFilter");
 
-    // **** get paramters
-    declare_parameter("stateless", false);
+    // **** get parameters
+    auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
+    descriptor.read_only = true;
+    declare_parameter("stateless", false, descriptor);
     get_parameter("stateless", stateless_);
-    declare_parameter("use_mag", true);
+    declare_parameter("use_mag", true, descriptor);
     get_parameter("use_mag", use_mag_);
-    declare_parameter("publish_tf", true);
+    declare_parameter("publish_tf", true, descriptor);
     get_parameter("publish_tf", publish_tf_);
-    declare_parameter("reverse_tf", false);
+    declare_parameter("reverse_tf", false, descriptor);
     get_parameter("reverse_tf", reverse_tf_);
-    declare_parameter("fixed_frame", "odom");
+    declare_parameter("fixed_frame", "odom", descriptor);
     get_parameter("fixed_frame", fixed_frame_);
-    declare_parameter("constant_dt", 0.0);
+    declare_parameter("constant_dt", 0.0, descriptor);
     get_parameter("constant_dt", constant_dt_);
-    declare_parameter("remove_gravity_vector", false);
+    declare_parameter("remove_gravity_vector", false, descriptor);
     get_parameter("remove_gravity_vector", remove_gravity_vector_);
-    declare_parameter("publish_debug_topics", false);
+    declare_parameter("publish_debug_topics", false, descriptor);
     get_parameter("publish_debug_topics", publish_debug_topics_);
 
     double yaw_offset = 0.0;
@@ -73,7 +75,7 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
         yaw_offset_total_);  // Create this quaternion for yaw offset (radians)
 
     std::string world_frame;
-    declare_parameter("world_frame", "enu");
+    declare_parameter("world_frame", "enu", descriptor);
     get_parameter("world_frame", world_frame);
     if (world_frame == "ned")
     {
