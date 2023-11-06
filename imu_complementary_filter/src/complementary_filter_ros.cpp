@@ -101,24 +101,28 @@ void ComplementaryFilterROS::initializeParams()
     double orientation_stddev;
 
     // set "Not Dynamically Reconfigurable Parameters"
-    rcl_interfaces::msg::ParameterDescriptor readonly;
-    readonly.read_only = true;
+    auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
+    descriptor.read_only = true;
+
     fixed_frame_ =
-        this->declare_parameter<std::string>("fixed_frame", "odom", readonly);
-    use_mag_ = this->declare_parameter<bool>("use_mag", false, readonly);
-    publish_tf_ = this->declare_parameter<bool>("publish_tf", false, readonly);
-    reverse_tf_ = this->declare_parameter<bool>("reverse_tf", false, readonly);
+        this->declare_parameter<std::string>("fixed_frame", "odom", descriptor);
+    use_mag_ = this->declare_parameter<bool>("use_mag", false, descriptor);
+    publish_tf_ =
+        this->declare_parameter<bool>("publish_tf", false, descriptor);
+    reverse_tf_ =
+        this->declare_parameter<bool>("reverse_tf", false, descriptor);
     constant_dt_ =
-        this->declare_parameter<double>("constant_dt", 0.0, readonly);
-    publish_debug_topics_ =
-        this->declare_parameter<bool>("publish_debug_topics", false, readonly);
-    gain_acc = this->declare_parameter<double>("gain_acc", 0.01, readonly);
-    gain_mag = this->declare_parameter<double>("gain_mag", 0.01, readonly);
+        this->declare_parameter<double>("constant_dt", 0.0, descriptor);
+    publish_debug_topics_ = this->declare_parameter<bool>(
+        "publish_debug_topics", false, descriptor);
+    gain_acc = this->declare_parameter<double>("gain_acc", 0.01, descriptor);
+    gain_mag = this->declare_parameter<double>("gain_mag", 0.01, descriptor);
     do_bias_estimation =
-        this->declare_parameter<bool>("do_bias_estimation", true, readonly);
-    bias_alpha = this->declare_parameter<double>("bias_alpha", 0.01, readonly);
+        this->declare_parameter<bool>("do_bias_estimation", true, descriptor);
+    bias_alpha =
+        this->declare_parameter<double>("bias_alpha", 0.01, descriptor);
     do_adaptive_gain =
-        this->declare_parameter<bool>("do_adaptive_gain", true, readonly);
+        this->declare_parameter<bool>("do_adaptive_gain", true, descriptor);
 
     orientation_stddev =
         this->declare_parameter<double>("orientation_stddev", 0.0);
