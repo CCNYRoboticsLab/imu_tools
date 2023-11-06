@@ -100,19 +100,26 @@ void ComplementaryFilterROS::initializeParams()
     bool do_adaptive_gain;
     double orientation_stddev;
 
-    fixed_frame_ = this->declare_parameter<std::string>("fixed_frame", "odom");
-    use_mag_ = this->declare_parameter<bool>("use_mag", false);
-    publish_tf_ = this->declare_parameter<bool>("publish_tf", false);
-    reverse_tf_ = this->declare_parameter<bool>("reverse_tf", false);
-    constant_dt_ = this->declare_parameter<double>("constant_dt", 0.0);
+    // set "Not Dynamically Reconfigurable Parameters"
+    rcl_interfaces::msg::ParameterDescriptor readonly;
+    readonly.read_only = true;
+    fixed_frame_ =
+        this->declare_parameter<std::string>("fixed_frame", "odom", readonly);
+    use_mag_ = this->declare_parameter<bool>("use_mag", false, readonly);
+    publish_tf_ = this->declare_parameter<bool>("publish_tf", false, readonly);
+    reverse_tf_ = this->declare_parameter<bool>("reverse_tf", false, readonly);
+    constant_dt_ =
+        this->declare_parameter<double>("constant_dt", 0.0, readonly);
     publish_debug_topics_ =
-        this->declare_parameter<bool>("publish_debug_topics", false);
-    gain_acc = this->declare_parameter<double>("gain_acc", 0.01);
-    gain_mag = this->declare_parameter<double>("gain_mag", 0.01);
+        this->declare_parameter<bool>("publish_debug_topics", false, readonly);
+    gain_acc = this->declare_parameter<double>("gain_acc", 0.01, readonly);
+    gain_mag = this->declare_parameter<double>("gain_mag", 0.01, readonly);
     do_bias_estimation =
-        this->declare_parameter<bool>("do_bias_estimation", true);
-    bias_alpha = this->declare_parameter<double>("bias_alpha", 0.01);
-    do_adaptive_gain = this->declare_parameter<bool>("do_adaptive_gain", true);
+        this->declare_parameter<bool>("do_bias_estimation", true, readonly);
+    bias_alpha = this->declare_parameter<double>("bias_alpha", 0.01, readonly);
+    do_adaptive_gain =
+        this->declare_parameter<bool>("do_adaptive_gain", true, readonly);
+
     orientation_stddev =
         this->declare_parameter<double>("orientation_stddev", 0.0);
     orientation_variance_ = orientation_stddev * orientation_stddev;
