@@ -62,10 +62,10 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
     get_parameter("publish_debug_topics", publish_debug_topics_);
 
     double yaw_offset = 0.0;
-    declare_parameter("yaw_offset", 0.0);
+    declare_parameter("yaw_offset", 0.0, descriptor);
     get_parameter("yaw_offset", yaw_offset);
     double declination = 0.0;
-    declare_parameter("declination", 0.0);
+    declare_parameter("declination", 0.0, descriptor);
     get_parameter("declination", declination);
 
     // create yaw offset quaternion
