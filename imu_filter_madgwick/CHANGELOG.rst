@@ -2,6 +2,17 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.1.3 (2022-12-07)
+------------------
+* Update CMakeLists to use targets
+* Remove node\_ prefix. (`#163 <https://github.com/CCNYRoboticsLab/imu_tools/issues/163>`_)
+* Contributors: Martin Günther, Max Polzin
+
+2.1.2 (2022-07-14)
+------------------
+* Enable on Windows (`#162 <https://github.com/CCNYRoboticsLab/imu_tools/issues/162>`_)
+* Contributors: Lou Amadio
+
 2.1.1 (2022-05-24)
 ------------------
 

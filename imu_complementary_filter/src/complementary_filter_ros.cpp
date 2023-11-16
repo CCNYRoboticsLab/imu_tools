@@ -100,19 +100,30 @@ void ComplementaryFilterROS::initializeParams()
     bool do_adaptive_gain;
     double orientation_stddev;
 
-    fixed_frame_ = this->declare_parameter<std::string>("fixed_frame", "odom");
-    use_mag_ = this->declare_parameter<bool>("use_mag", false);
-    publish_tf_ = this->declare_parameter<bool>("publish_tf", false);
-    reverse_tf_ = this->declare_parameter<bool>("reverse_tf", false);
-    constant_dt_ = this->declare_parameter<double>("constant_dt", 0.0);
-    publish_debug_topics_ =
-        this->declare_parameter<bool>("publish_debug_topics", false);
-    gain_acc = this->declare_parameter<double>("gain_acc", 0.01);
-    gain_mag = this->declare_parameter<double>("gain_mag", 0.01);
+    // set "Not Dynamically Reconfigurable Parameters"
+    auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
+    descriptor.read_only = true;
+
+    fixed_frame_ =
+        this->declare_parameter<std::string>("fixed_frame", "odom", descriptor);
+    use_mag_ = this->declare_parameter<bool>("use_mag", false, descriptor);
+    publish_tf_ =
+        this->declare_parameter<bool>("publish_tf", false, descriptor);
+    reverse_tf_ =
+        this->declare_parameter<bool>("reverse_tf", false, descriptor);
+    constant_dt_ =
+        this->declare_parameter<double>("constant_dt", 0.0, descriptor);
+    publish_debug_topics_ = this->declare_parameter<bool>(
+        "publish_debug_topics", false, descriptor);
+    gain_acc = this->declare_parameter<double>("gain_acc", 0.01, descriptor);
+    gain_mag = this->declare_parameter<double>("gain_mag", 0.01, descriptor);
     do_bias_estimation =
-        this->declare_parameter<bool>("do_bias_estimation", true);
-    bias_alpha = this->declare_parameter<double>("bias_alpha", 0.01);
-    do_adaptive_gain = this->declare_parameter<bool>("do_adaptive_gain", true);
+        this->declare_parameter<bool>("do_bias_estimation", true, descriptor);
+    bias_alpha =
+        this->declare_parameter<double>("bias_alpha", 0.01, descriptor);
+    do_adaptive_gain =
+        this->declare_parameter<bool>("do_adaptive_gain", true, descriptor);
+
     orientation_stddev =
         this->declare_parameter<double>("orientation_stddev", 0.0);
     orientation_variance_ = orientation_stddev * orientation_stddev;
