@@ -244,7 +244,7 @@ void ComplementaryFilterROS::publish(ImuMsg::ConstSharedPtr imu_msg_raw)
 
     //Rotate orientation to report in ENU coordinate convention instead of NWU. -- Alpistinho
     tf2::Quaternion qRot;
-    qRot.setRPY( 0, 0, -M_PI/2.0 );
+    qRot.setRPY( 0, 0, M_PI/2.0 );
     q = qRot*q;
     q.normalize();
 
