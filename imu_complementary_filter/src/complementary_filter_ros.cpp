@@ -69,12 +69,13 @@ ComplementaryFilterROS::ComplementaryFilterROS()
     }
 
     // Register IMU raw data subscriber.
-    imu_subscriber_.reset(new ImuSubscriber(this, "/imu/data_raw"));
+    rmw_qos_profile_t qos = rmw_qos_profile_sensor_data;
+    imu_subscriber_.reset(new ImuSubscriber(this, "/imu/data_raw", qos));
 
     // Register magnetic data subscriber.
     if (use_mag_)
     {
-        mag_subscriber_.reset(new MagSubscriber(this, "/imu/mag"));
+        mag_subscriber_.reset(new MagSubscriber(this, "/imu/mag", qos));
 
         sync_.reset(new Synchronizer(SyncPolicy(queue_size), *imu_subscriber_,
                                      *mag_subscriber_));
