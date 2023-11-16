@@ -242,6 +242,12 @@ void ComplementaryFilterROS::publish(ImuMsg::ConstSharedPtr imu_msg_raw)
     filter_.getOrientation(q0, q1, q2, q3);
     tf2::Quaternion q = hamiltonToTFQuaternion(q0, q1, q2, q3);
 
+    //Rotate orientation to report in ENU coordinate convention instead of NWU. -- Alpistinho
+    tf2::Quaternion qRot;
+    qRot.setRPY( 0, 0, M_PI/2.0 );
+    q = qRot*q;
+    q.normalize();
+
     // Create and publish fitlered IMU message.
     ImuMsg::SharedPtr imu_msg = std::make_shared<ImuMsg>(*imu_msg_raw);
     imu_msg->orientation.x = q1;
