@@ -69,12 +69,13 @@ ComplementaryFilterROS::ComplementaryFilterROS()
     }
 
     // Register IMU raw data subscriber.
-    imu_subscriber_.reset(new ImuSubscriber(this, "/imu/data_raw"));
+    rmw_qos_profile_t qos = rmw_qos_profile_sensor_data;
+    imu_subscriber_.reset(new ImuSubscriber(this, "/imu/data_raw", qos));
 
     // Register magnetic data subscriber.
     if (use_mag_)
     {
-        mag_subscriber_.reset(new MagSubscriber(this, "/imu/mag"));
+        mag_subscriber_.reset(new MagSubscriber(this, "/imu/mag", qos));
 
         sync_.reset(new Synchronizer(SyncPolicy(queue_size), *imu_subscriber_,
                                      *mag_subscriber_));
@@ -241,12 +242,18 @@ void ComplementaryFilterROS::publish(ImuMsg::ConstSharedPtr imu_msg_raw)
     filter_.getOrientation(q0, q1, q2, q3);
     tf2::Quaternion q = hamiltonToTFQuaternion(q0, q1, q2, q3);
 
+    //Rotate orientation to report in ENU coordinate convention instead of NWU. -- Alpistinho
+    tf2::Quaternion qRot;
+    qRot.setRPY( 0, 0, M_PI/2.0 );
+    q = qRot*q;
+    q.normalize();
+
     // Create and publish fitlered IMU message.
     ImuMsg::SharedPtr imu_msg = std::make_shared<ImuMsg>(*imu_msg_raw);
-    imu_msg->orientation.x = q1;
-    imu_msg->orientation.y = q2;
-    imu_msg->orientation.z = q3;
-    imu_msg->orientation.w = q0;
+    imu_msg->orientation.x = q.x();
+    imu_msg->orientation.y = q.y();
+    imu_msg->orientation.z = q.z();
+    imu_msg->orientation.w = q.w();
 
     imu_msg->orientation_covariance[0] = orientation_variance_;
     imu_msg->orientation_covariance[1] = 0.0;
