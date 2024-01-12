@@ -2,6 +2,17 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#192 <https://github.com/CCNYRoboticsLab/imu_tools/issues/192>`_ from enwaytech/av/remove_launchers
+  Increase max stddev, add pose visualization, fix error messages
+* add timeout to lookupTransform
+  Otherwise there are a lot of warnings of `lookup would require extrapolation into the future`
+* publish orientation as Pose to vis on rviz
+* show correct topics even if remapped
+* increase max covariance
+* Contributors: Adi Vardi, Martin Günther
+
 1.2.5 (2022-08-19)
 ------------------
 * Added ability to reset IMU filters when ROS time jumps back. (`#165 <https://github.com/CCNYRoboticsLab/imu_tools/issues/165>`_)

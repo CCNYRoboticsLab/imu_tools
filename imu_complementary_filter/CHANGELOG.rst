@@ -2,6 +2,19 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* complementary filter launch: Remove outdated phidgets_imu nodelet
+  The phidgets_imu package was renamed to phidgets_spatial. To avoid
+  adding a dependency on phidgets_spatial, this commit removes the include
+  of that nodelet altogether.
+  If launching the phidgets driver is desired, it should be done like in
+  this launch file:
+  https://github.com/ros-drivers/phidgets_drivers/blob/20512def27a74666aeb2eb2d31ff2faf45062c35/phidgets_spatial/launch/spatial.launch
+  Fixes `#186 <https://github.com/CCNYRoboticsLab/imu_tools/issues/186>`_.
+* add complementary_filter_nodelet (`#181 <https://github.com/CCNYRoboticsLab/imu_tools/issues/181>`_)
+* Contributors: Borong Yuan, Martin Günther
+
 1.2.5 (2022-08-19)
 ------------------
 * Added ability to reset IMU filters when ROS time jumps back. (`#165 <https://github.com/CCNYRoboticsLab/imu_tools/issues/165>`_)
