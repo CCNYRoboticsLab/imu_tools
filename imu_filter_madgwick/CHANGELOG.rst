@@ -2,8 +2,8 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.6 (2024-01-12)
+------------------
 * Merge pull request `#192 <https://github.com/CCNYRoboticsLab/imu_tools/issues/192>`_ from enwaytech/av/remove_launchers
   Increase max stddev, add pose visualization, fix error messages
 * add timeout to lookupTransform

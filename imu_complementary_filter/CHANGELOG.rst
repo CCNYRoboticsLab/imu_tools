@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.2.6 (2024-01-12)
+------------------
 * complementary filter launch: Remove outdated phidgets_imu nodelet
   The phidgets_imu package was renamed to phidgets_spatial. To avoid
   adding a dependency on phidgets_spatial, this commit removes the include
