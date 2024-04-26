@@ -13,9 +13,7 @@ jobs:
     - name: Install apt dependencies
       run: |
         apt-get update
-        apt-get install -y build-essential clang-format file git python3-pip python3-colcon-common-extensions python3-rosdep
-    - name: Install pip dependencies
-      run: pip install pre-commit
+        apt-get install -y build-essential clang-format file git python3-pip python3-colcon-common-extensions python3-rosdep pre-commit
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
