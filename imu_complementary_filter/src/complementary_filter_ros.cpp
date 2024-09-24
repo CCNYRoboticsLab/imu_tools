@@ -64,17 +64,27 @@ ComplementaryFilterROS::ComplementaryFilterROS()
         if (filter_.getDoBiasEstimation())
         {
             state_publisher_ = this->create_publisher<std_msgs::msg::Bool>(
-                "/imu/steady_state", queue_size);
+                "imu/steady_state", queue_size);
         }
     }
 
     // Register IMU raw data subscriber.
-    imu_subscriber_.reset(new ImuSubscriber(this, "/imu/data_raw"));
+    rclcpp::SubscriptionOptions sub_opts;
+    sub_opts.qos_overriding_options = rclcpp::QosOverridingOptions{{
+        rclcpp::QosPolicyKind::Depth,
+        rclcpp::QosPolicyKind::Durability,
+        rclcpp::QosPolicyKind::History,
+        rclcpp::QosPolicyKind::Reliability,
+    }};
+
+    imu_subscriber_.reset(new ImuSubscriber(this, "imu/data_raw",
+                                            rmw_qos_profile_default, sub_opts));
 
     // Register magnetic data subscriber.
     if (use_mag_)
     {
-        mag_subscriber_.reset(new MagSubscriber(this, "/imu/mag"));
+        mag_subscriber_.reset(new MagSubscriber(
+            this, "imu/mag", rmw_qos_profile_default, sub_opts));
 
         sync_.reset(new Synchronizer(SyncPolicy(queue_size), *imu_subscriber_,
                                      *mag_subscriber_));

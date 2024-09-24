@@ -1,0 +1,28 @@
+complementary_filter_gain_node:
+  ros__parameters:
+    gain_acc: 0.01
+    gain_mag: 0.01
+    bias_alpha: 0.01
+    do_bias_estimation: true
+    do_adaptive_gain: true
+    use_mag: false
+    fixed_frame: "odom"
+    publish_tf: false
+    reverse_tf: false
+    constant_dt: 0.0
+    publish_debug_topics: false
+
+    qos_overrides:
+      /imu/data_raw:
+        subscription:
+          depth: 10
+          durability: volatile
+          history: keep_last
+          reliability: reliable
+
+      /imu/mag:
+        subscription:
+          depth: 10
+          durability: volatile
+          history: keep_last
+          reliability: reliable
