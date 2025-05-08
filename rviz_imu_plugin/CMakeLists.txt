@@ -61,9 +61,7 @@ add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 ## the ``find_package(Qt4 ...)`` line above, or by the
 ## ``set(QT_LIBRARIES Qt5::Widgets)``, and with whatever libraries
 ## catkin has included.
-target_link_libraries(${PROJECT_NAME} PUBLIC ${dependencies})
-
-target_link_libraries(${PROJECT_NAME} PUBLIC rviz_ogre_vendor::OgreMain rviz_ogre_vendor::OgreOverlay Qt5::Widgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${dependencies} rviz_ogre_vendor::OgreMain rviz_ogre_vendor::OgreOverlay Qt5::Widgets)
 
 # prevent pluginlib from using boost
 target_compile_definitions(${PROJECT_NAME} PUBLIC "PLUGINLIB__DISABLE_BOOST_FUNCTIONS")
