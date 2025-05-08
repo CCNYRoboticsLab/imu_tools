@@ -24,7 +24,7 @@ target_compile_features(complementary_filter PUBLIC c_std_99 cxx_std_17)  # Requ
 target_include_directories(complementary_filter PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(complementary_filter
+target_link_libraries(complementary_filter PUBLIC
   geometry_msgs
   message_filters
   rclcpp
