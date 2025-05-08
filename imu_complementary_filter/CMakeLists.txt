@@ -25,13 +25,14 @@ target_include_directories(complementary_filter PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(complementary_filter PUBLIC
-  geometry_msgs
-  message_filters
-  rclcpp
-  sensor_msgs
-  std_msgs
-  tf2
-  tf2_ros
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${std_msgs_TARGETS}
+  message_filters::message_filters
+  rclcpp::rclcpp
+  sensor_msgs::sensor_msgs_library
+  tf2::tf2
+  tf2_ros::tf2_ros
 )
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
