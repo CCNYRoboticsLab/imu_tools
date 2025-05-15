@@ -31,7 +31,7 @@
 #ifndef RVIZ_IMU_PLUGIN_MAG_DISPLAY_H
 #define RVIZ_IMU_PLUGIN_MAG_DISPLAY_H
 
-#include <message_filters/subscriber.h>
+#include <message_filters/subscriber.hpp>
 #include <tf2_ros/message_filter.h>
 #include <sensor_msgs/msg/magnetic_field.hpp>
 #include <rviz_common/display.hpp>

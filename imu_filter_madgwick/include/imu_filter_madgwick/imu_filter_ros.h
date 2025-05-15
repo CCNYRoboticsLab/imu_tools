@@ -28,9 +28,9 @@
 
 #include "tf2_ros/transform_broadcaster.h"
 #include <geometry_msgs/msg/vector3_stamped.hpp>
-#include <message_filters/subscriber.h>
-#include <message_filters/sync_policies/approximate_time.h>
-#include <message_filters/synchronizer.h>
+#include <message_filters/subscriber.hpp>
+#include <message_filters/sync_policies/approximate_time.hpp>
+#include <message_filters/synchronizer.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
 #include <tf2/LinearMath/Quaternion.h>
