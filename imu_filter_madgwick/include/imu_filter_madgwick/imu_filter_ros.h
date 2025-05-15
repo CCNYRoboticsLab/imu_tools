@@ -33,7 +33,7 @@
 #include <message_filters/synchronizer.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
-#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Quaternion.hpp>
 
 #include "imu_filter_madgwick/imu_filter.h"
 #include "imu_filter_madgwick/base_node.hpp"

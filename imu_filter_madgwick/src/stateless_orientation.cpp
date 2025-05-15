@@ -23,8 +23,8 @@
  */
 
 #include "imu_filter_madgwick/stateless_orientation.h"
-#include <tf2/LinearMath/Matrix3x3.h>
-#include <tf2/convert.h>
+#include <tf2/LinearMath/Matrix3x3.hpp>
+#include <tf2/convert.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 template <typename T>

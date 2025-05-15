@@ -27,8 +27,8 @@
 #include "imu_filter_madgwick/stateless_orientation.h"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
-#include <tf2/LinearMath/Matrix3x3.h>
-#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.hpp>
+#include <tf2/LinearMath/Quaternion.hpp>
 
 using namespace std::chrono_literals;
 using namespace rclcpp;

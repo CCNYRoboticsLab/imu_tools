@@ -33,11 +33,11 @@
 
 #include "imu_complementary_filter/complementary_filter_ros.h"
 
-#include <geometry_msgs/msg/transform_stamped.h>
-#include <tf2/convert.h>
-#include <tf2/LinearMath/Matrix3x3.h>
-#include <tf2/LinearMath/Transform.h>
-#include <tf2/LinearMath/Vector3.h>
+#include <geometry_msgs/msg/transform_stamped.hpp>
+#include <tf2/convert.hpp>
+#include <tf2/LinearMath/Matrix3x3.hpp>
+#include <tf2/LinearMath/Transform.hpp>
+#include <tf2/LinearMath/Vector3.hpp>
 
 namespace imu_tools {
 

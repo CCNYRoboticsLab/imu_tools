@@ -42,8 +42,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 #include <std_msgs/msg/bool.hpp>
-#include <tf2/transform_datatypes.h>
-#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/transform_datatypes.hpp>
+#include <tf2/LinearMath/Quaternion.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include <memory>
 
