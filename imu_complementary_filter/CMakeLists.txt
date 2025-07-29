@@ -36,6 +36,9 @@ ament_target_dependencies(complementary_filter
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
 target_compile_definitions(complementary_filter PRIVATE "IMU_COMPLEMENTARY_FILTER_BUILDING_LIBRARY")
+if(WIN32 AND MSVC)
+  set_target_properties(complementary_filter PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
 
 # create complementary_filter_node executable
 add_executable(complementary_filter_node
