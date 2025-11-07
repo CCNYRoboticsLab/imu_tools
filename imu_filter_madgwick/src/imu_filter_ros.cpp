@@ -176,12 +176,8 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
                 mag_bias_.y, mag_bias_.z);
 
     // **** register dynamic reconfigure
-    parameters_client_ = std::make_shared<rclcpp::AsyncParametersClient>(
-        this->get_node_base_interface(), this->get_node_topics_interface(),
-        this->get_node_graph_interface(), this->get_node_services_interface());
-
-    parameter_event_sub_ = parameters_client_->on_parameter_event(
-        std::bind(&ImuFilterMadgwickRos::reconfigCallback, this, _1));
+    post_set_parameters_callback_handle_ =
+      this->add_post_set_parameters_callback(std::bind(&ImuFilterMadgwickRos::postSetParametersCallback, this, std::placeholders::_1));
 
     // **** register publishers
     imu_publisher_ = create_publisher<sensor_msgs::msg::Imu>("imu/data", 5);
@@ -498,42 +494,39 @@ void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time &t, float roll,
     rpy_raw_debug_publisher_->publish(rpy);
 }
 
-void ImuFilterMadgwickRos::reconfigCallback(
-    const rcl_interfaces::msg::ParameterEvent::SharedPtr event)
+void ImuFilterMadgwickRos::postSetParametersCallback(
+    const std::vector<rclcpp::Parameter>& parameters)
 {
-    double gain, zeta;
     std::lock_guard<std::mutex> lock(mutex_);
 
-    for (auto &changed_parameter : event->changed_parameters)
+    for (const auto& changed_parameter : parameters)
     {
-        const auto &type = changed_parameter.value.type;
-        const auto &name = changed_parameter.name;
-        const auto &value = changed_parameter.value;
+        const auto &type = changed_parameter.get_type();
+        const auto &name = changed_parameter.get_name();
+        const auto &value = changed_parameter.get_value<double>();
 
         if (type == ParameterType::PARAMETER_DOUBLE)
         {
             RCLCPP_INFO(get_logger(), "Parameter %s set to %f", name.c_str(),
-                        value.double_value);
+                        value);
             if (name == "gain")
             {
-                gain = value.double_value;
-                filter_.setAlgorithmGain(gain);
+                filter_.setAlgorithmGain(value);
             } else if (name == "zeta")
             {
-                zeta = value.double_value;
-                filter_.setDriftBiasGain(zeta);
+                filter_.setDriftBiasGain(value);
             } else if (name == "mag_bias_x")
             {
-                mag_bias_.x = value.double_value;
+                mag_bias_.x = value;
             } else if (name == "mag_bias_y")
             {
-                mag_bias_.y = value.double_value;
+                mag_bias_.y = value;
             } else if (name == "mag_bias_z")
             {
-                mag_bias_.z = value.double_value;
+                mag_bias_.z = value;
             } else if (name == "orientation_stddev")
             {
-                double orientation_stddev = value.double_value;
+                double orientation_stddev = value;
                 orientation_variance_ = orientation_stddev * orientation_stddev;
             }
         }
