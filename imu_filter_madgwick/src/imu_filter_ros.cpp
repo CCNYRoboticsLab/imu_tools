@@ -177,7 +177,7 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
 
     // **** register dynamic reconfigure
     post_set_parameters_callback_handle_ =
-      this->add_post_set_parameters_callback(std::bind(&ImuFilterMadgwickRos::postSetParametersCallback, this, std::placeholders::_1));
+      this->add_post_set_parameters_callback(std::bind(&ImuFilterMadgwickRos::postSetParametersCallback, this, _1));
 
     // **** register publishers
     imu_publisher_ = create_publisher<sensor_msgs::msg::Imu>("imu/data", 5);
@@ -501,12 +501,10 @@ void ImuFilterMadgwickRos::postSetParametersCallback(
 
     for (const auto& changed_parameter : parameters)
     {
-        const auto &type = changed_parameter.get_type();
-        const auto &name = changed_parameter.get_name();
-        const auto &value = changed_parameter.get_value<double>();
-
-        if (type == ParameterType::PARAMETER_DOUBLE)
+        if (changed_parameter.get_type() == ParameterType::PARAMETER_DOUBLE)
         {
+            const auto &name = changed_parameter.get_name();
+            const auto &value = changed_parameter.get_value<double>();
             RCLCPP_INFO(get_logger(), "Parameter %s set to %f", name.c_str(),
                         value);
             if (name == "gain")
