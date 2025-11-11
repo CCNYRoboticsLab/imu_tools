@@ -177,7 +177,8 @@ ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
 
     // **** register dynamic reconfigure
     post_set_parameters_callback_handle_ =
-      this->add_post_set_parameters_callback(std::bind(&ImuFilterMadgwickRos::postSetParametersCallback, this, _1));
+        this->add_post_set_parameters_callback(std::bind(
+            &ImuFilterMadgwickRos::postSetParametersCallback, this, _1));
 
     // **** register publishers
     imu_publisher_ = create_publisher<sensor_msgs::msg::Imu>("imu/data", 5);
@@ -495,11 +496,11 @@ void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time &t, float roll,
 }
 
 void ImuFilterMadgwickRos::postSetParametersCallback(
-    const std::vector<rclcpp::Parameter>& parameters)
+    const std::vector<rclcpp::Parameter> &parameters)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    for (const auto& changed_parameter : parameters)
+    for (const auto &changed_parameter : parameters)
     {
         if (changed_parameter.get_type() == ParameterType::PARAMETER_DOUBLE)
         {
