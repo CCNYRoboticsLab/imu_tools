@@ -32,12 +32,12 @@
 #define RVIZ_IMU_PLUGIN_MAG_DISPLAY_H
 
 #include <message_filters/subscriber.hpp>
-#include <tf2_ros/message_filter.h>
+#include <tf2_ros/message_filter.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
 #include <rviz_common/display.hpp>
 #include <rviz_common/properties/property.hpp>
 #include <rviz_common/message_filter_display.hpp>
-#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/transform_listener.hpp>
 
 #include <rviz_common/properties/bool_property.hpp>
 #include <rviz_common/properties/float_property.hpp>
