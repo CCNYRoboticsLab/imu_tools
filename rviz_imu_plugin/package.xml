@@ -13,7 +13,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>qt6-base-dev</build_depend>
 
   <depend>message_filters</depend>
   <depend>pluginlib</depend>
@@ -25,10 +25,10 @@
   <depend>tf2</depend>
   <depend>tf2_ros</depend>
 
-  <exec_depend>libqt5-core</exec_depend>
-  <exec_depend>libqt5-gui</exec_depend>
-  <exec_depend>libqt5-opengl</exec_depend>
-  <exec_depend>libqt5-widgets</exec_depend>
+  <exec_depend>libqt6-core</exec_depend>
+  <exec_depend>libqt6gui6t64</exec_depend>
+  <exec_depend>libqt6opengl6t64</exec_depend>
+  <exec_depend>libqt6widgets6t64</exec_depend>
 
   <export>
     <rosdoc config="${prefix}/rosdoc.yaml"/>

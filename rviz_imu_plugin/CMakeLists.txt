@@ -12,7 +12,8 @@ endif()
 
 find_package(ament_cmake REQUIRED COMPONENTS rviz)
 find_package(message_filters REQUIRED)
-find_package(Qt5 REQUIRED COMPONENTS Widgets Test)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Test)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Test)
 find_package(rviz_common REQUIRED)
 find_package(rviz_ogre_vendor REQUIRED)
 find_package(rviz_rendering REQUIRED)
@@ -34,7 +35,7 @@ include_directories(include)
 
 set(dependencies
     message_filters
-    Qt5
+    Qt${QT_VERSION_MAJOR}
     rviz_common
     rviz_ogre_vendor
     rviz_rendering
@@ -58,11 +59,11 @@ add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 #set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 ## Link the library with whatever Qt libraries have been defined by
-## the ``find_package(Qt4 ...)`` line above, or by the
-## ``set(QT_LIBRARIES Qt5::Widgets)``, and with whatever libraries
+## the ``find_package(Qt6 ...)`` line above, or by the
+## ``set(QT_LIBRARIES Qt${QT_VERSION_MAJOR}::Widgets)``, and with whatever libraries
 ## catkin has included.
 
-target_link_libraries(${PROJECT_NAME} PUBLIC rviz_ogre_vendor::OgreMain rviz_ogre_vendor::OgreOverlay Qt5::Widgets ${sensor_msgs_TARGETS} message_filters::message_filters rviz_common::rviz_common rviz_ogre_vendor::OgreMain rviz_rendering::rviz_rendering sensor_msgs::sensor_msgs_library tf2::tf2 tf2_ros::tf2_ros)
+target_link_libraries(${PROJECT_NAME} PUBLIC rviz_ogre_vendor::OgreMain rviz_ogre_vendor::OgreOverlay Qt${QT_VERSION_MAJOR}::Widgets ${sensor_msgs_TARGETS} message_filters::message_filters rviz_common::rviz_common rviz_ogre_vendor::OgreMain rviz_rendering::rviz_rendering sensor_msgs::sensor_msgs_library tf2::tf2 tf2_ros::tf2_ros)
 
 # prevent pluginlib from using boost
 target_compile_definitions(${PROJECT_NAME} PUBLIC "PLUGINLIB__DISABLE_BOOST_FUNCTIONS")
@@ -73,7 +74,7 @@ pluginlib_export_plugin_description_file(rviz_common plugin_description.xml)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 ament_export_dependencies(
-    Qt5
+    Qt${QT_VERSION_MAJOR}
     rviz_common
     sensor_msgs
     tf2
