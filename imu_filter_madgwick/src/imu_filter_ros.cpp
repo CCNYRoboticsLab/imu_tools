@@ -36,7 +36,7 @@ using namespace std::placeholders;
 
 ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
     : BaseNode("imu_filter_madgwick", options),
-      tf_broadcaster_(this),
+      tf_broadcaster_(*this),
       initialized_(false)
 {
     RCLCPP_INFO(get_logger(), "Starting ImuFilter");

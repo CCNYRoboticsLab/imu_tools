@@ -43,7 +43,7 @@ namespace imu_tools {
 
 ComplementaryFilterROS::ComplementaryFilterROS()
     : Node("ComplementaryFilterROS"),
-      tf_broadcaster_(this),
+      tf_broadcaster_(*this),
       initialized_filter_(false)
 {
     RCLCPP_INFO(this->get_logger(), "Starting ComplementaryFilterROS");
