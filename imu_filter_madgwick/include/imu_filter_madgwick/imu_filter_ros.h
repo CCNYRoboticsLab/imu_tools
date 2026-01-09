@@ -73,9 +73,8 @@ class ImuFilterMadgwickRos : public imu_filter::BaseNode
     rclcpp::TimerBase::SharedPtr check_topics_timer_;
 
     // Subscription for parameter change
-    rclcpp::AsyncParametersClient::SharedPtr parameters_client_;
-    rclcpp::Subscription<rcl_interfaces::msg::ParameterEvent>::SharedPtr
-        parameter_event_sub_;
+    rclcpp::node_interfaces::PostSetParametersCallbackHandle::SharedPtr
+        post_set_parameters_callback_handle_;
 
     // **** paramaters
     WorldFrame::WorldFrame world_frame_;
@@ -108,7 +107,8 @@ class ImuFilterMadgwickRos : public imu_filter::BaseNode
     void publishRawMsg(const rclcpp::Time& t, float roll, float pitch,
                        float yaw);
 
-    void reconfigCallback(rcl_interfaces::msg::ParameterEvent::SharedPtr event);
+    void postSetParametersCallback(
+        const std::vector<rclcpp::Parameter>& parameters);
     void checkTopicsTimerCallback();
 
     void applyYawOffset(double& q0, double& q1, double& q2, double& q3);
