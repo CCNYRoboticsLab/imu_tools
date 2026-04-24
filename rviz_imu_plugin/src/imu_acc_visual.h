@@ -91,10 +91,18 @@ class ImuAccVisual
 
   private:
     void create();
+    void updateDirection();
+
+    static bool checkQuaternionValidity(
+        const sensor_msgs::msg::Imu::ConstSharedPtr msg);
 
     rviz_rendering::Arrow* acc_vector_;
 
     Ogre::Vector3 direction_;  // computed from IMU message
+
+    Ogre::Vector3 raw_acc_;
+    Ogre::Quaternion orientation_;
+    bool quat_valid_;
 
     float arrow_length_;  // computed from IMU message
     float arrow_radius_;
