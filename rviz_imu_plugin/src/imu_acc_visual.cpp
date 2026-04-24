@@ -32,6 +32,10 @@
 #include <OgreSceneManager.h>
 
 #include "imu_acc_visual.h"
+
+#include <cmath>
+#include <rclcpp/rclcpp.hpp>
+#include <rviz_common/logging.hpp>
 #include <rviz_rendering/objects/arrow.hpp>
 
 namespace rviz_imu_plugin {
@@ -39,6 +43,7 @@ namespace rviz_imu_plugin {
 ImuAccVisual::ImuAccVisual(Ogre::SceneManager* scene_manager,
                            Ogre::SceneNode* parent_node)
     : acc_vector_(NULL),
+      quat_valid_(true),
       arrow_length_(9.81),
       arrow_radius_(0.50),
       head_length_(1.00),
@@ -92,25 +97,46 @@ void ImuAccVisual::hide()
 
 void ImuAccVisual::setMessage(const sensor_msgs::msg::Imu::ConstSharedPtr msg)
 {
-    direction_ =
+    raw_acc_ =
         Ogre::Vector3(msg->linear_acceleration.x, msg->linear_acceleration.y,
                       msg->linear_acceleration.z);
+    arrow_length_ = raw_acc_.length();
 
-    // Rotate the acceleration vector by the IMU orientation. This makes
-    // sense since the visualization of the IMU is also rotated by the
-    // orientation. In this way, both appear in the inertial frame.
-    if (derotated_)
+    if (checkQuaternionValidity(msg))
     {
-        Ogre::Quaternion orientation(msg->orientation.w, msg->orientation.x,
-                                     msg->orientation.y, msg->orientation.z);
-
-        direction_ = orientation * direction_;
+        if (!quat_valid_)
+        {
+            RVIZ_COMMON_LOG_INFO_STREAM(
+                "rviz_imu_plugin got valid quaternion, "
+                "applying acceleration derotation");
+            quat_valid_ = true;
+        }
+        orientation_ = Ogre::Quaternion(msg->orientation.w, msg->orientation.x,
+                                        msg->orientation.y, msg->orientation.z);
+    } else
+    {
+        if (quat_valid_)
+        {
+            RVIZ_COMMON_LOG_WARNING_STREAM(
+                "rviz_imu_plugin got invalid quaternion ("
+                << msg->orientation.w << "," << msg->orientation.x << ","
+                << msg->orientation.y << "," << msg->orientation.z
+                << "); skipping acceleration derotation");
+            quat_valid_ = false;
+        }
+        orientation_ = Ogre::Quaternion();
     }
 
-    arrow_length_ =
-        sqrt(msg->linear_acceleration.x * msg->linear_acceleration.x +
-             msg->linear_acceleration.y * msg->linear_acceleration.y +
-             msg->linear_acceleration.z * msg->linear_acceleration.z);
+    updateDirection();
+}
+
+void ImuAccVisual::updateDirection()
+{
+    direction_ = raw_acc_;
+    if (derotated_ && quat_valid_)
+    {
+        direction_ = orientation_ * direction_;
+    }
 
     if (acc_vector_)
     {
@@ -150,9 +176,7 @@ void ImuAccVisual::setAlpha(float alpha)
 void ImuAccVisual::setDerotated(bool derotated)
 {
     derotated_ = derotated;
-    if (acc_vector_)
-        acc_vector_->setColor(color_.redF(), color_.greenF(), color_.blueF(),
-                              alpha_);
+    updateDirection();
 }
 
 void ImuAccVisual::setFramePosition(const Ogre::Vector3& position)
@@ -163,6 +187,25 @@ void ImuAccVisual::setFramePosition(const Ogre::Vector3& position)
 void ImuAccVisual::setFrameOrientation(const Ogre::Quaternion& orientation)
 {
     frame_node_->setOrientation(orientation);
+}
+
+bool ImuAccVisual::checkQuaternionValidity(
+    const sensor_msgs::msg::Imu::ConstSharedPtr msg)
+{
+    // REP-145: orientation_covariance[0] == -1 signals "not estimated".
+    if (msg->orientation_covariance[0] == -1.0)
+    {
+        return false;
+    }
+    double x = msg->orientation.x, y = msg->orientation.y,
+           z = msg->orientation.z, w = msg->orientation.w;
+    // Near-zero length indicates the default (0, 0, 0, 0) quaternion,
+    // which would silently zero out any vector multiplication.
+    if (std::sqrt(x * x + y * y + z * z + w * w) < 0.0001)
+    {
+        return false;
+    }
+    return true;
 }
 
 }  // namespace rviz_imu_plugin
