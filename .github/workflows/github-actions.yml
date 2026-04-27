@@ -38,7 +38,7 @@ jobs:
         # (install from apt instead).
         (python3 -m pip install --break-system-packages pre-commit || python3 -m pip install pre-commit)
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         path: src/imu_tools
     - name: Use rosdep to install remaining dependencies
