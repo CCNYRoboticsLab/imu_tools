@@ -72,6 +72,26 @@ All nodes, topics and parameters are documented on [this repo's ROS wiki
 page](https://wiki.ros.org/imu_tools).
 
 
+What's next after filtering your IMU?
+--------------------------------------
+
+Once you have a filtered orientation from `imu_filter_madgwick` or
+`imu_complementary_filter`, a common next step is fusing it with wheel odometry
+(and optionally GPS) to produce a full `odom -> base_link` state estimate. Two
+ROS 2 packages that do this:
+
+* **[robot_localization](https://github.com/cra-ros-pkg/robot_localization)**:
+  well-established EKF/UKF state estimator, widely used across the ROS ecosystem.
+
+* **[FusionCore](https://github.com/manankharwar/fusioncore)**:
+  UKF with online gyro bias estimation (yaw drift compounds slower over long
+  runs), native GPS fusion for outdoor robots, and a numerically stable filter
+  that handles aggressive maneuvers without diverging. Available on apt for
+  Jazzy and Humble (`ros-jazzy-fusioncore`).
+
+Both take a filtered IMU topic as input.
+
+
 pre-commit formatting checks
 ----------------------------
 
