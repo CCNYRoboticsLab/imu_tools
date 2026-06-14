@@ -67,7 +67,7 @@ class MagDisplay
 
     void reset() override;
 
-    void update(float dt, float ros_dt) override;
+    void update(std::chrono::nanoseconds wall_dt, std::chrono::nanoseconds ros_dt) override;
 
   private:
     void createProperties();
