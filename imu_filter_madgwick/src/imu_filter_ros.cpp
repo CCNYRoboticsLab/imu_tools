@@ -34,7 +34,7 @@ using namespace std::chrono_literals;
 using namespace rclcpp;
 using namespace std::placeholders;
 
-ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
+ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions& options)
     : BaseNode("imu_filter_madgwick", options),
       tf_broadcaster_(*this),
       tf_buffer_(this->get_clock()),
@@ -238,8 +238,8 @@ void ImuFilterMadgwickRos::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw)
 
     std::lock_guard<std::mutex> lock(mutex_);
 
-    const geometry_msgs::msg::Vector3 &ang_vel = imu_msg_raw->angular_velocity;
-    const geometry_msgs::msg::Vector3 &lin_acc =
+    const geometry_msgs::msg::Vector3& ang_vel = imu_msg_raw->angular_velocity;
+    const geometry_msgs::msg::Vector3& lin_acc =
         imu_msg_raw->linear_acceleration;
 
     rclcpp::Clock steady_clock(RCL_STEADY_TIME);  // for throttle logger message
@@ -305,10 +305,10 @@ void ImuFilterMadgwickRos::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
 
     std::lock_guard<std::mutex> lock(mutex_);
 
-    const geometry_msgs::msg::Vector3 &ang_vel = imu_msg_raw->angular_velocity;
-    const geometry_msgs::msg::Vector3 &lin_acc =
+    const geometry_msgs::msg::Vector3& ang_vel = imu_msg_raw->angular_velocity;
+    const geometry_msgs::msg::Vector3& lin_acc =
         imu_msg_raw->linear_acceleration;
-    const geometry_msgs::msg::Vector3 &mag_fld = mag_msg->magnetic_field;
+    const geometry_msgs::msg::Vector3& mag_fld = mag_msg->magnetic_field;
 
     rclcpp::Time time = imu_msg_raw->header.stamp;
     imu_frame_ = imu_msg_raw->header.frame_id;
@@ -438,8 +438,8 @@ void ImuFilterMadgwickRos::publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw)
  * @param q2 quaternion z component
  * @param q3 quaternion w component
  **/
-void ImuFilterMadgwickRos::applyYawOffset(double &q0, double &q1, double &q2,
-                                          double &q3)
+void ImuFilterMadgwickRos::applyYawOffset(double& q0, double& q1, double& q2,
+                                          double& q3)
 {
     if (yaw_offset_total_ != 0.0)
     {
@@ -503,7 +503,7 @@ void ImuFilterMadgwickRos::publishFilteredMsg(
     }
 }
 
-void ImuFilterMadgwickRos::publishOrientationFiltered(const ImuMsg &imu_msg)
+void ImuFilterMadgwickRos::publishOrientationFiltered(const ImuMsg& imu_msg)
 {
     geometry_msgs::msg::PoseStamped pose;
     pose.header.stamp = imu_msg.header.stamp;
@@ -517,7 +517,7 @@ void ImuFilterMadgwickRos::publishOrientationFiltered(const ImuMsg &imu_msg)
         transform = tf_buffer_.lookupTransform(
             fixed_frame_, imu_msg.header.frame_id, imu_msg.header.stamp,
             rclcpp::Duration::from_seconds(0.1));
-    } catch (tf2::TransformException &ex)
+    } catch (tf2::TransformException& ex)
     {
         RCLCPP_WARN(
             this->get_logger(), "Could not get transform from %s to %s: %s",
@@ -532,7 +532,7 @@ void ImuFilterMadgwickRos::publishOrientationFiltered(const ImuMsg &imu_msg)
     orientation_filtered_publisher_->publish(pose);
 }
 
-void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time &t, float roll,
+void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time& t, float roll,
                                          float pitch, float yaw)
 {
     geometry_msgs::msg::Vector3Stamped rpy;
@@ -545,16 +545,16 @@ void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time &t, float roll,
 }
 
 void ImuFilterMadgwickRos::postSetParametersCallback(
-    const std::vector<rclcpp::Parameter> &parameters)
+    const std::vector<rclcpp::Parameter>& parameters)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    for (const auto &changed_parameter : parameters)
+    for (const auto& changed_parameter : parameters)
     {
         if (changed_parameter.get_type() == ParameterType::PARAMETER_DOUBLE)
         {
-            const auto &name = changed_parameter.get_name();
-            const auto &value = changed_parameter.get_value<double>();
+            const auto& name = changed_parameter.get_name();
+            const auto& value = changed_parameter.get_value<double>();
             RCLCPP_INFO(get_logger(), "Parameter %s set to %f", name.c_str(),
                         value);
             if (name == "gain")

@@ -113,7 +113,8 @@ void ImuDisplay::reset()
     acc_visual_->hide();
 }
 
-void ImuDisplay::update(std::chrono::nanoseconds /* wall_dt */, std::chrono::nanoseconds /* ros_dt */)
+void ImuDisplay::update(std::chrono::nanoseconds /* wall_dt */,
+                        std::chrono::nanoseconds /* ros_dt */)
 {
     updateTop();
     updateBox();

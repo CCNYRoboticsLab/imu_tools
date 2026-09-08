@@ -7,7 +7,7 @@ namespace imu_filter {
 class BaseNode : public rclcpp::Node
 {
   public:
-    explicit BaseNode(std::string name, const rclcpp::NodeOptions &options)
+    explicit BaseNode(std::string name, const rclcpp::NodeOptions& options)
         : Node(name, options)
     {
     }
@@ -26,10 +26,10 @@ class BaseNode : public rclcpp::Node
 
     // Declare a parameter that has no integer or floating point range
     // constraints
-    void add_parameter(const std::string &name,
-                       const rclcpp::ParameterValue &default_value,
-                       const std::string &description = "",
-                       const std::string &additional_constraints = "",
+    void add_parameter(const std::string& name,
+                       const rclcpp::ParameterValue& default_value,
+                       const std::string& description = "",
+                       const std::string& additional_constraints = "",
                        bool read_only = false)
     {
         auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
@@ -43,11 +43,11 @@ class BaseNode : public rclcpp::Node
     }
 
     // Declare a parameter that has a floating point range constraint
-    void add_parameter(const std::string &name,
-                       const rclcpp::ParameterValue &default_value,
+    void add_parameter(const std::string& name,
+                       const rclcpp::ParameterValue& default_value,
                        const floating_point_range fp_range,
-                       const std::string &description = "",
-                       const std::string &additional_constraints = "",
+                       const std::string& description = "",
+                       const std::string& additional_constraints = "",
                        bool read_only = false)
     {
         auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
@@ -65,11 +65,11 @@ class BaseNode : public rclcpp::Node
     }
 
     // Declare a parameter that has an integer range constraint
-    void add_parameter(const std::string &name,
-                       const rclcpp::ParameterValue &default_value,
+    void add_parameter(const std::string& name,
+                       const rclcpp::ParameterValue& default_value,
                        const integer_range int_range,
-                       const std::string &description = "",
-                       const std::string &additional_constraints = "",
+                       const std::string& description = "",
+                       const std::string& additional_constraints = "",
                        bool read_only = false)
     {
         auto descriptor = rcl_interfaces::msg::ParameterDescriptor();
