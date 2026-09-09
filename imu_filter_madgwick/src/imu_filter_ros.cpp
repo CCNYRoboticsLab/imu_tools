@@ -34,7 +34,7 @@ using namespace std::chrono_literals;
 using namespace rclcpp;
 using namespace std::placeholders;
 
-ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions &options)
+ImuFilterMadgwickRos::ImuFilterMadgwickRos(const rclcpp::NodeOptions& options)
     : BaseNode("imu_filter_madgwick", options),
       tf_broadcaster_(this),
       initialized_(false)
@@ -225,8 +225,8 @@ void ImuFilterMadgwickRos::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    const geometry_msgs::msg::Vector3 &ang_vel = imu_msg_raw->angular_velocity;
-    const geometry_msgs::msg::Vector3 &lin_acc =
+    const geometry_msgs::msg::Vector3& ang_vel = imu_msg_raw->angular_velocity;
+    const geometry_msgs::msg::Vector3& lin_acc =
         imu_msg_raw->linear_acceleration;
 
     rclcpp::Clock steady_clock(RCL_STEADY_TIME);  // for throttle logger message
@@ -290,10 +290,10 @@ void ImuFilterMadgwickRos::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    const geometry_msgs::msg::Vector3 &ang_vel = imu_msg_raw->angular_velocity;
-    const geometry_msgs::msg::Vector3 &lin_acc =
+    const geometry_msgs::msg::Vector3& ang_vel = imu_msg_raw->angular_velocity;
+    const geometry_msgs::msg::Vector3& lin_acc =
         imu_msg_raw->linear_acceleration;
-    const geometry_msgs::msg::Vector3 &mag_fld = mag_msg->magnetic_field;
+    const geometry_msgs::msg::Vector3& mag_fld = mag_msg->magnetic_field;
 
     rclcpp::Time time = imu_msg_raw->header.stamp;
     imu_frame_ = imu_msg_raw->header.frame_id;
@@ -423,8 +423,8 @@ void ImuFilterMadgwickRos::publishTransform(ImuMsg::ConstSharedPtr imu_msg_raw)
  * @param q2 quaternion z component
  * @param q3 quaternion w component
  **/
-void ImuFilterMadgwickRos::applyYawOffset(double &q0, double &q1, double &q2,
-                                          double &q3)
+void ImuFilterMadgwickRos::applyYawOffset(double& q0, double& q1, double& q2,
+                                          double& q3)
 {
     if (yaw_offset_total_ != 0.0)
     {
@@ -486,7 +486,7 @@ void ImuFilterMadgwickRos::publishFilteredMsg(
     }
 }
 
-void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time &t, float roll,
+void ImuFilterMadgwickRos::publishRawMsg(const rclcpp::Time& t, float roll,
                                          float pitch, float yaw)
 {
     geometry_msgs::msg::Vector3Stamped rpy;
@@ -504,11 +504,11 @@ void ImuFilterMadgwickRos::reconfigCallback(
     double gain, zeta;
     std::lock_guard<std::mutex> lock(mutex_);
 
-    for (auto &changed_parameter : event->changed_parameters)
+    for (auto& changed_parameter : event->changed_parameters)
     {
-        const auto &type = changed_parameter.value.type;
-        const auto &name = changed_parameter.name;
-        const auto &value = changed_parameter.value;
+        const auto& type = changed_parameter.value.type;
+        const auto& name = changed_parameter.name;
+        const auto& value = changed_parameter.value;
 
         if (type == ParameterType::PARAMETER_DOUBLE)
         {

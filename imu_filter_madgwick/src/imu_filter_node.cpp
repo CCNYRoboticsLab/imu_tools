@@ -25,7 +25,7 @@
 
 #include "imu_filter_madgwick/imu_filter_ros.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     rclcpp::init(argc, argv);
 

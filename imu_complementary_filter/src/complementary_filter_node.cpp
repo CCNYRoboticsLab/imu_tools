@@ -33,7 +33,7 @@
 
 #include "imu_complementary_filter/complementary_filter_ros.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     rclcpp::init(argc, argv);
     auto filter = std::make_shared<imu_tools::ComplementaryFilterROS>();
