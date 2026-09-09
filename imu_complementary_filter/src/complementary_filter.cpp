@@ -496,7 +496,8 @@ void invertQuaternion(double q0, double q1, double q2, double q3,
 void scaleQuaternion(double gain, double& dq0, double& dq1, double& dq2,
                      double& dq3)
 {
-    if (dq0 < 0.0)  // 0.9
+    constexpr double interpolation_threshold = 0.9;
+    if (dq0 <= interpolation_threshold)
     {
         // Slerp (Spherical linear interpolation):
         double angle = acos(dq0);

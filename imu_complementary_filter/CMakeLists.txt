@@ -71,6 +71,13 @@ install(DIRECTORY launch config
   DESTINATION share/${PROJECT_NAME}
 )
 
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(complementary_filter_test
+    test/complementary_filter_test.cpp)
+  target_link_libraries(complementary_filter_test complementary_filter)
+endif()
+
 ament_export_include_directories(include)
 ament_export_libraries(complementary_filter)
 ament_export_targets(
