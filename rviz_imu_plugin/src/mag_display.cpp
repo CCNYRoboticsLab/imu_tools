@@ -85,7 +85,8 @@ void MagDisplay::reset()
     mag_visual_->hide();
 }
 
-void MagDisplay::update(std::chrono::nanoseconds /* wall_dt */, std::chrono::nanoseconds /* ros_dt */)
+void MagDisplay::update(std::chrono::nanoseconds /* wall_dt */,
+                        std::chrono::nanoseconds /* ros_dt */)
 {
     updateMag();
 }

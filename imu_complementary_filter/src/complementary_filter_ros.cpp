@@ -182,9 +182,9 @@ void ComplementaryFilterROS::imuCallback(ImuMsg::ConstSharedPtr imu_msg_raw)
 {
     checkTimeJump();
 
-    const geometry_msgs::msg::Vector3 &a = imu_msg_raw->linear_acceleration;
-    const geometry_msgs::msg::Vector3 &w = imu_msg_raw->angular_velocity;
-    const rclcpp::Time &time = imu_msg_raw->header.stamp;
+    const geometry_msgs::msg::Vector3& a = imu_msg_raw->linear_acceleration;
+    const geometry_msgs::msg::Vector3& w = imu_msg_raw->angular_velocity;
+    const rclcpp::Time& time = imu_msg_raw->header.stamp;
 
     // Initialize.
     if (!initialized_filter_)
@@ -215,10 +215,10 @@ void ComplementaryFilterROS::imuMagCallback(ImuMsg::ConstSharedPtr imu_msg_raw,
 {
     checkTimeJump();
 
-    const geometry_msgs::msg::Vector3 &a = imu_msg_raw->linear_acceleration;
-    const geometry_msgs::msg::Vector3 &w = imu_msg_raw->angular_velocity;
-    const geometry_msgs::msg::Vector3 &m = mag_msg->magnetic_field;
-    const rclcpp::Time &time = imu_msg_raw->header.stamp;
+    const geometry_msgs::msg::Vector3& a = imu_msg_raw->linear_acceleration;
+    const geometry_msgs::msg::Vector3& w = imu_msg_raw->angular_velocity;
+    const geometry_msgs::msg::Vector3& m = mag_msg->magnetic_field;
+    const rclcpp::Time& time = imu_msg_raw->header.stamp;
 
     // Initialize.
     if (!initialized_filter_)
