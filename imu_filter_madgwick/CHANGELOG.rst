@@ -2,6 +2,12 @@
 Changelog for package imu_filter_madgwick
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use SPDX license tags in package.xml (`#235 <https://github.com/CCNYRoboticsLab/imu_tools/issues/235>`_)
+* CI: fix pre-commit failures on Python 3.14 / clang-format 21 (`#237 <https://github.com/CCNYRoboticsLab/imu_tools/issues/237>`_)
+* Contributors: Martin Günther, Michal Sojka
+
 2.2.4 (2026-06-15)
 ------------------
 
