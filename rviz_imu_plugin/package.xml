@@ -6,7 +6,7 @@
   <description>
     RVIZ plugin for IMU visualization
   </description>
-  <license>BSD</license>
+  <license>BSD-3-Clause</license>
   <url>http://ros.org/wiki/rviz_imu_plugin</url>
   <author email="ivan.dryanovski@gmail.com">Ivan Dryanovski</author>
   <maintainer email="martin.guenther@dfki.de">Martin Günther</maintainer>

@@ -5,7 +5,8 @@
     Various tools for IMU devices
   </description>
   <maintainer email="martin.guenther@dfki.de">Martin Günther</maintainer>
-  <license>BSD, GPL</license>
+  <license>BSD-3-Clause</license>
+  <license>GPL-3.0-or-later</license>
 
   <url>http://ros.org/wiki/imu_tools</url>
 
