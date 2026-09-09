@@ -32,6 +32,9 @@
 
 #include <rviz_common/properties/status_property.hpp>
 #include <rviz_common/logging.hpp>
+#include <OgreSceneNode.h>
+#include <OgreSceneManager.h>
+
 namespace rviz_imu_plugin {
 
 ImuDisplay::ImuDisplay()
