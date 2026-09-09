@@ -2,8 +2,8 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.2.5 (2026-09-09)
+------------------
 * Add missing includes (`#236 <https://github.com/CCNYRoboticsLab/imu_tools/issues/236>`_)
 * Use SPDX license tags in package.xml (`#235 <https://github.com/CCNYRoboticsLab/imu_tools/issues/235>`_)
 * CI: fix pre-commit failures on Python 3.14 / clang-format 21 (`#237 <https://github.com/CCNYRoboticsLab/imu_tools/issues/237>`_)

@@ -2,8 +2,8 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+2.2.5 (2026-09-09)
+------------------
 * Use SPDX license tags in package.xml (`#235 <https://github.com/CCNYRoboticsLab/imu_tools/issues/235>`_)
 * Fix quaternion interpolation threshold (`#234 <https://github.com/CCNYRoboticsLab/imu_tools/issues/234>`_)
 * CI: fix pre-commit failures on Python 3.14 / clang-format 21 (`#237 <https://github.com/CCNYRoboticsLab/imu_tools/issues/237>`_)
