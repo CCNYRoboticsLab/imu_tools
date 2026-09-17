@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        rosdistro: [rolling]
+        rosdistro: [kilted]
       fail-fast: false
     runs-on: ubuntu-latest
     container:
