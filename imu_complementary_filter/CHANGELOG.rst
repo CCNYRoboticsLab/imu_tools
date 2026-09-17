@@ -2,6 +2,14 @@
 Changelog for package imu_complementary_filter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use SPDX license tags in package.xml (`#235 <https://github.com/CCNYRoboticsLab/imu_tools/issues/235>`_)
+* Fix quaternion interpolation threshold (`#234 <https://github.com/CCNYRoboticsLab/imu_tools/issues/234>`_)
+* CI: fix pre-commit failures on Python 3.14 / clang-format 21 (`#237 <https://github.com/CCNYRoboticsLab/imu_tools/issues/237>`_)
+* Fixed a static library linking issue with the imu_complementary_filter package on Windows. (`#218 <https://github.com/CCNYRoboticsLab/imu_tools/issues/218>`_)
+* Contributors: Daniiiil1, Martin Günther, Michal Sojka, wentywenty
+
 2.1.5 (2024-10-01)
 ------------------
 * Add QoS overriding options (`#207 <https://github.com/CCNYRoboticsLab/imu_tools/issues/207>`_)

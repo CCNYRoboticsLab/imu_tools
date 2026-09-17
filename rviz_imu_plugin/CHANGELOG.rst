@@ -2,6 +2,12 @@
 Changelog for package rviz_imu_plugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use SPDX license tags in package.xml (`#235 <https://github.com/CCNYRoboticsLab/imu_tools/issues/235>`_)
+* rviz_imu_plugin: fix invisible-arrow and stale-direction bugs in ImuAccVisual (`#228 <https://github.com/CCNYRoboticsLab/imu_tools/issues/228>`_)
+* Contributors: Kris, Michal Sojka
+
 2.1.5 (2024-10-01)
 ------------------
 
