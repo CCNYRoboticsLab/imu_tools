@@ -29,6 +29,10 @@ jobs:
       run: |
         apt-get update
         apt-get install -y build-essential clang-format file git python3-pip python3-colcon-common-extensions python3-rosdep pre-commit
+        # noble's apt nodeenv (0.13.4) crashes with an IndexError parsing the current
+        # nodejs.org release index, which breaks pre-commit's node-based dockerfilelint hook.
+        # Install nodeenv 1.12 via pip; /usr/local precedes /usr/lib/python3/dist-packages in sys.path.
+        python3 -m pip install --break-system-packages --ignore-installed nodeenv
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
